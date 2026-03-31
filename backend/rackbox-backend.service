@@ -1,0 +1,18 @@
+[Unit]
+Description=Rackbox Backend Node.js Application
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=nobody
+WorkingDirectory=/var/www/rackbox-backend
+ExecStart=/usr/bin/node src/server.js
+Restart=always
+RestartSec=10
+StandardOutput=append:/var/log/rackbox-backend/out.log
+StandardError=append:/var/log/rackbox-backend/error.log
+EnvironmentFile=/var/www/rackbox-backend/.env
+
+[Install]
+WantedBy=multi-user.target

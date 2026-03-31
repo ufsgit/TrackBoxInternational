@@ -1,0 +1,97 @@
+<div class="settings-container">
+    <header class="settings-header">
+        <div class="header-info">
+            <h1>Branch Management</h1>
+            <p>Configure branches and assign their functional departments.</p>
+        </div>
+        <button class="btn btn-primary" (click)="onNewBranch()">
+            <span class="icon">➕</span> Create New Branch
+        </button>
+    </header>
+
+    <div class="status-content">
+        <!-- Add/Edit Branch Modal -->
+        <div class="modal-overlay" *ngIf="isFormOpen">
+            <div class="settings-modal">
+                <header class="modal-header">
+                    <h3>{{ selectedBranch ? 'Edit' : 'Add' }} Branch</h3>
+                    <button class="close-modal" (click)="onToggleForm()">×</button>
+                </header>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Branch Name <span class="required">*</span></label>
+                        <input type="text" [(ngModel)]="branchForm.branch_name" placeholder="e.g. Kochi, Dubai..."
+                            class="form-control" (keydown.enter)="onSaveBranch()">
+                    </div>
+                </div>
+                <footer class="modal-footer">
+                    <button class="btn btn-secondary" (click)="onToggleForm()">Cancel</button>
+                    <button class="btn btn-primary" (click)="onSaveBranch()">
+                        <span class="icon">{{ selectedBranch ? '💾' : '➕' }}</span> {{ selectedBranch ? 'Update' :
+                        'Create'
+                        }}
+                        Branch
+                    </button>
+                </footer>
+            </div>
+        </div>
+
+        <!-- Department Mapping Modal -->
+        <div class="modal-overlay" *ngIf="isMappingOpen">
+            <div class="settings-modal" style="max-width: 600px;">
+                <header class="modal-header">
+                    <h3>Map Departments: {{ selectedBranch?.branch_name }}</h3>
+                    <button class="close-modal" (click)="onToggleMapping()">×</button>
+                </header>
+                <div class="modal-body">
+                    <p class="section-desc t-muted mb-3">Select which departments operate in this branch.</p>
+                    <div class="dept-grid">
+                        <label class="dept-checkbox" *ngFor="let d of departments">
+                            <input type="checkbox" [checked]="isDeptMapped(d.department_id)"
+                                (change)="toggleDepartment(d.department_id, $event)">
+                            <span class="dept-label">{{d.department_name}}</span>
+                        </label>
+                    </div>
+                </div>
+                <footer class="modal-footer">
+                    <button class="btn btn-secondary" (click)="onToggleMapping()">Cancel</button>
+                    <button class="btn btn-primary" (click)="onSaveMappings()">💾 Save Mappings</button>
+                </footer>
+            </div>
+        </div>
+
+        <!-- List Branches -->
+        <div class="status-list-section grid-card">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Branch Name</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let b of branches">
+                        <td class="font-bold">{{b.branch_name}}</td>
+                        <td class="text-right">
+                            <button class="btn btn-outline-sm icon" (click)="onToggleMapping(b)"
+                                title="Map Departments">
+                                🏢 Map Depts
+                            </button>
+                            <button class="icon-btn edit-btn" (click)="onEditBranch(b)" title="Edit Branch">
+                                ✏️
+                            </button>
+                            <button class="icon-btn delete-btn" (click)="onDelete(b.branch_id, $event)"
+                                title="Delete Branch">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="empty-state" *ngIf="branches.length === 0">
+                No branches found. Click "Create New" to add some.
+            </div>
+        </div>
+    </div>
+</div>

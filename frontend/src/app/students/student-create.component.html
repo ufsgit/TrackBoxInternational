@@ -1,0 +1,340 @@
+<div class="student-details-container">
+    <div class="page-title">
+        <h2>{{student.id ? 'Edit' : 'Create New'}} Student Profile</h2>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="main-card">
+        <section class="basic-info">
+            <h3 class="section-title">SECTION 1: PROFILE TAB</h3>
+
+            <div class="form-row">
+                <div class="form-group flex-2">
+                    <label>Student Name <span class="required">*</span></label>
+                    <input type="text" [(ngModel)]="student.student_name" placeholder="Enter Student Name">
+                </div>
+                <div class="form-group flex-1">
+                    <label>Enquiry Source</label>
+                    <input type="text" [(ngModel)]="student.enquiry_source" placeholder="Source">
+                </div>
+            </div>
+
+            <div class="form-row three-cols">
+                <div class="form-group">
+                    <label>Mobile <span class="required">*</span></label>
+                    <div class="field-with-social">
+                        <div class="mobile-input">
+                            <select [(ngModel)]="student.mobile_country_code">
+                                <option value="+91">+91 (IN)</option>
+                                <option value="+971">+971 (UAE)</option>
+                                <option value="+1">+1 (US)</option>
+                            </select>
+                            <input type="text" [(ngModel)]="student.mobile_number" placeholder="Mobile Number">
+                        </div>
+                        <div class="social-checks-inline">
+                            <label title="Whatsapp"><input type="checkbox" [(ngModel)]="student.whatsapp"> <i
+                                    class="icon-whatsapp">W</i></label>
+                            <label title="Botim"><input type="checkbox" [(ngModel)]="student.botim"> <i
+                                    class="icon-botim">B</i></label>
+                            <label title="Telegram"><input type="checkbox" [(ngModel)]="student.telegram"> <i
+                                    class="icon-telegram">T</i></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone</label>
+                    <div class="field-with-social">
+                        <div class="mobile-input">
+                            <select [(ngModel)]="student.phone_country_code">
+                                <option value="+91">+91 (IN)</option>
+                            </select>
+                            <input type="text" [(ngModel)]="student.phone_number" placeholder="Phone Number">
+                        </div>
+                        <div class="social-checks-inline">
+                            <label title="Whatsapp"><input type="checkbox" [(ngModel)]="student.phone_whatsapp"> <i
+                                    class="icon-whatsapp">W</i></label>
+                            <label title="Botim"><input type="checkbox" [(ngModel)]="student.phone_botim"> <i
+                                    class="icon-botim">B</i></label>
+                            <label title="Telegram"><input type="checkbox" [(ngModel)]="student.phone_telegram"> <i
+                                    class="icon-telegram">T</i></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" [(ngModel)]="student.email" placeholder="Email Address">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Program Required:</label>
+                    <div class="program-checks">
+                        <label><input type="checkbox" [(ngModel)]="student.study_interested"
+                                (ngModelChange)="onProgramToggle('study', $event)"> Study</label>
+                        <label><input type="checkbox" [(ngModel)]="student.migration_interested"
+                                (ngModelChange)="onProgramToggle('migration', $event)"> Migration</label>
+                        <label><input type="checkbox" [(ngModel)]="student.coaching_interested"
+                                (ngModelChange)="onProgramToggle('coaching', $event)"> Coaching</label>
+                        <label><input type="checkbox" [(ngModel)]="student.visa_interested"
+                                (ngModelChange)="onProgramToggle('visa', $event)"> Visa</label>
+                        <label><input type="checkbox" [(ngModel)]="student.work_interested"
+                                (ngModelChange)="onProgramToggle('work', $event)"> Work</label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Program Sections -->
+        <div class="dynamic-programs">
+            <!-- Study Details -->
+            <section class="program-section" *ngIf="student.study_interested">
+                <div class="section-header">
+                    <h4>STUDY</h4>
+                    <button class="btn-add" (click)="addProgramRow('study')">Add Row+</button>
+                </div>
+                <div class="grid-table-scroll">
+                    <table class="dynamic-table no-header">
+                        <tbody>
+                            <tr *ngFor="let p of programs.study; let i = index">
+                                <td><input type="text" [(ngModel)]="p.country" list="countryList"
+                                        placeholder="Type Country"></td>
+                                <td><input type="text" [(ngModel)]="p.level" list="levelList" placeholder="Type Level">
+                                </td>
+                                <td><input type="text" [(ngModel)]="p.field" list="fieldList" placeholder="Type Field">
+                                </td>
+                                <td><input type="text" [(ngModel)]="p.intake" list="intakeList"
+                                        placeholder="Type Intake"></td>
+                                <td><input type="text" [(ngModel)]="p.year" list="yearList" placeholder="Type Year">
+                                </td>
+                                <td class="action-cell"><button class="btn-delete-icon"
+                                        (click)="removeProgramRow('study', i)" title="Remove">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Migration Details -->
+            <section class="program-section" *ngIf="student.migration_interested">
+                <div class="section-header">
+                    <h4>MIGRATION</h4>
+                    <button class="btn-add" (click)="addProgramRow('migration')">Add Row+</button>
+                </div>
+                <div class="grid-table-scroll">
+                    <table class="dynamic-table no-header">
+                        <tbody>
+                            <tr *ngFor="let p of programs.migration; let i = index">
+                                <td><input type="text" [(ngModel)]="p.country" list="countryList"
+                                        placeholder="Type Country"></td>
+                                <td><input type="text" [(ngModel)]="p.occupation" list="occList"
+                                        placeholder="Type Occupation"></td>
+                                <td><input type="text" [(ngModel)]="p.category" list="categoryList"
+                                        placeholder="Type Category"></td>
+                                <td class="action-cell"><button class="btn-delete-icon"
+                                        (click)="removeProgramRow('migration', i)" title="Remove">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Coaching Details -->
+            <section class="program-section" *ngIf="student.coaching_interested">
+                <div class="section-header">
+                    <h4>COACHING</h4>
+                    <button class="btn-add" (click)="addProgramRow('coaching')">Add Row+</button>
+                </div>
+                <div class="grid-table-scroll">
+                    <table class="dynamic-table no-header">
+                        <tbody>
+                            <tr *ngFor="let p of programs.coaching; let i = index">
+                                <td><input type="text" [(ngModel)]="p.course" placeholder="Type Course"></td>
+                                <td><input type="text" [(ngModel)]="p.batch" placeholder="Type Batch"></td>
+                                <td class="action-cell"><button class="btn-delete-icon"
+                                        (click)="removeProgramRow('coaching', i)" title="Remove">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Visa Details -->
+            <section class="program-section" *ngIf="student.visa_interested">
+                <div class="section-header">
+                    <h4>VISA</h4>
+                    <button class="btn-add" (click)="addProgramRow('visa')">Add Row+</button>
+                </div>
+                <div class="grid-table-scroll">
+                    <table class="dynamic-table no-header">
+                        <tbody>
+                            <tr *ngFor="let p of programs.visa; let i = index">
+                                <td><input type="text" [(ngModel)]="p.country" list="countryList"
+                                        placeholder="Type Country"></td>
+                                <td><input type="text" [(ngModel)]="p.category" list="categoryList"
+                                        placeholder="Type Category"></td>
+                                <td class="action-cell"><button class="btn-delete-icon"
+                                        (click)="removeProgramRow('visa', i)" title="Remove">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Work Details -->
+            <section class="program-section" *ngIf="student.work_interested">
+                <div class="section-header">
+                    <h4>WORK</h4>
+                    <button class="btn-add" (click)="addProgramRow('work')">Add Row+</button>
+                </div>
+                <div class="grid-table-scroll">
+                    <table class="dynamic-table no-header">
+                        <tbody>
+                            <tr *ngFor="let p of programs.work; let i = index">
+                                <td><input type="text" [(ngModel)]="p.country" list="countryList"
+                                        placeholder="Type Country"></td>
+                                <td><input type="text" [(ngModel)]="p.occupation" list="occList"
+                                        placeholder="Type Occupation"></td>
+                                <td class="action-cell"><button class="btn-delete-icon"
+                                        (click)="removeProgramRow('work', i)" title="Remove">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- Data Lists for Autocomplete -->
+    <datalist id="countryList">
+        <option *ngFor="let c of lookups.countries" [value]="c.name"></option>
+    </datalist>
+    <datalist id="levelList">
+        <option *ngFor="let l of lookups.levels" [value]="l.name"></option>
+    </datalist>
+    <datalist id="intakeList">
+        <option *ngFor="let it of lookups.intakes" [value]="it.name"></option>
+    </datalist>
+    <datalist id="occList">
+        <option *ngFor="let o of lookups.occupations" [value]="o.name"></option>
+    </datalist>
+    <datalist id="fieldList">
+        <option *ngFor="let f of lookups.fields" [value]="f.name"></option>
+    </datalist>
+    <datalist id="yearList">
+        <option *ngFor="let y of lookups.years" [value]="y.name"></option>
+    </datalist>
+    <datalist id="categoryList">
+        <option *ngFor="let c of lookups.categories" [value]="c.name"></option>
+    </datalist>
+
+    <!-- Follow up Section -->
+    <div class="main-card followup-card">
+        <h3 class="section-title">SECTION 4: FOLLOW UP DETAILS</h3>
+
+        <section class="followup-form-box">
+            <div class="alert-info" *ngIf="!student.id">
+                <p>⚠️ Follow-up will be recorded but not linked until profile is initially saved.</p>
+            </div>
+            <div class="form-row three-cols">
+                <div class="form-group">
+                    <label>Branch</label>
+                    <select [(ngModel)]="newFollowup.branch_id" (change)="onBranchChange()">
+                        <option [ngValue]="null">Select Branch</option>
+                        <option *ngFor="let b of branches" [value]="b.branch_id">{{b.branch_name}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <select [(ngModel)]="newFollowup.department_id" (change)="onDepartmentChange()"
+                        [disabled]="!newFollowup.branch_id">
+                        <option [ngValue]="null">Select Department</option>
+                        <option *ngFor="let d of filteredDepartments" [value]="d.department_id">{{d.department_name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select [(ngModel)]="newFollowup.status" [disabled]="!newFollowup.department_id">
+                        <option value="">Select Status</option>
+                        <option *ngFor="let s of filteredStatuses" [value]="s.status_name">{{s.status_name}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row three-cols">
+                <div class="form-group">
+                    <label>To Staff</label>
+                    <select [(ngModel)]="newFollowup.assigned_to">
+                        <option *ngFor="let u of users" [value]="u.user_id">{{u.username}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Follow Up On <span class="required">*</span></label>
+                    <input type="date" [(ngModel)]="newFollowup.follow_up_date">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Remark <span class="required">*</span></label>
+                <textarea [(ngModel)]="newFollowup.remark" rows="3" placeholder="Enter follow-up details..."></textarea>
+            </div>
+
+            <div class="mt-15">
+                <button class="btn btn-save" (click)="onAddFollowup()" *ngIf="student.id">Submit Follow-up</button>
+                <p class="help-text" *ngIf="!student.id">ℹ️ For new students, fill in these details and click
+                    <strong>SAVE STUDENT PROFILE</strong> above to save everything at once.
+                </p>
+            </div>
+        </section>
+
+        <section class="followup-history-box" *ngIf="student.id">
+            <h4>Follow-up History</h4>
+            <div class="grid-table-scroll history-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>DateTime</th>
+                            <th>Status</th>
+                            <th>Staff</th>
+                            <th>Next F.Up</th>
+                            <th class="remark-header">Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let f of followupHistory">
+                            <td class="date-cell">
+                                <span class="d-block">{{f.created_at | date:'dd MMM yyyy'}}</span>
+                                <small class="t-muted">{{f.created_at | date:'hh:mm a'}}</small>
+                            </td>
+                            <td><span class="status-badge" [attr.data-status]="f.status">{{f.status}}</span></td>
+                            <td class="staff-cell">{{f.creator_name}}</td>
+                            <td class="date-cell">{{f.follow_up_date | date:'dd MMM yyyy'}}</td>
+                            <td class="remark-cell">{{f.remark}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Final Footer Actions -->
+        <div class="final-form-footer">
+            <button class="btn btn-save-large" (click)="onSave()">
+                <span class="btn-icon">💾</span>
+                SAVE STUDENT PROFILE
+            </button>
+            <button class="btn btn-application" (click)="onApplicationForm()" *ngIf="student.id">
+                <span class="btn-icon">📋</span>
+                ASSESSMENT FORM
+            </button>
+            <button class="btn btn-delete-outline" (click)="onDelete()" *ngIf="student.id">
+                <span class="btn-icon">🗑️</span>
+                DELETE STUDENT
+            </button>
+            <button class="btn btn-close-outline" (click)="onClose()">CLOSE</button>
+        </div>
+    </div>
+</div>

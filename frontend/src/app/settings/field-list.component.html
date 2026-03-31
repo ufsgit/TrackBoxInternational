@@ -1,0 +1,70 @@
+<div class="settings-container">
+    <header class="settings-header">
+        <div class="header-info">
+            <h1>Study Field Configuration</h1>
+            <p>Manage the list of study fields (e.g., Computer Science, Business, Health).</p>
+        </div>
+        <button class="btn btn-primary" (click)="onToggleForm()">
+            <span class="icon">➕</span> Create New
+        </button>
+    </header>
+
+    <div class="status-content">
+        <!-- Add/Edit Modal -->
+        <div class="modal-overlay" *ngIf="isFormOpen">
+            <div class="settings-modal">
+                <header class="modal-header">
+                    <h3>{{ editingItem ? 'Edit Study Field' : 'Add New Study Field' }}</h3>
+                    <button class="close-modal" (click)="onToggleForm()">×</button>
+                </header>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Study Field Name <span class="required">*</span></label>
+                        <input type="text" [(ngModel)]="newItemName"
+                            placeholder="e.g. Mechanical Engineering, Nursing..." class="form-control"
+                            (keydown.enter)="onAddItem()">
+                    </div>
+                </div>
+
+                <footer class="modal-footer">
+                    <button class="btn btn-secondary" (click)="onToggleForm()">Cancel</button>
+                    <button class="btn btn-primary" (click)="onAddItem()">
+                        <span class="icon">{{ editingItem ? '💾' : '➕' }}</span> {{ editingItem ? 'Update' : 'Add' }}
+                        Field
+                    </button>
+                </footer>
+            </div>
+        </div>
+
+        <!-- List Fields -->
+        <div class="status-list-section grid-card">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Study Field Name</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of items">
+                        <td class="font-bold">{{item.name}}</td>
+                        <td class="text-right">
+                            <button class="icon-btn edit-btn" (click)="onEditItem(item)" title="Edit Field">
+                                ✏️
+                            </button>
+                            <button class="icon-btn delete-btn" (click)="onDeleteItem(item.field_id)"
+                                title="Delete Field">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="empty-state" *ngIf="items.length === 0">
+                No study fields defined yet. Click "Create New" to add some.
+            </div>
+        </div>
+    </div>
+</div>

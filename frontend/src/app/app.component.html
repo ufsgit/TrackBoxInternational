@@ -1,0 +1,17 @@
+<div class="app-layout" [class.logged-in]="isLoggedIn" [class.sidebar-collapsed]="!sidebarActive">
+    <app-navbar *ngIf="isLoggedIn" (toggleSidebar)="toggleSidebar()"></app-navbar>
+
+    <div class="main-body" [class.full-width]="!isLoggedIn">
+        <app-sidebar *ngIf="isLoggedIn" [isActive]="sidebarActive"></app-sidebar>
+        <main class="content-area">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>
+
+<app-dialog></app-dialog>
+
+<div class="loading-overlay" *ngIf="isLoading">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Loading Trackbox...</div>
+</div>

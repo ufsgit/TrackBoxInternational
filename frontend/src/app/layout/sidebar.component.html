@@ -1,0 +1,102 @@
+<aside class="sidebar" [class.collapsed]="!isActive">
+    <div class="sidebar-content">
+        <ul class="nav-links">
+            <li>
+                <a routerLink="/dashboard" routerLinkActive="active" title="Dashboard">
+                    <span class="icon">🏠</span>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a routerLink="/students" routerLinkActive="active" title="Students">
+                    <span class="icon">👥</span>
+                    <span class="text">Student Registry</span>
+                </a>
+            </li>
+            <li>
+                <a class="has-submenu" (click)="toggleReports()" [class.expanded]="isReportsExpanded">
+                    <span class="icon">📊</span>
+                    <span class="text">Reports</span>
+                    <span class="arrow-icon">▼</span>
+                </a>
+                <ul class="submenu" [class.expanded]="isReportsExpanded">
+                    <li>
+                        <a routerLink="/reports/enquiry" routerLinkActive="active" title="Enquiry Report">
+                            <span class="icon">📈</span>
+                            <span class="text">Enquiry Report</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="has-submenu" (click)="toggleSettings()" [class.expanded]="isSettingsExpanded">
+                    <span class="icon">⚙️</span>
+                    <span class="text">Settings</span>
+                    <span class="arrow-icon">▼</span>
+                </a>
+                <ul class="submenu" [class.expanded]="isSettingsExpanded">
+                    <li>
+                        <a routerLink="/users" routerLinkActive="active" title="Users">
+                            <span class="icon">👤</span>
+                            <span class="text">User Management</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/settings/branches" routerLinkActive="active" title="Branches">
+                            <span class="icon">🏢</span>
+                            <span class="text">Branch Config</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/settings/departments" routerLinkActive="active" title="Departments">
+                            <span class="icon">⚙️</span>
+                            <span class="text">Dept Config</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/settings/sources" routerLinkActive="active" title="Enquiry Sources">
+                            <span class="icon">📢</span>
+                            <span class="text">Enquiry Sources</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/settings/statuses" routerLinkActive="active" title="Status Config">
+                            <span class="icon">⚡</span>
+                            <span class="text">Status Config</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/settings/levels" routerLinkActive="active" title="Level Config">
+                            <span class="icon">🎓</span>
+                            <span class="text">Level Config</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/settings/fields" routerLinkActive="active" title="Field Config">
+                            <span class="icon">📚</span>
+                            <span class="text">Field Config</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/settings/app-status" routerLinkActive="active" title="App Status">
+                            <span class="icon">📝</span>
+                            <span class="text">App Status</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/settings/app-sub-status" routerLinkActive="active" title="App Sub Status">
+                            <span class="icon">📑</span>
+                            <span class="text">App Sub Status</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="version-badge">v1.2.0-PRO</div>
+        </div>
+    </div>
+</aside>
+<!-- reload trigger -->

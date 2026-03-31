@@ -1,0 +1,25 @@
+<nav class="navbar glass">
+    <div class="nav-left">
+        <button class="menu-toggle" (click)="toggle()">
+            <span class="icon">☰</span>
+        </button>
+        <div class="logo-area">
+            <span class="logo-icon">📊</span>
+            <h1 class="nav-title outfit">Trackbox</h1>
+        </div>
+    </div>
+
+    <div class="nav-right" *ngIf="currentUser">
+        <div class="user-info">
+            <div class="avatar">{{currentUser.username?.charAt(0).toUpperCase()}}</div>
+            <div class="user-meta">
+                <span class="username">{{currentUser.username}}</span>
+                <span class="role">{{currentUser.role}}</span>
+            </div>
+        </div>
+        <button class="btn btn-logout" (click)="logout()" title="Logout">
+            <span class="icon">󰗼</span>
+            <span class="text">Logout</span>
+        </button>
+    </div>
+</nav>

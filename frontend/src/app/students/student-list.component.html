@@ -1,0 +1,169 @@
+<div class="student-list-container">
+    <!-- Top Section -->
+    <div class="header-actions">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search by name or number..." [(ngModel)]="searchQuery"
+                (keydown.enter)="onSearch()">
+            <button class="btn btn-cyan" (click)="onSearch()">SEARCH</button>
+            <button class="btn btn-outline ml-2" (click)="toggleAdvancedSearch()">
+                {{ showAdvancedSearch ? 'Less' : 'More' }}
+            </button>
+        </div>
+        <div class="header-right">
+
+            <button class="btn btn-green" routerLink="/students/create">CREATE NEW</button>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar" *ngIf="showAdvancedSearch">
+        <div class="filter-group">
+            <label>Department:</label>
+            <select [(ngModel)]="filters.deptId" (change)="applyFilters()">
+                <option [value]="0">All Departments</option>
+                <option *ngFor="let d of departments" [value]="d.department_id">{{d.department_name}}</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>To Staff:</label>
+            <select [(ngModel)]="filters.assignedTo" (change)="applyFilters()">
+                <option [value]="0">All Users</option>
+                <option *ngFor="let u of users" [value]="u.user_id">{{u.username}}</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Status:</label>
+            <select [(ngModel)]="filters.status" (change)="applyFilters()">
+                <option value="">All Status</option>
+                <option value="New Lead">New Lead</option>
+                <option value="Interested">Interested</option>
+                <option value="Registered">Registered</option>
+            </select>
+        </div>
+        <div class="filter-group date-filter">
+            <label><input type="checkbox" [(ngModel)]="filters.useDate" (change)="applyFilters()"> F.Up Date:</label>
+            <input type="date" [(ngModel)]="filters.fromDate" [disabled]="!filters.useDate" (change)="applyFilters()">
+            <span>to</span>
+            <input type="date" [(ngModel)]="filters.toDate" [disabled]="!filters.useDate" (change)="applyFilters()">
+        </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="stats-bar">
+        <span>Total Students: <strong>{{totalItems}}</strong></span>
+    </div>
+
+    <!-- 17 Column Grid -->
+    <div class="grid-wrapper">
+        <table class="student-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Reg.</th>
+                    <th>F.Up</th>
+                    <th>Entry On</th>
+                    <th>F.Up On</th>
+                    <th>Student Name</th>
+                    <th>Mobile</th>
+                    <th>Source</th>
+                    <th>Remark</th>
+                    <th>By</th>
+                    <th>Dept.</th>
+                    <th>Status</th>
+                    <th>To Staff</th>
+                    <th>Created By</th>
+                    <th>Branch</th>
+                    <th>History</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let s of students; let i = index">
+                    <td>{{(currentPage - 1) * pageSize + i + 1}}</td>
+                    <td><input type="checkbox" [checked]="s.is_registered" disabled></td>
+                    <td><button class="icon-btn follow-btn" title="Follow Up"
+                            [routerLink]="['/students/followup', s.student_id]">📅</button></td>
+                    <td>{{s.follow_up_entry_on | date:'dd-MM-yyyy'}}</td>
+                    <td>{{s.follow_up_on | date:'dd-MM-yyyy'}}</td>
+                    <td><a [routerLink]="['/students/edit', s.student_id]" class="student-link">{{s.student_name}}</a>
+                    </td>
+                    <td>{{s.mobile_number}}</td>
+                    <td>{{s.enquiry_source}}</td>
+                    <td>
+                        <div class="text-truncate" [title]="s.remark">{{s.remark}}</div>
+                    </td>
+                    <td>{{s.follow_up_by_name}}</td>
+                    <td>{{s.department_name}}</td>
+                    <td><span class="status-badge" [attr.data-status]="s.status">{{s.status}}</span></td>
+                    <td>{{s.assigned_to_name}}</td>
+                    <td>{{s.created_by_name}}</td>
+                    <td>{{s.branch_name}}</td>
+                    <td><button class="icon-btn history-btn"
+                            (click)="viewHistory(s.student_id, s.student_name)">👁️</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal-overlay" *ngIf="showHistory">
+        <div class="modal-content history-modal">
+            <div class="modal-header">
+                <div class="header-title">
+                    <span class="icon">📜</span>
+                    <h3>History Trail: {{currentStudentName}}</h3>
+                </div>
+                <button class="close-modal" (click)="closeHistory()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="history-grid-container">
+                    <table class="history-grid">
+                        <thead>
+                            <tr>
+                                <th>DateTime</th>
+                                <th>Status</th>
+                                <th class="remark-header">Remark</th>
+                                <th>By Staff</th>
+                                <th>Next F.Up</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let h of selectedStudentHistory">
+                                <td class="date-cell">
+                                    <span class="d-block">{{h.created_at | date:'dd MMM yyyy'}}</span>
+                                    <small class="t-muted">{{h.created_at | date:'hh:mm a'}}</small>
+                                </td>
+                                <td><span class="status-badge" [attr.data-status]="h.status">{{h.status}}</span></td>
+                                <td class="remark-cell">{{h.remark}}</td>
+                                <td class="staff-name">{{h.creator_name}}</td>
+                                <td class="date-cell highlight">{{h.follow_up_date | date:'dd MMM yyyy'}}</td>
+                            </tr>
+                            <tr *ngIf="selectedStudentHistory.length === 0">
+                                <td colspan="5" class="empty-state">
+                                    <div class="empty-content">
+                                        <span>📂</span>
+                                        <p>No history found for this student.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="bottom-bar">
+        <div class="follow-up-stats">
+            <span class="stat-item">Total Follow Ups: <strong>{{totalItems}}</strong></span>
+            <span class="stat-item missed">Missed Follow Ups: <strong>0</strong></span>
+        </div>
+        <div class="pagination">
+            <button class="btn btn-outline" (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+            <span class="page-info">Page {{currentPage}} (Showing {{students.length}} of {{totalItems}})</span>
+            <button class="btn btn-outline" (click)="nextPage()"
+                [disabled]="currentPage * pageSize >= totalItems">Next</button>
+        </div>
+    </div>
+</div>

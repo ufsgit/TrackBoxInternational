@@ -1,0 +1,101 @@
+<div class="report-container">
+    <header class="report-header">
+        <h1>Enquiry Report</h1>
+    </header>
+
+    <!-- Filters: Compact Single Row -->
+    <section class="filters-card">
+        <div class="filter-row">
+            <div class="filter-group student-search">
+                <label>Student / Mobile</label>
+                <div class="input-icon-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" [(ngModel)]="filters.search" placeholder="Search..." class="form-control"
+                        (keydown.enter)="runReport()">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Staff</label>
+                <select [(ngModel)]="filters.staffId" class="form-control" (change)="runReport()">
+                    <option [ngValue]="null">All Staff</option>
+                    <option *ngFor="let u of users" [value]="u.user_id">{{u.username}}</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Branch</label>
+                <select [(ngModel)]="filters.branchId" class="form-control" (change)="runReport()">
+                    <option [ngValue]="null">All Branches</option>
+                    <option *ngFor="let b of branches" [value]="b.branch_id">{{b.branch_name}}</option>
+                </select>
+            </div>
+
+            <div class="filter-group date-group">
+                <label>Date Range</label>
+                <div class="date-inputs">
+                    <input type="date" [(ngModel)]="filters.fromDate" class="form-control">
+                    <span class="separator">-</span>
+                    <input type="date" [(ngModel)]="filters.toDate" class="form-control">
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn btn-primary btn-search" (click)="runReport()">
+                    SEARCH
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Report Data -->
+    <section class="data-section grid-card">
+        <div class="table-container">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th width="100">Date</th>
+                        <th width="160">Student</th>
+                        <th width="110">Mobile</th>
+                        <th width="90">Type</th>
+                        <th width="120">Country</th>
+                        <th width="140">Program</th>
+                        <th width="110">Intake</th>
+                        <th width="110">Status</th>
+                        <th width="150">Remark</th>
+                        <th width="90">By</th>
+                        <th width="90">To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of reportData; let i = index">
+                        <td class="text-muted">{{i+1}}</td>
+                        <td>{{row.created_date | date:'dd MMM yyyy'}}</td>
+                        <td class="fw-600">
+                            <a [routerLink]="['/students/edit', row.student_id]" class="student-link">
+                                {{row.student_name}}
+                            </a>
+                        </td>
+                        <td>{{row.mobile}}</td>
+                        <td>
+                            <span class="type-badge" [attr.data-type]="row.enquiry_type">{{row.enquiry_type}}</span>
+                        </td>
+                        <td>{{row.country_or_course}}</td>
+                        <td class="text-secondary">{{row.program_details}}</td>
+                        <td>{{row.intake_or_batch || '-'}}</td>
+                        <td>
+                            <span class="status-pill">{{row.current_status || 'New Lead'}}</span>
+                        </td>
+                        <td class="text-truncate" title="{{row.last_remark}}">{{row.last_remark}}</td>
+                        <td>{{row.created_by}}</td>
+                        <td>{{row.assigned_to}}</td>
+                    </tr>
+                    <tr *ngIf="reportData.length === 0">
+                        <td colspan="12" class="empty-state">No enquiries found matching criteria.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>

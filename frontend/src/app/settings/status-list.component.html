@@ -1,0 +1,89 @@
+<div class="settings-container">
+    <header class="settings-header">
+        <div class="header-info">
+            <h1>Status Configuration</h1>
+            <p>Define the master list of all possible workflow statuses. These can then be mapped to specific
+                departments.</p>
+        </div>
+        <button class="btn btn-primary" (click)="onToggleForm()">
+            <span class="icon">➕</span> Create New Status
+        </button>
+    </header>
+
+    <div class="status-content">
+        <!-- Add/Edit Modal -->
+        <div class="modal-overlay" *ngIf="isFormOpen">
+            <div class="settings-modal">
+                <header class="modal-header">
+                    <h3>{{ editingStatus ? 'Edit Master Status' : 'Add New Master Status' }}</h3>
+                    <button class="close-modal" (click)="onToggleForm()">×</button>
+                </header>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Status Name <span class="required">*</span></label>
+                        <input type="text" [(ngModel)]="newStatusName"
+                            placeholder="Enter status name (e.g. Visa Granted)" class="form-control"
+                            (keydown.enter)="onAddStatus()">
+                    </div>
+
+                    <div class="form-group inline-checkbox">
+                        <label class="checkbox-container">
+                            <input type="checkbox" [(ngModel)]="requiresFollowup">
+                            <span class="checkmark"></span>
+                            Follow-up Required
+                        </label>
+                        <p class="help-text">If checked, students with this status will appear in follow-up reports.
+                        </p>
+                    </div>
+                </div>
+
+                <footer class="modal-footer">
+                    <button class="btn btn-secondary" (click)="onToggleForm()">Cancel</button>
+                    <button class="btn btn-primary" (click)="onAddStatus()">
+                        <span class="icon">{{ editingStatus ? '💾' : '➕' }}</span> {{ editingStatus ? 'Update' : 'Add'
+                        }}
+                        Status
+                    </button>
+                </footer>
+            </div>
+        </div>
+
+        <!-- List Statuses -->
+        <div class="status-list-section grid-card">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Master Status Name</th>
+                        <th>Follow-up Required</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of statuses">
+                        <td class="font-bold">{{s.status_name}}</td>
+                        <td>
+                            <span class="status-badge" [class.success]="s.requires_followup !== 0"
+                                [class.warning]="s.requires_followup === 0">
+                                {{ s.requires_followup !== 0 ? 'YES' : 'NO' }}
+                            </span>
+                        </td>
+                        <td class="text-right">
+                            <button class="icon-btn edit-btn" (click)="onEditStatus(s)" title="Edit Status">
+                                ✏️
+                            </button>
+                            <button class="icon-btn delete-btn" (click)="onDeleteStatus(s.status_id)"
+                                title="Delete Status">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="empty-state" *ngIf="statuses.length === 0">
+                No master statuses defined yet. Click "Create New" to add some.
+            </div>
+        </div>
+    </div>
+</div>

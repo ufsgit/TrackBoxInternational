@@ -1,0 +1,217 @@
+.followup-container {
+    padding: 0.5rem;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.header-band {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.header-band h2 {
+    font-size: 1.5rem;
+    color: var(--secondary);
+    letter-spacing: -0.02em;
+}
+
+.student-name {
+    color: var(--primary);
+}
+
+.followup-main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.card h3 {
+    font-size: 1.125rem;
+    color: var(--secondary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card h3::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    font-size: 0.93rem;
+    background-color: var(--bg-main);
+    transition: all 0.2s;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    grid-column: span 2;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.footer-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* History List Overhaul */
+.history-list {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.history-item {
+    background: var(--bg-main);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.history-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: white;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.history-date {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.remark-text {
+    margin: 1rem 0;
+    font-size: 0.93rem;
+    color: var(--text-main);
+    line-height: 1.6;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+}
+
+.item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding-top: 0.75rem;
+    border-top: 1px dotted var(--border);
+}
+
+.staff-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-badge {
+    padding: 0.3rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-badge[data-status="New Lead"] {
+    background-color: #f0f9ff;
+    color: #0369a1;
+}
+
+.status-badge[data-status="Interested"] {
+    background-color: #ecfdf5;
+    color: #047857;
+}
+
+.status-badge[data-status="Registered"] {
+    background-color: #fefce8;
+    color: #a16207;
+}
+
+@media (max-width: 1024px) {
+    .followup-main-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group textarea {
+        grid-column: span 1;
+    }
+
+    .header-band {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .footer-actions {
+        flex-direction: column-reverse;
+    }
+
+    .footer-actions button {
+        width: 100%;
+    }
+}

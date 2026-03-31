@@ -1,0 +1,85 @@
+<div class="settings-container">
+    <header class="settings-header">
+        <div class="header-info">
+            <h1>Application Status Configuration</h1>
+            <p>Manage the list of main statuses for student applications.</p>
+        </div>
+        <button class="btn btn-primary" (click)="onToggleForm()">
+            <span class="icon">➕</span> Create New Status
+        </button>
+    </header>
+
+    <div class="status-content">
+        <!-- Add/Edit Modal -->
+        <div class="modal-overlay" *ngIf="isFormOpen">
+            <div class="settings-modal">
+                <header class="modal-header">
+                    <h3>{{ editingItem ? 'Edit Status' : 'Add New Status' }}</h3>
+                    <button class="close-modal" (click)="onToggleForm()">×</button>
+                </header>
+
+                <div class="modal-body">
+                    <div class="form-group mb-4">
+                        <label class="d-block mb-2">Visible in Categories <span class="required">*</span></label>
+                        <div class="category-grid">
+                            <label *ngFor="let cat of categories" class="category-checkbox-label">
+                                <input type="checkbox" [checked]="isCategorySelected(cat)"
+                                    (change)="onToggleCategory(cat)">
+                                <span>{{cat}}</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status Name <span class="required">*</span></label>
+                        <input type="text" [(ngModel)]="newItemName" placeholder="e.g. Applied, Offer Issued..."
+                            class="form-control" (keydown.enter)="onAddItem()">
+                    </div>
+                </div>
+
+                <footer class="modal-footer">
+                    <button class="btn btn-secondary" (click)="onToggleForm()">Cancel</button>
+                    <button class="btn btn-primary" (click)="onAddItem()">
+                        <span class="icon">{{ editingItem ? '💾' : '➕' }}</span> {{ editingItem ? 'Update' : 'Add' }}
+                        Status
+                    </button>
+                </footer>
+            </div>
+        </div>
+
+        <!-- List Statuses -->
+        <div class="status-list-section grid-card">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Categories</th>
+                        <th>Status Name</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of items">
+                        <td>
+                            <div class="badge-container">
+                                <span *ngFor="let cat of item.categories"
+                                    class="badge badge-info mr-1 mb-1">{{cat}}</span>
+                            </div>
+                        </td>
+                        <td class="font-bold">{{item.name}}</td>
+                        <td class="text-right">
+                            <button class="icon-btn edit-btn" (click)="onEditItem(item)" title="Edit">
+                                ✏️
+                            </button>
+                            <button class="icon-btn delete-btn" (click)="onDeleteItem(item.status_id)" title="Delete">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="empty-state" *ngIf="items.length === 0">
+                No application statuses defined yet. Click "Create New" to add some.
+            </div>
+        </div>
+    </div>
+</div>

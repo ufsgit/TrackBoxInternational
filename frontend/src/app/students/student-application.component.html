@@ -1,0 +1,1110 @@
+<div class="application-container">
+    <div class="application-header">
+        <div class="header-left">
+            <button class="btn btn-back" (click)='goBack()'>← Back</button>
+            <h2>Assessment Form</h2>
+        </div>
+        <div class="student-info-badge" *ngIf="student">
+            <span class="label">Student:</span>
+            <span class="value">{{student.student_name}}</span>
+            <span class="label ml-3">Mobile:</span>
+            <span class="value">{{student.mobile_country_code}} {{student.mobile_number}}</span>
+            <span class="label ml-3">Email:</span>
+            <span class="value">{{student.email}}</span>
+            <span class="label ml-3">ID:</span>
+            <span class="value">#{{studentId}}</span>
+        </div>
+    </div>
+
+    <div class="application-form-body">
+        <div class="application-form-segments">
+            <!-- SECTION 1: PERSONAL DETAILS -->
+            <section class="form-section">
+                <h3 class="section-title">PERSONAL DETAILS SECTION</h3>
+
+                <div class="form-row">
+                    <div class="form-group flex-2">
+                        <label>Profile Name (as per Passport) <span class="required">*</span></label>
+                        <input type="text" [(ngModel)]="application.passport_name"
+                            placeholder="Full name matching your passport">
+                    </div>
+                    <div class="form-group flex-1" *ngIf="showAgeField">
+                        <label>Age <span class="required">*</span></label>
+                        <input type="number" [(ngModel)]="application.age" placeholder="Enter age">
+                    </div>
+                    <div class="form-group flex-1" *ngIf="student.work_interested">
+                        <label>Gender</label>
+                        <div class="radio-group-modern">
+                            <label><input type="radio" name="gender" [(ngModel)]="application.gender" value="Male">
+                                Male</label>
+                            <label><input type="radio" name="gender" [(ngModel)]="application.gender" value="Female">
+                                Female</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Marital Status</label>
+                        <select [(ngModel)]="application.marital_status">
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                            <option value="Common Law">Common Law</option>
+                            <option value="Separated">Separated</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1"
+                        *ngIf="application.marital_status === 'Married' || application.marital_status === 'Common Law'">
+                        <label>Will this person accompany you?</label>
+                        <div class="radio-group-modern">
+                            <label><input type="radio" name="spouse_acc" [(ngModel)]="application.spouse_accompanying"
+                                    [value]="true"> Yes</label>
+                            <label><input type="radio" name="spouse_acc" [(ngModel)]="application.spouse_accompanying"
+                                    [value]="false"> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Number of children</label>
+                        <input type="number" [ngModel]="children.length" (ngModelChange)="onChildrenCountChange($event)"
+                            style="width: 100px;" min="0" placeholder="0">
+                    </div>
+                </div>
+
+
+            </section>
+
+            <!-- SECTION 3: ADDRESS INFORMATION -->
+            <section class="form-section">
+                <h3 class="section-title">ADDRESS INFORMATION</h3>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Country</label>
+                        <select [(ngModel)]="application.address_country">
+                            <option value="">Select Country</option>
+                            <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>State/Province</label>
+                        <input type="text" [(ngModel)]="application.address_state" placeholder="State/Province">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Suburb/Town</label>
+                        <input type="text" [(ngModel)]="application.address_suburb" placeholder="Suburb/Town">
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4 & 5: CONTACT & CITIZENSHIP -->
+            <section class="form-section row-split">
+                <div class="split-left">
+                    <h3 class="section-title">CONTACT DETAILS</h3>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" [(ngModel)]="application.email" placeholder="Email">
+                    </div>
+                    <div class="form-row mt-2">
+                        <div class="form-group flex-1">
+                            <label>Primary Contact</label>
+                            <input type="text" [(ngModel)]="application.contact1" placeholder="Mobile">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>Secondary Contact</label>
+                            <input type="text" [(ngModel)]="application.contact2" placeholder="Phone">
+                        </div>
+                    </div>
+                </div>
+                <div class="split-right">
+                    <h3 class="section-title">CITIZENSHIP</h3>
+                    <div class="form-group">
+                        <label>Country of Citizenship</label>
+                        <select [(ngModel)]="application.citizenship_country">
+                            <option value="">Select Country</option>
+                            <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: EDUCATION DETAILS -->
+            <section class="form-section">
+                <h3 class="section-title">EDUCATION DETAILS</h3>
+                <!-- Specific Country Education (Dynamic) -->
+                <div class="edu-grid-tabular">
+                    <div class="edu-row" *ngFor="let country of educationCountries">
+                        <ng-container *ngIf="application.education_data && application.education_data[country]">
+                            <div class="edu-label">Do you have any {{country}} Education?</div>
+                            <div class="edu-toggle">
+                                <label><input type="radio" [name]="'has_'+country+'_edu'"
+                                        [(ngModel)]="application.education_data[country].has_edu" [value]="true">
+                                    YES</label>
+                                <label><input type="radio" [name]="'has_'+country+'_edu'"
+                                        [(ngModel)]="application.education_data[country].has_edu" [value]="false">
+                                    NO</label>
+                            </div>
+                            <div class="edu-inputs" *ngIf="application.education_data[country].has_edu">
+                                <select [(ngModel)]="application.education_data[country].level">
+                                    <option value="">Level</option>
+                                    <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                </select>
+                                <select [(ngModel)]="application.education_data[country].field">
+                                    <option value="">Field</option>
+                                    <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                </select>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                </div>
+
+                <p class="section-subtitle">Please enter the highest level of education you have completed (for study
+                    and
+                    Migration)</p>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Highest Education Level</label>
+                        <select [(ngModel)]="application.highest_education">
+                            <option value="">Select Level</option>
+                            <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Field of Study</label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <select [(ngModel)]="application.education_field" style="flex: 1;">
+                                <option value="">Field</option>
+                                <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                            </select>
+                            <button type="button" class="btn btn-sm btn-primary" (click)="addQualification()"
+                                title="Add another qualification"
+                                style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Qualifications -->
+                <div class="form-row" *ngFor="let q of application.education_data?.additional; let i = index"
+                    style="margin-top: 10px;">
+                    <div class="form-group flex-1">
+                        <label>Education Level {{i + 2}}</label>
+                        <select [(ngModel)]="q.level">
+                            <option value="">Select Level</option>
+                            <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Field of Study {{i + 2}}</label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <select [(ngModel)]="q.field" style="flex: 1;">
+                                <option value="">Field</option>
+                                <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                            </select>
+                            <button type="button" class="btn btn-sm btn-danger" (click)="removeQualification(i)"
+                                title="Remove qualification"
+                                style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                &times;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- SECTION 7: WORK EXPERIENCE -->
+            <section class="form-section">
+                <h3 class="section-title">WORK EXPERIENCE SECTION</h3>
+                <div class="form-row" *ngIf="showGeneralWorkExperience">
+                    <div class="form-group flex-2">
+                        <label>Are you currently Working?</label>
+                        <div class="radio-group-modern">
+                            <label><input type="radio" name="has_work_exp" [(ngModel)]="application.has_work_experience"
+                                    [value]="true" (change)="onWorkToggle(null, 'work_experience_list')"> YES</label>
+                            <label><input type="radio" name="has_work_exp" [(ngModel)]="application.has_work_experience"
+                                    [value]="false"> NO</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row" *ngIf="showGeneralWorkExperience && application.has_work_experience"
+                    style="margin-top: -15px; margin-bottom: 20px;">
+                    <div class="work-experience-list" style="width: 100%; padding-left: 20px;">
+                        <div class="work-inputs" *ngFor="let exp of application.work_experience_list; let i = index"
+                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
+                            <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
+                                <label style="font-size: 0.85rem; color: #1e40af;">Country of Employment</label>
+                                <select [(ngModel)]="exp.employment_country">
+                                    <option value="">Select country</option>
+                                    <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
+                                <label style="font-size: 0.85rem; color: #1e40af;">Job Title</label>
+                                <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
+                            </div>
+                            <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
+                                <label style="font-size: 0.85rem; color: #1e40af;">Duration</label>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
+                                        style="width: 45px;" min="0">
+                                    <span style="font-size: 0.8rem;">Yrs</span>
+                                    <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
+                                        style="width: 45px;" min="0" max="11">
+                                    <span style="font-size: 0.8rem;">Mths</span>
+                                </div>
+                            </div>
+                            <button type="button" (click)="removeWorkExperience(null, 'work_experience_list', i)"
+                                *ngIf="application.work_experience_list.length > 1"
+                                style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">×</button>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button type="button" (click)="addWorkExperience(null, 'work_experience_list')"
+                                style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                                <span style="font-size: 1.2rem; line-height: 1;">+</span> Add More Experience
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OTHER WORK EXPERIENCE -->
+                <div class="form-row" *ngIf="showGeneralWorkExperience">
+                    <div class="form-group flex-2">
+                        <label>Do you have any other Work Experience?</label>
+                        <div class="radio-group-modern">
+                            <label><input type="radio" name="has_other_work" [(ngModel)]="application.has_other_work_experience"
+                                    [value]="true" (change)="onWorkToggle(null, 'other_work_experience_list')"> YES</label>
+                            <label><input type="radio" name="has_other_work" [(ngModel)]="application.has_other_work_experience"
+                                    [value]="false"> NO</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row" *ngIf="showGeneralWorkExperience && application.has_other_work_experience"
+                    style="margin-top: -15px; margin-bottom: 20px;">
+                    <div class="work-experience-list" style="width: 100%; padding-left: 20px;">
+                        <div class="work-inputs" *ngFor="let exp of application.other_work_experience_list; let i = index"
+                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; width: 100%; position: relative;">
+                            <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
+                                <label style="font-size: 0.85rem; color: #166534;">Country of Employment</label>
+                                <select [(ngModel)]="exp.employment_country">
+                                    <option value="">Select country</option>
+                                    <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
+                                <label style="font-size: 0.85rem; color: #166534;">Job Title</label>
+                                <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
+                            </div>
+                            <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
+                                <label style="font-size: 0.85rem; color: #166534;">Duration</label>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
+                                        style="width: 45px;" min="0">
+                                    <span style="font-size: 0.8rem;">Yrs</span>
+                                    <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
+                                        style="width: 45px;" min="0" max="11">
+                                    <span style="font-size: 0.8rem;">Mths</span>
+                                </div>
+                            </div>
+                            <button type="button" (click)="removeWorkExperience(null, 'other_work_experience_list', i)"
+                                *ngIf="application.other_work_experience_list.length > 1"
+                                style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">×</button>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button type="button" (click)="addWorkExperience(null, 'other_work_experience_list')"
+                                style="background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                                <span style="font-size: 1.2rem; line-height: 1;">+</span> Add More Experience
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="work-exp-tabular">
+                    <div class="work-row" *ngFor="let country of interestedCountries">
+                        <ng-container *ngIf="application.migration_data && application.migration_data[country]">
+                            <div class="work-label">Work Experience in {{country}}?</div>
+                            <div class="radio-group-modern">
+                                <label><input type="radio" [name]="'has_work_'+country"
+                                        [(ngModel)]="application.migration_data[country].has_work" [value]="true">
+                                    YES</label>
+                                <label><input type="radio" [name]="'has_work_'+country"
+                                        [(ngModel)]="application.migration_data[country].has_work" [value]="false">
+                                    NO</label>
+                            </div>
+
+                            <div *ngIf="application.migration_data[country].has_work"
+                                style="width: 100%; padding-left: 30px; margin-top: 10px;">
+                                <!-- Current Work -->
+                                <div class="work-row" style="border-top: 1px dotted #cbd5e1; padding-top: 10px;">
+                                    <div class="work-label" style="font-size: 0.9rem;">Are you currently Working in {{country}}?</div>
+                                    <div class="radio-group-modern">
+                                        <label><input type="radio" [name]="'is_current_work_'+country"
+                                                [(ngModel)]="application.migration_data[country].is_currently_working"
+                                                [value]="true"
+                                                (change)="onWorkToggle(country, 'migration_data', 'current_work_experience_list')">
+                                            YES</label>
+                                        <label><input type="radio" [name]="'is_current_work_'+country"
+                                                [(ngModel)]="application.migration_data[country].is_currently_working"
+                                                [value]="false">
+                                            NO</label>
+                                    </div>
+                                </div>
+                                <div class="work-experience-list"
+                                    *ngIf="application.migration_data[country].is_currently_working"
+                                    style="width: 100%;">
+                                    <div class="work-inputs"
+                                        *ngFor="let exp of application.migration_data[country].current_work_experience_list; let i = index"
+                                        style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 10px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
+                                        <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
+                                            <label style="font-size: 0.8rem; color: #1e40af;">Job Title</label>
+                                            <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
+                                        </div>
+                                        <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
+                                            <label style="font-size: 0.8rem; color: #1e40af;">Duration</label>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
+                                                    style="width: 70px;" min="0">
+                                                <span style="font-size: 0.75rem;">Yrs</span>
+                                                <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
+                                                    style="width: 70px;" min="0" max="11">
+                                                <span style="font-size: 0.75rem;">Mths</span>
+                                            </div>
+                                        </div>
+                                        <button type="button"
+                                            (click)="removeWorkExperience(country, 'migration_data', i, 'current_work_experience_list')"
+                                            *ngIf="application.migration_data[country].current_work_experience_list.length > 1"
+                                            style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">×</button>
+                                    </div>
+                                    <div style="margin-top: 5px;">
+                                        <button type="button"
+                                            (click)="addWorkExperience(country, 'migration_data', 'current_work_experience_list')"
+                                            style="background: #2563eb; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                                            + Add
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Other Work -->
+                                <div class="work-row"
+                                    style="margin-top: 15px; border-top: 1px dotted #cbd5e1; padding-top: 10px;">
+                                    <div class="work-label" style="font-size: 0.9rem;">Do you have any other {{country}} Work
+                                        Experience?</div>
+                                    <div class="radio-group-modern">
+                                        <label><input type="radio" [name]="'has_other_work_'+country"
+                                                [(ngModel)]="application.migration_data[country].has_other_work"
+                                                [value]="true"
+                                                (change)="onWorkToggle(country, 'migration_data', 'other_work_experience_list')">
+                                            YES</label>
+                                        <label><input type="radio" [name]="'has_other_work_'+country"
+                                                [(ngModel)]="application.migration_data[country].has_other_work"
+                                                [value]="false">
+                                            NO</label>
+                                    </div>
+                                </div>
+                                <div class="work-experience-list"
+                                    *ngIf="application.migration_data[country].has_other_work" style="width: 100%;">
+                                    <div class="work-inputs"
+                                        *ngFor="let exp of application.migration_data[country].other_work_experience_list; let i = index"
+                                        style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 10px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; width: 100%; position: relative;">
+                                        <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
+                                            <label style="font-size: 0.8rem; color: #166534;">Job Title</label>
+                                            <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
+                                        </div>
+                                        <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
+                                            <label style="font-size: 0.8rem; color: #166534;">Duration</label>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
+                                                    style="width: 70px;" min="0">
+                                                <span style="font-size: 0.75rem;">Yrs</span>
+                                                <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
+                                                    style="width: 70px;" min="0" max="11">
+                                                <span style="font-size: 0.75rem;">Mths</span>
+                                            </div>
+                                        </div>
+                                        <button type="button"
+                                            (click)="removeWorkExperience(country, 'migration_data', i, 'other_work_experience_list')"
+                                            *ngIf="application.migration_data[country].other_work_experience_list.length > 1"
+                                            style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">×</button>
+                                    </div>
+                                    <div style="margin-top: 5px;">
+                                        <button type="button"
+                                            (click)="addWorkExperience(country, 'migration_data', 'other_work_experience_list')"
+                                            style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                                            + Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 8: LANGUAGE TEST -->
+            <section class="form-section">
+                <h3 class="section-title">LANGUAGE PROFICIENCY</h3>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Provided English Test?</label>
+                        <div class="radio-group-modern">
+                            <label><input type="radio" name="has_lang" [(ngModel)]="application.has_language_test"
+                                    [value]="true"> YES</label>
+                            <label><input type="radio" name="has_lang" [(ngModel)]="application.has_language_test"
+                                    [value]="false"> NO</label>
+                        </div>
+                    </div>
+                    <div class="form-group flex-1" *ngIf="application.has_language_test">
+                        <label>Test Type</label>
+                        <select [(ngModel)]="application.language_test_type">
+                            <option value="">Select Test</option>
+                            <option value="IELTS">IELTS</option>
+                            <option value="PTE">PTE</option>
+                            <option value="TOEFL">TOEFL</option>
+                            <option value="CELPIP">CELPIP</option>
+                            <option value="DET">DET</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="scores-grid" *ngIf="application.has_language_test">
+                    <div class="score-item"><label>Reading</label><input type="text"
+                            [(ngModel)]="application.reading_score"></div>
+                    <div class="score-item"><label>Listening</label><input type="text"
+                            [(ngModel)]="application.listening_score"></div>
+                    <div class="score-item"><label>Speaking</label><input type="text"
+                            [(ngModel)]="application.speaking_score"></div>
+                    <div class="score-item"><label>Writing</label><input type="text"
+                            [(ngModel)]="application.writing_score"></div>
+                </div>
+            </section>
+
+            <!-- SECTION 9: ADMISSION TEST -->
+            <section class="form-section">
+                <h3 class="section-title">ADMISSION TEST (GMAT/GRE/SAT)</h3>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Provided Admission Test?</label>
+                        <div class="radio-group-modern">
+                            <label><input type="radio" name="has_adm" [(ngModel)]="application.has_admission_test"
+                                    [value]="true"> YES</label>
+                            <label><input type="radio" name="has_adm" [(ngModel)]="application.has_admission_test"
+                                    [value]="false"> NO</label>
+                        </div>
+                    </div>
+                    <div class="form-group flex-1" *ngIf="application.has_admission_test">
+                        <label>Test Type</label>
+                        <select [(ngModel)]="application.admission_test_type">
+                            <option value="">Select Test</option>
+                            <option value="GMAT">GMAT Focus</option>
+                            <option value="GRE">GRE</option>
+                            <option value="SAT">SAT</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="scores-grid" *ngIf="application.has_admission_test">
+                    <div class="score-item"><label>Quant</label><input type="text"
+                            [(ngModel)]="application.quant_score">
+                    </div>
+                    <div class="score-item"><label>Verbal</label><input type="text"
+                            [(ngModel)]="application.verbal_score">
+                    </div>
+                    <div class="score-item"><label>Data Insights</label><input type="text"
+                            [(ngModel)]="application.data_insights_score"></div>
+                </div>
+            </section>
+
+            <!-- SECTION 10: SPOUSE DETAILS (Conditional) -->
+            <section class="form-section"
+                *ngIf="application.spouse_accompanying && (application.marital_status === 'Married' || application.marital_status === 'Common Law')">
+                <h3 class="section-title">SPOUSE DETAILS</h3>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Spouse Age</label>
+                        <input type="number" [(ngModel)]="application.spouse_age" style="width: 100px;">
+                    </div>
+                </div>
+
+                <!-- SPOUSE EDUCATION DETAILS -->
+                <div class="edu-grid-tabular mt-4">
+                    <div class="edu-row">
+                        <div class="edu-label"
+                            style="min-width: 100%; color: #2563eb; font-weight: 700; border-bottom: 1.5px solid #cbd5e1; margin-bottom: 8px; padding-bottom: 4px;">
+                            EDUCATION DETAILS
+                        </div>
+                    </div>
+                    <div class="edu-row">
+                        <div class="form-group flex-1">
+                            <label>Highest Education Level</label>
+                            <select [(ngModel)]="application.spouse_edu_level">
+                                <option value="">Select Level</option>
+                                <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>Field of Study</label>
+                            <select [(ngModel)]="application.spouse_edu_field">
+                                <option value="">Select Field</option>
+                                <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Spouse Country Education Toggles (restored logic) -->
+                    <ng-container *ngFor="let country of interestedCountries">
+                        <div class="edu-row"
+                            *ngIf="application.migration_spouse_data && application.migration_spouse_data[country]">
+                            <div class="edu-label">Did Spouse study in {{country}}?</div>
+                            <div class="radio-group-modern">
+                                <label><input type="radio" [name]="'spouse_has_edu_'+country"
+                                        [(ngModel)]="application.migration_spouse_data[country].has_edu" [value]="true">
+                                    YES</label>
+                                <label><input type="radio" [name]="'spouse_has_edu_'+country"
+                                        [(ngModel)]="application.migration_spouse_data[country].has_edu" [value]="false">
+                                    NO</label>
+                            </div>
+                            <div class="edu-inputs" *ngIf="application.migration_spouse_data[country].has_edu">
+                                <select [(ngModel)]="application.migration_spouse_data[country].edu_level">
+                                    <option value="">Level</option>
+                                    <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                </select>
+                                <select [(ngModel)]="application.migration_spouse_data[country].edu_field">
+                                    <option value="">Field</option>
+                                    <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <!-- SPOUSE WORK EXPERIENCE SECTION -->
+                <div class="work-exp-tabular mt-4">
+                    <div class="work-row">
+                        <div class="work-label"
+                            style="min-width: 100%; color: #2563eb; font-weight: 700; border-bottom: 1.5px solid #cbd5e1; margin-bottom: 8px; padding-bottom: 4px;">
+                            WORK EXPERIENCE SECTION
+                        </div>
+                    </div>
+                    <div class="work-row" *ngIf="showGeneralWorkExperience">
+                        <div class="work-label">Is your Spouse currently Working?</div>
+                        <div class="radio-group-modern">
+                            <label><input type="radio" [name]="'spouse_has_work'"
+                                    [(ngModel)]="application.spouse_has_work_experience" [value]="true"
+                                    (change)="onWorkToggle(null, 'spouse_work_experience_list')"> YES</label>
+                            <label><input type="radio" [name]="'spouse_has_work'"
+                                    [(ngModel)]="application.spouse_has_work_experience" [value]="false"> NO</label>
+                        </div>
+                    </div>
+                    <div class="form-row" *ngIf="showGeneralWorkExperience && application.spouse_has_work_experience"
+                        style="margin-top: 10px; margin-bottom: 20px; width: 100%;">
+                        <div class="work-experience-list" style="width: 100%; padding-left: 10px;">
+                            <div class="work-inputs"
+                                *ngFor="let exp of application.spouse_work_experience_list; let i = index"
+                                style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
+                                <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
+                                    <label style="font-size: 0.85rem; color: #1e40af;">Country of Employment</label>
+                                    <select [(ngModel)]="exp.employment_country">
+                                        <option value="">Select country</option>
+                                        <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
+                                    <label style="font-size: 0.85rem; color: #1e40af;">Job Title</label>
+                                    <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
+                                </div>
+                                <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
+                                    <label style="font-size: 0.85rem; color: #1e40af;">Duration</label>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
+                                            style="width: 45px;" min="0">
+                                        <span style="font-size: 0.8rem;">Yrs</span>
+                                        <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
+                                            style="width: 45px;" min="0" max="11">
+                                        <span style="font-size: 0.8rem;">Mths</span>
+                                    </div>
+                                </div>
+                                <button type="button"
+                                    (click)="removeWorkExperience(null, 'spouse_work_experience_list', i)"
+                                    *ngIf="application.spouse_work_experience_list.length > 1"
+                                    style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">×</button>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <button type="button" (click)="addWorkExperience(null, 'spouse_work_experience_list')"
+                                    style="background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                                    + Add More
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SPOUSE OTHER WORK EXPERIENCE -->
+                    <div class="work-row" *ngIf="showGeneralWorkExperience">
+                        <div class="work-label">Does your Spouse have any other Work Experience?</div>
+                        <div class="radio-group-modern">
+                            <label><input type="radio" [name]="'spouse_has_other_work'"
+                                    [(ngModel)]="application.spouse_has_other_work_experience" [value]="true"
+                                    (change)="onWorkToggle(null, 'spouse_other_work_experience_list')"> YES</label>
+                            <label><input type="radio" [name]="'spouse_has_other_work'"
+                                    [(ngModel)]="application.spouse_has_other_work_experience" [value]="false"> NO</label>
+                        </div>
+                    </div>
+                    <div class="form-row"
+                        *ngIf="showGeneralWorkExperience && application.spouse_has_other_work_experience"
+                        style="margin-top: 10px; margin-bottom: 20px; width: 100%;">
+                        <div class="work-experience-list" style="width: 100%; padding-left: 10px;">
+                            <div class="work-inputs"
+                                *ngFor="let exp of application.spouse_other_work_experience_list; let i = index"
+                                style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; width: 100%; position: relative;">
+                                <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
+                                    <label style="font-size: 0.85rem; color: #166534;">Country of Employment</label>
+                                    <select [(ngModel)]="exp.employment_country">
+                                        <option value="">Select country</option>
+                                        <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
+                                    <label style="font-size: 0.85rem; color: #166534;">Job Title</label>
+                                    <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
+                                </div>
+                                <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
+                                    <label style="font-size: 0.85rem; color: #166534;">Duration</label>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
+                                            style="width: 45px;" min="0">
+                                        <span style="font-size: 0.8rem;">Yrs</span>
+                                        <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
+                                            style="width: 45px;" min="0" max="11">
+                                        <span style="font-size: 0.8rem;">Mths</span>
+                                    </div>
+                                </div>
+                                <button type="button"
+                                    (click)="removeWorkExperience(null, 'spouse_other_work_experience_list', i)"
+                                    *ngIf="application.spouse_other_work_experience_list.length > 1"
+                                    style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">×</button>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <button type="button" (click)="addWorkExperience(null, 'spouse_other_work_experience_list')"
+                                    style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                                    + Add More
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Dynamic Spouse Migration Specific Questions (Split Rows) -->
+                    <ng-container *ngFor="let country of interestedCountries">
+                        <ng-container
+                            *ngIf="application.migration_spouse_data && application.migration_spouse_data[country]">
+                            <!-- Spouse Work Row -->
+                            <div class="work-row">
+                                <div class="work-label">Do your Spouse have any {{country}} Work Experience?</div>
+                                <div class="radio-group-modern">
+                                    <label><input type="radio" [name]="'spouse_work_'+country"
+                                            [(ngModel)]="application.migration_spouse_data[country].has_work"
+                                            [value]="true">
+                                        YES</label>
+                                    <label><input type="radio" [name]="'spouse_work_'+country"
+                                            [(ngModel)]="application.migration_spouse_data[country].has_work"
+                                            [value]="false"> NO</label>
+                                </div>
+
+                                <div *ngIf="application.migration_spouse_data[country].has_work"
+                                    style="width: 100%; padding-left: 30px; margin-top: 10px;">
+                                    <!-- Spouse Current Work -->
+                                    <div class="work-row" style="border-top: 1px dotted #cbd5e1; padding-top: 10px;">
+                                        <div class="work-label" style="font-size: 0.9rem;">Is your Spouse currently working in
+                                            {{country}}?</div>
+                                        <div class="radio-group-modern">
+                                            <label><input type="radio" [name]="'spouse_is_current_work_'+country"
+                                                    [(ngModel)]="application.migration_spouse_data[country].is_currently_working"
+                                                    [value]="true"
+                                                    (change)="onWorkToggle(country, 'migration_spouse_data', 'current_work_experience_list')">
+                                                YES</label>
+                                            <label><input type="radio" [name]="'spouse_is_current_work_'+country"
+                                                    [(ngModel)]="application.migration_spouse_data[country].is_currently_working"
+                                                    [value]="false">
+                                                NO</label>
+                                        </div>
+                                    </div>
+                                    <div class="work-experience-list"
+                                        *ngIf="application.migration_spouse_data[country].is_currently_working"
+                                        style="width: 100%;">
+                                        <div class="work-inputs"
+                                            *ngFor="let exp of application.migration_spouse_data[country].current_work_experience_list; let i = index"
+                                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 10px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
+                                            <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
+                                                <label style="font-size: 0.8rem; color: #1e40af;">Job Title</label>
+                                                <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
+                                            </div>
+                                            <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
+                                                <label style="font-size: 0.8rem; color: #1e40af;">Duration</label>
+                                                <div style="display: flex; align-items: center; gap: 8px;">
+                                                    <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
+                                                        style="width: 70px;" min="0">
+                                                    <span style="font-size: 0.75rem;">Yrs</span>
+                                                    <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
+                                                        style="width: 70px;" min="0" max="11">
+                                                    <span style="font-size: 0.75rem;">Mths</span>
+                                                </div>
+                                            </div>
+                                            <button type="button"
+                                                (click)="removeWorkExperience(country, 'migration_spouse_data', i, 'current_work_experience_list')"
+                                                *ngIf="application.migration_spouse_data[country].current_work_experience_list.length > 1"
+                                                style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">×</button>
+                                        </div>
+                                        <div style="margin-top: 5px;">
+                                            <button type="button"
+                                                (click)="addWorkExperience(country, 'migration_spouse_data', 'current_work_experience_list')"
+                                                style="background: #2563eb; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                                                + Add
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Spouse Other Work -->
+                                    <div class="work-row"
+                                        style="margin-top: 15px; border-top: 1px dotted #cbd5e1; padding-top: 10px;">
+                                        <div class="work-label" style="font-size: 0.9rem;">Does your Spouse have any other
+                                            {{country}} Work Experience?</div>
+                                        <div class="radio-group-modern">
+                                            <label><input type="radio" [name]="'spouse_has_other_work_'+country"
+                                                    [(ngModel)]="application.migration_spouse_data[country].has_other_work"
+                                                    [value]="true"
+                                                    (change)="onWorkToggle(country, 'migration_spouse_data', 'other_work_experience_list')">
+                                                YES</label>
+                                            <label><input type="radio" [name]="'spouse_has_other_work_'+country"
+                                                    [(ngModel)]="application.migration_spouse_data[country].has_other_work"
+                                                    [value]="false">
+                                                NO</label>
+                                        </div>
+                                    </div>
+                                    <div class="work-experience-list"
+                                        *ngIf="application.migration_spouse_data[country].has_other_work"
+                                        style="width: 100%;">
+                                        <div class="work-inputs"
+                                            *ngFor="let exp of application.migration_spouse_data[country].other_work_experience_list; let i = index"
+                                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 10px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; width: 100%; position: relative;">
+                                            <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
+                                                <label style="font-size: 0.8rem; color: #166534;">Job Title</label>
+                                                <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
+                                            </div>
+                                            <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
+                                                <label style="font-size: 0.8rem; color: #166534;">Duration</label>
+                                                <div style="display: flex; align-items: center; gap: 8px;">
+                                                    <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
+                                                        style="width: 70px;" min="0">
+                                                    <span style="font-size: 0.75rem;">Yrs</span>
+                                                    <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
+                                                        style="width: 70px;" min="0" max="11">
+                                                    <span style="font-size: 0.75rem;">Mths</span>
+                                                </div>
+                                            </div>
+                                            <button type="button"
+                                                (click)="removeWorkExperience(country, 'migration_spouse_data', i, 'other_work_experience_list')"
+                                                *ngIf="application.migration_spouse_data[country].other_work_experience_list.length > 1"
+                                                style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">×</button>
+                                        </div>
+                                        <div style="margin-top: 5px;">
+                                            <button type="button"
+                                                (click)="addWorkExperience(country, 'migration_spouse_data', 'other_work_experience_list')"
+                                                style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                                                + Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+
+                <div class="form-row mt-4">
+                    <div class="form-group flex-2">
+                        <label>Language Test Type</label>
+                        <select [(ngModel)]="application.spouse_lang_test_type">
+                            <option value="">None</option>
+                            <option value="IELTS">IELTS</option>
+                            <option value="PTE">PTE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="scores-grid mt-3" *ngIf="application.spouse_lang_test_type">
+                    <div class="score-item">
+                        <label>Reading</label>
+                        <input type="text" [(ngModel)]="application.spouse_reading">
+                    </div>
+                    <div class="score-item">
+                        <label>Listening</label>
+                        <input type="text" [(ngModel)]="application.spouse_listening">
+                    </div>
+                    <div class="score-item">
+                        <label>Speaking</label>
+                        <input type="text" [(ngModel)]="application.spouse_speaking">
+                    </div>
+                    <div class="score-item">
+                        <label>Writing</label>
+                        <input type="text" [(ngModel)]="application.spouse_writing">
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 11: CHILDREN DETAILS (Dynamic Row Generation) -->
+            <section class="form-section" *ngIf="children.length > 0">
+                <h3 class="section-title">CHILDREN DETAILS</h3>
+                <div class="children-list">
+                    <div class="child-row-tabular" *ngFor="let child of children; let i = index">
+                        <div class="child-label">Child {{i + 1}}</div>
+                        <div class="child-inputs">
+                            <div class="form-group mb-0">
+                                <label>Age</label>
+                                <input type="number" [(ngModel)]="child.age" placeholder="Age">
+                            </div>
+                            <div class="form-group mb-0">
+                                <label>Is this child accompanying?</label>
+                                <div class="radio-group-modern">
+                                    <label><input type="radio" [name]="'child_acc_'+i"
+                                            [(ngModel)]="child.is_accompanying" [value]="true"> YES</label>
+                                    <label><input type="radio" [name]="'child_acc_'+i"
+                                            [(ngModel)]="child.is_accompanying" [value]="false"> NO</label>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-remove" (click)="removeChild(i)">×</button>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SECTION 12: RELATIVES ABROAD -->
+            <section class="form-section">
+                <h3 class="section-title">RELATIVES ABROAD</h3>
+                <div class="edu-grid-tabular">
+                    <div class="edu-row" *ngFor="let country of interestedCountries">
+                        <ng-container *ngIf="application.relatives_data && application.relatives_data[country]">
+                            <div class="edu-label">Do you have any relatives in {{country}}?</div>
+                            <div class="edu-toggle">
+                                <label><input type="radio" [name]="'has_rel_'+country"
+                                        [(ngModel)]="application.relatives_data[country].has_rel" [value]="true">
+                                    YES</label>
+                                <label><input type="radio" [name]="'has_rel_'+country"
+                                        [(ngModel)]="application.relatives_data[country].has_rel" [value]="false">
+                                    NO</label>
+                            </div>
+                            <div class="edu-inputs" *ngIf="application.relatives_data[country].has_rel">
+                                <select [(ngModel)]="application.relatives_data[country].relationship">
+                                    <option value="">Relationship</option>
+                                    <option value="Parent">Parent</option>
+                                    <option value="Sibling">Sibling</option>
+                                    <option value="Uncle/Aunty">Uncle/Aunty</option>
+                                    <option value="Cousin">Cousin</option>
+                                </select>
+                                <select [(ngModel)]="application.relatives_data[country].related_to">
+                                    <option value="Applicant">Related to Applicant</option>
+                                    <option value="Spouse">Related to Spouse</option>
+                                </select>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- STUDENT INTERESTS (VIEW ONLY) -->
+        <section class="form-section mt-4"
+            style="border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+            <h3 class="section-title">STUDENT INTERESTS (FROM PROFILE)</h3>
+            <div class="view-only-interests-table">
+                <div class="table-responsive">
+                    <table class="modern-view-table">
+                        <thead>
+                            <tr>
+                                <th width="15%">TYPE</th>
+                                <th width="20%">COUNTRY</th>
+                                <th width="20%">LEVEL / OCCUPATION</th>
+                                <th width="25%">FIELD / CATEGORY</th>
+                                <th width="20%">INTAKE / BATCH</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of allInterests">
+                                <td class="type-cell">
+                                    <span class="type-badge" [ngClass]="item.type.toLowerCase()">{{item.type}}</span>
+                                </td>
+                                <td>{{item.country || 'N/A'}}</td>
+                                <td>{{item.level}}</td>
+                                <td>{{item.field}}</td>
+                                <td>{{item.timing}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUGGESTED PROGRAMS (EDITABLE) -->
+        <section class="form-section mt-4"
+            style="border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+            <h3 class="section-title">SUGGESTED PROGRAMS SECTION</h3>
+
+            <div class="table-actions-modern mb-3">
+                <button class="btn btn-type study" (click)="addSuggestedProgram('STUDY')">+ Add Study</button>
+                <button class="btn btn-type migration" (click)="addSuggestedProgram('MIGRATION')">+ Add
+                    Migration</button>
+                <button class="btn btn-type visa" (click)="addSuggestedProgram('VISA')">+ Add Visa</button>
+                <button class="btn btn-type work" (click)="addSuggestedProgram('WORK')">+ Add Work</button>
+                <button class="btn btn-type coaching" (click)="addSuggestedProgram('COACHING')">+ Add Coaching</button>
+                <button class="btn btn-type other" (click)="addSuggestedProgram('OTHER')">+ Add Other</button>
+            </div>
+            <div class="table-responsive">
+                <table class="app-table">
+                    <thead>
+                        <tr>
+                            <th width="4%">TYPE</th>
+                            <th width="8%">PROGRAM</th>
+                            <th width="40%">APPLIED FOR / DETAILS</th>
+                            <th width="8%">STATUS</th>
+                            <th width="6%">SUB STATUS</th>
+                            <th width="8%">REMARKS</th>
+                            <th width="8%">Branch</th>
+                            <th width="9%">Department</th>
+                            <th width="9%">To Staff</th>
+                            <th width="40px">SEL</th>
+                            <th width="40px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let p of suggestedPrograms; let i = index">
+                            <td>
+                                <span class="type-badge" [ngClass]="p.type.toLowerCase()">{{p.type}}</span>
+                            </td>
+                            <td class="prog-cell">
+                                <ng-container [ngSwitch]="p.type">
+                                    <div *ngSwitchDefault class="flex-inputs">
+                                        <input type="text" [(ngModel)]="p.country" list="countryList"
+                                            (ngModelChange)="onCountryChange(p)" placeholder="Country">
+                                    </div>
+                                    <div *ngSwitchCase="'OTHER'">
+                                        <input type="text" [(ngModel)]="p.program" list="countryList"
+                                            placeholder="Program Name">
+                                    </div>
+                                    <div *ngSwitchCase="'COACHING'">
+                                        <input type="text" value="COACHING" readonly disabled class="static-input">
+                                    </div>
+                                </ng-container>
+                            </td>
+                            <td class="details-cell">
+                                <ng-container [ngSwitch]="p.type">
+                                    <div *ngSwitchCase="'STUDY'" class="details-row-inputs">
+                                        <input type="text" [(ngModel)]="p.level" list="levelList"
+                                            (change)="syncSuggestedProgStrings(p)" placeholder="Level">
+                                        <input type="text" [(ngModel)]="p.field" list="fieldList"
+                                            (change)="syncSuggestedProgStrings(p)" placeholder="Field">
+                                        <input type="text" [(ngModel)]="p.intake" list="intakeList"
+                                            (change)="syncSuggestedProgStrings(p)" placeholder="Intake">
+                                        <input type="text" [(ngModel)]="p.year" list="yearList"
+                                            (change)="syncSuggestedProgStrings(p)" placeholder="Year">
+                                    </div>
+                                    <div *ngSwitchCase="'MIGRATION'" class="details-row-inputs">
+                                        <input type="text" [(ngModel)]="p.occupation" list="occList"
+                                            (change)="syncSuggestedProgStrings(p)" placeholder="Occupation">
+                                        <input type="text" [(ngModel)]="p.category" list="categoryList"
+                                            (change)="syncSuggestedProgStrings(p)" placeholder="Category">
+                                    </div>
+                                    <div *ngSwitchCase="'VISA'" class="details-row-inputs">
+                                        <input type="text" [(ngModel)]="p.category" list="categoryList"
+                                            (change)="syncSuggestedProgStrings(p)" placeholder="Category">
+                                        <input type="text" placeholder="Extra Details (Optional)">
+                                    </div>
+                                    <div *ngSwitchCase="'WORK'" class="details-row-inputs">
+                                        <input type="text" [(ngModel)]="p.occupation" list="occList"
+                                            (change)="syncSuggestedProgStrings(p)" placeholder="Occupation">
+                                        <input type="text" placeholder="Employer (Optional)">
+                                    </div>
+                                    <div *ngSwitchCase="'COACHING'" class="details-row-inputs">
+                                        <input type="text" [(ngModel)]="p.course" (change)="syncSuggestedProgStrings(p)"
+                                            placeholder="Course">
+                                        <input type="text" [(ngModel)]="p.batch" (change)="syncSuggestedProgStrings(p)"
+                                            placeholder="Batch">
+                                    </div>
+                                    <div *ngSwitchDefault class="details-row-inputs">
+                                        <input type="text" [(ngModel)]="p.details" placeholder="Details">
+                                    </div>
+                                </ng-container>
+                            </td>
+                            <td>
+                                <select [(ngModel)]="p.status" (change)="onStatusChange(p)">
+                                    <option value="">-- Status --</option>
+                                    <option *ngFor="let s of getFilteredStatuses(p.type)" [value]="s.name">{{s.name}}
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <select [(ngModel)]="p.sub_status">
+                                    <option value="">-- Sub Status --</option>
+                                    <option *ngFor="let ss of appSubStatuses[p.status_id]" [value]="ss.name">{{ss.name}}
+                                    </option>
+                                </select>
+                            </td>
+                            <td><input type="text" [(ngModel)]="p.remarks" placeholder="Remarks"></td>
+                            <td>
+                                <select [(ngModel)]="p.branch_id" (change)="onBranchChange(i)">
+                                    <option [ngValue]="null">Branch</option>
+                                    <option *ngFor="let b of branches" [value]="b.branch_id">{{b.branch_name}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select [(ngModel)]="p.department_id" (change)="onDepartmentChange(i)">
+                                    <option [ngValue]="null">Dept</option>
+                                    <option *ngFor="let d of rowDepartments[i]" [value]="d.department_id">
+                                        {{d.department_name}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select [(ngModel)]="p.assigned_to">
+                                    <option [ngValue]="null">Staff</option>
+                                    <option *ngFor="let s of rowStaff[i]" [value]="s.user_id">{{s.username}}</option>
+                                </select>
+                            </td>
+                            <td><input type="checkbox" [(ngModel)]="p.is_selected"></td>
+                            <td><button class="btn-remove" (click)="removeProgram(i)">×</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- FOOTER ACTIONS -->
+        <div class="application-footer">
+            <button class="btn btn-save" (click)="onSave()">SAVE ASSESSMENT</button>
+            <button class="btn btn-register" (click)="onRegisterNow()">REGISTER NOW</button>
+        </div>
+    </div>
+</div>
+
+<!-- Data Lists for Autocomplete -->
+<datalist id="countryList">
+    <option *ngFor="let c of lookups.countries" [value]="c.name"></option>
+</datalist>
+<datalist id="levelList">
+    <option *ngFor="let l of lookups.levels" [value]="l.name"></option>
+</datalist>
+<datalist id="intakeList">
+    <option *ngFor="let it of lookups.intakes" [value]="it.name"></option>
+</datalist>
+<datalist id="occList">
+    <option *ngFor="let o of lookups.occupations" [value]="o.name"></option>
+</datalist>
+<datalist id="fieldList">
+    <option *ngFor="let f of lookups.fields" [value]="f.name"></option>
+</datalist>
+<datalist id="yearList">
+    <option *ngFor="let y of lookups.years" [value]="y.name"></option>
+</datalist>
+<datalist id="categoryList">
+    <option *ngFor="let c of lookups.categories" [value]="c.name"></option>
+</datalist>

@@ -1,0 +1,55 @@
+<div class="user-list-container">
+    <div class="header-actions">
+        <h2>User Management</h2>
+        <button class="btn btn-green" (click)="onCreateUser()">+ Create User</button>
+    </div>
+
+    <div class="card mt-20">
+        <div class="table-scroll">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Sl.No</th>
+                        <th>User Name</th>
+                        <th>User Type</th>
+                        <th>Role</th>
+                        <th>Branch</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users; let i = index">
+                        <td>{{i + 1}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.user_type}}</td>
+                        <td>{{user.user_role || user.role}}</td>
+                        <td>{{user.branch_name}}</td>
+                        <td>{{user.department_name}}</td>
+                        <td>
+                            <span class="status-badge" [ngClass]="user.status.toLowerCase()">
+                                {{user.status}}
+                            </span>
+                        </td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.mobile}}</td>
+                        <td>
+                            <button class="btn-icon" (click)="editUser(user)" title="Edit">
+                                ✏️
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="users.length === 0 && !loading">
+                        <td colspan="10" class="text-center">No users found.</td>
+                    </tr>
+                    <tr *ngIf="loading">
+                        <td colspan="10" class="text-center">Loading users...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+<div class="dashboard-container">
+    <header class="page-header">
+        <div class="header-main">
+            <div>
+                <h1>Dashboard</h1>
+                <p class="subtitle">Welcome back! Here's what's happening today.</p>
+            </div>
+            <div class="filter-controls">
+                <button [class.active]="filterType === 'today'" (click)="setFilter('today')">Today</button>
+                <button [class.active]="filterType === 'thisWeek'" (click)="setFilter('thisWeek')">This Week</button>
+                <button [class.active]="filterType === 'thisMonth'" (click)="setFilter('thisMonth')">This Month</button>
+                <button [class.active]="filterType === 'last6Months'" (click)="setFilter('last6Months')">Last 6
+                    Months</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="stats-grid">
+        <!-- Card 1: Today's Follow-up -->
+        <div class="stat-card blue-gradient">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-day"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Today's Follow-ups</h3>
+                <p class="stat-value">{{ stats.summary.todayFollowups }}</p>
+                <span class="stat-label">Scheduled for today</span>
+            </div>
+        </div>
+
+        <!-- Card 2: Pending Follow-up -->
+        <div class="stat-card red-gradient">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Pending Follow-ups</h3>
+                <p class="stat-value">{{ stats.summary.pendingFollowups }}</p>
+                <span class="stat-label">Missed or Overdue</span>
+            </div>
+        </div>
+
+        <!-- Card 3: Total Enquiries -->
+        <div class="stat-card purple-gradient">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Enquiries</h3>
+                <p class="stat-value">{{ stats.summary.totalStudents }}</p>
+                <span class="stat-label">Record count in range</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Middle Section: Distribution + Trend -->
+    <div class="dashboard-grid">
+        <!-- Status Distribution -->
+        <div class="status-section">
+            <div class="chart-header">
+                <h2>Status Distribution</h2>
+                <p>Breakdown by current stage</p>
+            </div>
+            <div class="status-list">
+                <div class="status-item" *ngFor="let item of stats.statusDistribution">
+                    <span class="status-name">{{ item.current_status || 'Unassigned' }}</span>
+                    <div class="status-bar-bg">
+                        <div class="status-bar-fill"
+                            [style.width.%]="stats.summary.totalStudents > 0 ? (item.count / stats.summary.totalStudents) * 100 : 0">
+                        </div>
+                    </div>
+                    <span class="status-count">{{ item.count }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graph Section -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <h2>Enquiry Trends</h2>
+                <p>{{ filterType === 'today' || filterType === 'thisWeek' ? 'Daily' : 'Monthly' }} enquiry flow</p>
+            </div>
+
+            <div class="bar-chart-container">
+                <div class="bar-chart">
+                    <div class="bar-group" *ngFor="let item of stats.chartData">
+                        <div class="bar-value" [style.bottom]="getBarHeight(item.count)">
+                            {{ item.count }}
+                        </div>
+                        <div class="bar" [style.height]="getBarHeight(item.count)"></div>
+                        <div class="bar-label">{{ item.label }}</div>
+                    </div>
+
+                    <!-- Helper lines -->
+                    <div class="chart-line" style="bottom: 0%"></div>
+                    <div class="chart-line" style="bottom: 25%"></div>
+                    <div class="chart-line" style="bottom: 50%"></div>
+                    <div class="chart-line" style="bottom: 75%"></div>
+                    <div class="chart-line" style="bottom: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

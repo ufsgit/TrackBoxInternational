@@ -1,0 +1,78 @@
+<div class="followup-container">
+    <div class="header-band">
+        <h2>Follow-up: <span class="student-name">{{studentName}}</span></h2>
+        <button class="btn btn-outline" (click)="onBack()">Back to List</button>
+    </div>
+
+    <div class="followup-main-content">
+        <!-- Entry Form -->
+        <div class="card entry-card">
+            <h3>Add New Interaction</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Branch</label>
+                    <select [(ngModel)]="newFollowup.branch_id">
+                        <option *ngFor="let b of branches" [value]="b.branch_id">{{b.branch_name}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <select [(ngModel)]="newFollowup.department_id">
+                        <option *ngFor="let d of departments" [value]="d.department_id">{{d.department_name}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select [(ngModel)]="newFollowup.status">
+                        <option value="Interested">Interested</option>
+                        <option value="New Lead">New Lead</option>
+                        <option value="Registered">Registered</option>
+                        <option value="Doubtful">Doubtful</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>To Staff</label>
+                    <select [(ngModel)]="newFollowup.assigned_to">
+                        <option *ngFor="let u of users" [value]="u.user_id">{{u.username}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Next Follow-up Date <span class="required">*</span></label>
+                    <input type="date" [(ngModel)]="newFollowup.follow_up_date">
+                </div>
+            </div>
+            <div class="form-group mt-15">
+                <label>Remarks / Notes <span class="required">*</span></label>
+                <textarea [(ngModel)]="newFollowup.remark" rows="4"
+                    placeholder="Describe the conversation..."></textarea>
+            </div>
+            <div class="footer-actions">
+                <button class="btn btn-primary" (click)="onAddFollowup()">SAVE FOLLOW-UP</button>
+            </div>
+        </div>
+
+        <!-- History Side -->
+        <div class="card history-card">
+            <h3>Interaction History</h3>
+            <div class="history-list">
+                <div class="history-item" *ngFor="let f of followupHistory">
+                    <div class="item-header">
+                        <span class="history-date">{{f.created_at | date:'dd MMM yyyy HH:mm'}}</span>
+                        <span class="history-status status-badge" [attr.data-status]="f.status">{{f.status}}</span>
+                    </div>
+                    <div class="item-content">
+                        <p class="remark-text">{{f.remark}}</p>
+                    </div>
+                    <div class="item-footer">
+                        <span>By: <strong>{{f.creator_name}}</strong></span>
+                        <span *ngIf="f.follow_up_date">Next F.Up: {{f.follow_up_date | date:'dd MMM yyyy'}}</span>
+                    </div>
+                </div>
+                <div class="no-history" *ngIf="followupHistory.length === 0">
+                    No previous history found for this student.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
