@@ -1,0 +1,16 @@
+NODE_ENV=
+PORT=
+DB_HOST=
+DB_USER=
+DB_PASS=
+DB_NAME=
+JWT_SECRET=
+
+# JWT Configuration
+JWT_EXPIRY=
+
+# API Configuration
+API_BASE_URL=
+
+# Logging
+LOG_LEVEL=

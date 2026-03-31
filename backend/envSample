@@ -1,0 +1,16 @@
+PORT=5001
+
+# DB_HOST=
+# DB_USER=
+# DB_PASS=
+# DB_NAME=
+
+# JWT Configuration
+JWT_EXPIRY=
+JWT_SECRET=
+
+# API Configuration
+API_BASE_URL=
+
+# Logging
+LOG_LEVEL=
