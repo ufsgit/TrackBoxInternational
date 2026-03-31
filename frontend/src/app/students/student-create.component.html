@@ -99,16 +99,11 @@
                     <table class="dynamic-table no-header">
                         <tbody>
                             <tr *ngFor="let p of programs.study; let i = index">
-                                <td><input type="text" [(ngModel)]="p.country" list="countryList"
-                                        placeholder="Type Country"></td>
-                                <td><input type="text" [(ngModel)]="p.level" list="levelList" placeholder="Type Level">
-                                </td>
-                                <td><input type="text" [(ngModel)]="p.field" list="fieldList" placeholder="Type Field">
-                                </td>
-                                <td><input type="text" [(ngModel)]="p.intake" list="intakeList"
-                                        placeholder="Type Intake"></td>
-                                <td><input type="text" [(ngModel)]="p.year" list="yearList" placeholder="Type Year">
-                                </td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.countries" [allowEmpty]="false" placeholder="Country" [(ngModel)]="p.country"></app-searchable-dropdown></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.levels" [allowEmpty]="false" placeholder="Level" [(ngModel)]="p.level"></app-searchable-dropdown></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.fields" [allowEmpty]="false" placeholder="Field" [(ngModel)]="p.field"></app-searchable-dropdown></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.intakes" [allowEmpty]="false" placeholder="Intake" [(ngModel)]="p.intake"></app-searchable-dropdown></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.years" [allowEmpty]="false" placeholder="Year" [(ngModel)]="p.year"></app-searchable-dropdown></td>
                                 <td class="action-cell"><button class="btn-delete-icon"
                                         (click)="removeProgramRow('study', i)" title="Remove">×</button></td>
                             </tr>
@@ -127,12 +122,9 @@
                     <table class="dynamic-table no-header">
                         <tbody>
                             <tr *ngFor="let p of programs.migration; let i = index">
-                                <td><input type="text" [(ngModel)]="p.country" list="countryList"
-                                        placeholder="Type Country"></td>
-                                <td><input type="text" [(ngModel)]="p.occupation" list="occList"
-                                        placeholder="Type Occupation"></td>
-                                <td><input type="text" [(ngModel)]="p.category" list="categoryList"
-                                        placeholder="Type Category"></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.countries" [allowEmpty]="false" placeholder="Country" [(ngModel)]="p.country"></app-searchable-dropdown></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.occupations" [allowEmpty]="false" placeholder="Occupation" [(ngModel)]="p.occupation"></app-searchable-dropdown></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.categories" [allowEmpty]="false" placeholder="Category" [(ngModel)]="p.category"></app-searchable-dropdown></td>
                                 <td class="action-cell"><button class="btn-delete-icon"
                                         (click)="removeProgramRow('migration', i)" title="Remove">×</button></td>
                             </tr>
@@ -151,7 +143,7 @@
                     <table class="dynamic-table no-header">
                         <tbody>
                             <tr *ngFor="let p of programs.coaching; let i = index">
-                                <td><input type="text" [(ngModel)]="p.course" placeholder="Type Course"></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.fields" [allowEmpty]="false" placeholder="Course" [(ngModel)]="p.course"></app-searchable-dropdown></td>
                                 <td><input type="text" [(ngModel)]="p.batch" placeholder="Type Batch"></td>
                                 <td class="action-cell"><button class="btn-delete-icon"
                                         (click)="removeProgramRow('coaching', i)" title="Remove">×</button></td>
@@ -171,10 +163,8 @@
                     <table class="dynamic-table no-header">
                         <tbody>
                             <tr *ngFor="let p of programs.visa; let i = index">
-                                <td><input type="text" [(ngModel)]="p.country" list="countryList"
-                                        placeholder="Type Country"></td>
-                                <td><input type="text" [(ngModel)]="p.category" list="categoryList"
-                                        placeholder="Type Category"></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.countries" [allowEmpty]="false" placeholder="Country" [(ngModel)]="p.country"></app-searchable-dropdown></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.categories" [allowEmpty]="false" placeholder="Category" [(ngModel)]="p.category"></app-searchable-dropdown></td>
                                 <td class="action-cell"><button class="btn-delete-icon"
                                         (click)="removeProgramRow('visa', i)" title="Remove">×</button></td>
                             </tr>
@@ -193,10 +183,8 @@
                     <table class="dynamic-table no-header">
                         <tbody>
                             <tr *ngFor="let p of programs.work; let i = index">
-                                <td><input type="text" [(ngModel)]="p.country" list="countryList"
-                                        placeholder="Type Country"></td>
-                                <td><input type="text" [(ngModel)]="p.occupation" list="occList"
-                                        placeholder="Type Occupation"></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.countries" [allowEmpty]="false" placeholder="Country" [(ngModel)]="p.country"></app-searchable-dropdown></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.occupations" [allowEmpty]="false" placeholder="Occupation" [(ngModel)]="p.occupation"></app-searchable-dropdown></td>
                                 <td class="action-cell"><button class="btn-delete-icon"
                                         (click)="removeProgramRow('work', i)" title="Remove">×</button></td>
                             </tr>
@@ -208,28 +196,6 @@
 
     </div>
 
-    <!-- Data Lists for Autocomplete -->
-    <datalist id="countryList">
-        <option *ngFor="let c of lookups.countries" [value]="c.name"></option>
-    </datalist>
-    <datalist id="levelList">
-        <option *ngFor="let l of lookups.levels" [value]="l.name"></option>
-    </datalist>
-    <datalist id="intakeList">
-        <option *ngFor="let it of lookups.intakes" [value]="it.name"></option>
-    </datalist>
-    <datalist id="occList">
-        <option *ngFor="let o of lookups.occupations" [value]="o.name"></option>
-    </datalist>
-    <datalist id="fieldList">
-        <option *ngFor="let f of lookups.fields" [value]="f.name"></option>
-    </datalist>
-    <datalist id="yearList">
-        <option *ngFor="let y of lookups.years" [value]="y.name"></option>
-    </datalist>
-    <datalist id="categoryList">
-        <option *ngFor="let c of lookups.categories" [value]="c.name"></option>
-    </datalist>
 
     <!-- Follow up Section -->
     <div class="main-card followup-card">

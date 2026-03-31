@@ -8,10 +8,12 @@ import { UserService } from '../shared/user.service';
 import { SettingsService } from '../shared/settings.service';
 import { LoadingService } from '../shared/loading.service';
 
+import { SearchableDropdownComponent } from '../shared/components/searchable-dropdown.component';
+
 @Component({
     selector: 'app-student-details',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule],
+    imports: [CommonModule, FormsModule, RouterModule, SearchableDropdownComponent],
     templateUrl: './student-create.component.html',
     styleUrls: ['./student-create.component.css']
 })
@@ -78,6 +80,16 @@ export class StudentCreateComponent implements OnInit {
         categories: [] as any[]
     };
 
+    formattedLookups = {
+        countries: [] as any[],
+        levels: [] as any[],
+        intakes: [] as any[],
+        occupations: [] as any[],
+        years: [] as any[],
+        fields: [] as any[],
+        categories: [] as any[]
+    };
+
     constructor(
         private studentService: StudentService,
         private userService: UserService,
@@ -87,6 +99,10 @@ export class StudentCreateComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute
     ) { }
+
+    formatLookup(items: any[]): { label: string, value: string }[] {
+        return items.map(i => ({ label: i.name, value: i.name }));
+    }
 
     ngOnInit() {
         this.loadInitialData();
@@ -129,10 +145,21 @@ export class StudentCreateComponent implements OnInit {
         this.studentService.getLookups().subscribe({
             next: (data) => {
                 this.lookups = data;
+                this.refreshFormattedLookups();
                 this.loadingService.hide();
             },
             error: () => this.loadingService.hide()
         });
+    }
+
+    refreshFormattedLookups() {
+        this.formattedLookups.countries = this.formatLookup(this.lookups.countries);
+        this.formattedLookups.levels = this.formatLookup(this.lookups.levels);
+        this.formattedLookups.intakes = this.formatLookup(this.lookups.intakes);
+        this.formattedLookups.occupations = this.formatLookup(this.lookups.occupations);
+        this.formattedLookups.years = this.formatLookup(this.lookups.years);
+        this.formattedLookups.fields = this.formatLookup(this.lookups.fields);
+        this.formattedLookups.categories = this.formatLookup(this.lookups.categories);
     }
 
     // Dependent Dropdowns
