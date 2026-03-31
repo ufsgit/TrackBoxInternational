@@ -529,14 +529,40 @@
                 </div>
 
                 <!-- SPOUSE EDUCATION DETAILS -->
-                <div class="edu-grid-tabular mt-4">
-                    <div class="edu-row">
-                        <div class="edu-label"
-                            style="min-width: 100%; color: #2563eb; font-weight: 700; border-bottom: 1.5px solid #cbd5e1; margin-bottom: 8px; padding-bottom: 4px;">
-                            EDUCATION DETAILS
+                <div class="spouse-education-card mt-4">
+                    <div class="section-subtitle" style="font-weight:700;">EDUCATION DETAILS</div>
+
+                    <ng-container *ngFor="let country of interestedCountries">
+                        <div class="form-row" *ngIf="application.migration_spouse_data?.[country]">
+                            <div class="form-group flex-1">
+                                <label>Did Spouse study in {{country}}?</label>
+                                <div class="radio-group-modern">
+                                    <label><input type="radio" [name]="'spouse_has_edu_'+country"
+                                            [(ngModel)]="application.migration_spouse_data[country].has_edu" [value]="true"> YES</label>
+                                    <label><input type="radio" [name]="'spouse_has_edu_'+country"
+                                            [(ngModel)]="application.migration_spouse_data[country].has_edu" [value]="false"> NO</label>
+                                </div>
+                            </div>
+                            <div class="form-group flex-1" *ngIf="application.migration_spouse_data[country].has_edu">
+                                <label>Level</label>
+                                <select [(ngModel)]="application.migration_spouse_data[country].edu_level">
+                                    <option value="">Select Level</option>
+                                    <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group flex-1" *ngIf="application.migration_spouse_data[country].has_edu">
+                                <label>Field</label>
+                                <select [(ngModel)]="application.migration_spouse_data[country].edu_field">
+                                    <option value="">Select Field</option>
+                                    <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="edu-row">
+                    </ng-container>
+
+                    <p class="section-subtitle">Please enter the highest level of education you have completed</p>
+
+                    <div class="form-row">
                         <div class="form-group flex-1">
                             <label>Highest Education Level</label>
                             <select [(ngModel)]="application.spouse_edu_level">
@@ -546,38 +572,29 @@
                         </div>
                         <div class="form-group flex-1">
                             <label>Field of Study</label>
-                            <select [(ngModel)]="application.spouse_edu_field">
-                                <option value="">Select Field</option>
-                                <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
-                            </select>
+                            <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                <input type="text" [(ngModel)]="application.spouse_edu_field" placeholder="Field of Study" style="flex: 1;" />
+                                <button type="button" class="btn btn-sm btn-primary" (click)="addSpouseQualification()" title="Add another qualification" style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">+</button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Spouse Country Education Toggles (restored logic) -->
-                    <ng-container *ngFor="let country of interestedCountries">
-                        <div class="edu-row"
-                            *ngIf="application.migration_spouse_data && application.migration_spouse_data[country]">
-                            <div class="edu-label">Did Spouse study in {{country}}?</div>
-                            <div class="radio-group-modern">
-                                <label><input type="radio" [name]="'spouse_has_edu_'+country"
-                                        [(ngModel)]="application.migration_spouse_data[country].has_edu" [value]="true">
-                                    YES</label>
-                                <label><input type="radio" [name]="'spouse_has_edu_'+country"
-                                        [(ngModel)]="application.migration_spouse_data[country].has_edu" [value]="false">
-                                    NO</label>
-                            </div>
-                            <div class="edu-inputs" *ngIf="application.migration_spouse_data[country].has_edu">
-                                <select [(ngModel)]="application.migration_spouse_data[country].edu_level">
-                                    <option value="">Level</option>
-                                    <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
-                                </select>
-                                <select [(ngModel)]="application.migration_spouse_data[country].edu_field">
-                                    <option value="">Field</option>
-                                    <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
-                                </select>
+                    <div class="form-row" *ngFor="let q of application.spouse_education; let i = index" style="margin-top: 10px;">
+                        <div class="form-group flex-1">
+                            <label>Education Level {{i + 2}}</label>
+                            <select [(ngModel)]="q.level">
+                                <option value="">Select Level</option>
+                                <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>Field of Study {{i + 2}}</label>
+                            <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                <input type="text" [(ngModel)]="q.field" placeholder="Field of Study" style="flex: 1;" />
+                                <button type="button" class="btn btn-sm btn-danger" (click)="removeSpouseQualification(i)" title="Remove qualification" style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">&times;</button>
                             </div>
                         </div>
-                    </ng-container>
+                    </div>
                 </div>
 
                 <!-- SPOUSE WORK EXPERIENCE SECTION -->

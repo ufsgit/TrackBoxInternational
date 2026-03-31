@@ -35,6 +35,7 @@ export class StudentApplicationComponent implements OnInit {
         spouse_has_other_work_experience: false,
         spouse_other_work_experience_list: [],
         spouse_work_exp: '',
+        spouse_education: [],
         has_canadian_edu: false,
         has_australian_edu: false,
         has_aus_specialised_edu: false,
@@ -587,6 +588,11 @@ export class StudentApplicationComponent implements OnInit {
                 this.application.education_data[country] = { has_edu: false, level: '', field: '' };
             }
         });
+
+        if (!this.application.spouse_education) {
+            this.application.spouse_education = [];
+        }
+
         if (!this.application.education_data.additional) {
             this.application.education_data.additional = [];
         }
@@ -597,6 +603,19 @@ export class StudentApplicationComponent implements OnInit {
             this.application.education_data.additional = [];
         }
         this.application.education_data.additional.push({ level: '', field: '' });
+    }
+
+    addSpouseQualification() {
+        if (!this.application.spouse_education) {
+            this.application.spouse_education = [];
+        }
+        this.application.spouse_education.push({ level: '', field: '' });
+    }
+
+    removeSpouseQualification(index: number) {
+        if (this.application.spouse_education && this.application.spouse_education[index]) {
+            this.application.spouse_education.splice(index, 1);
+        }
     }
 
     removeQualification(index: number) {

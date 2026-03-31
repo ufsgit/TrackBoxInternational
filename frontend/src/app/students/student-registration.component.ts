@@ -606,6 +606,19 @@ export class StudentRegistrationComponent implements OnInit {
         this.application.education_data.additional.push({ level: '', field: '' });
     }
 
+    addSpouseQualification() {
+        if (!this.application.spouse_education) {
+            this.application.spouse_education = [];
+        }
+        this.application.spouse_education.push({ level: '', field: '' });
+    }
+
+    removeSpouseQualification(index: number) {
+        if (this.application.spouse_education && this.application.spouse_education[index]) {
+            this.application.spouse_education.splice(index, 1);
+        }
+    }
+
     addWorkExperience(country: string | null, target: string, subTarget: string = 'work_experience_list') {
         const newItem = { job_title: '', work_years: '', work_months: '', employment_country: '' };
         if (country) {
