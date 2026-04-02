@@ -77,7 +77,10 @@ export class StudentCreateComponent implements OnInit {
         occupations: [] as any[],
         years: [] as any[],
         fields: [] as any[],
-        categories: [] as any[]
+        categories: [] as any[],
+        visaCategories: [] as any[],
+        workCategories: [] as any[],
+        coachingCourses: [] as any[]
     };
 
     formattedLookups = {
@@ -87,7 +90,10 @@ export class StudentCreateComponent implements OnInit {
         occupations: [] as any[],
         years: [] as any[],
         fields: [] as any[],
-        categories: [] as any[]
+        categories: [] as any[],
+        visaCategories: [] as any[],
+        workCategories: [] as any[],
+        coachingCourses: [] as any[]
     };
 
     constructor(
@@ -160,6 +166,9 @@ export class StudentCreateComponent implements OnInit {
         this.formattedLookups.years = this.formatLookup(this.lookups.years);
         this.formattedLookups.fields = this.formatLookup(this.lookups.fields);
         this.formattedLookups.categories = this.formatLookup(this.lookups.categories);
+        this.formattedLookups.visaCategories = this.formatLookup(this.lookups.visaCategories);
+        this.formattedLookups.workCategories = this.formatLookup(this.lookups.workCategories);
+        this.formattedLookups.coachingCourses = this.formatLookup(this.lookups.coachingCourses);
     }
 
     // Dependent Dropdowns

@@ -20,7 +20,10 @@ const getLookups = () => {
                 fields: results[4],
                 categories: results[5],
                 years: results[6],
-                enquirySources: results[7]
+                enquirySources: results[7],
+                visaCategories: results[8],
+                workCategories: results[9],
+                coachingCourses: results[10]
             });
         });
     });
@@ -366,5 +369,44 @@ router.get('/staff', (req, res) => {
         successResponse(res, results);
     });
 });
+
+// --- Generic Master CRUD Helper ---
+const genericCrud = (path, tableName, idName, itemName) => {
+    router.get(`/${path}`, (req, res) => {
+        db.query(`SELECT * FROM ${tableName} ORDER BY name`, (err, results) => {
+            if (err) return errorResponse(res, err.message);
+            successResponse(res, results);
+        });
+    });
+
+    router.post(`/${path}`, checkAdmin, (req, res) => {
+        const { id, name } = req.body;
+        if (id) {
+            db.query(`UPDATE ${tableName} SET name = ? WHERE ${idName} = ?`, [name, id], (err) => {
+                if (err) return errorResponse(res, err.message);
+                successResponse(res, { message: `${itemName} updated successfully` });
+            });
+        } else {
+            db.query(`INSERT INTO ${tableName} (name) VALUES (?)`, [name], (err) => {
+                if (err) return errorResponse(res, err.message);
+                successResponse(res, { message: `${itemName} added successfully` });
+            });
+        }
+    });
+
+    router.delete(`/${path}/:id`, checkAdmin, (req, res) => {
+        db.query(`DELETE FROM ${tableName} WHERE ${idName} = ?`, [req.params.id], (err) => {
+            if (err) return errorResponse(res, err.message);
+            successResponse(res, { message: `${itemName} deleted successfully` });
+        });
+    });
+};
+
+genericCrud('countries', 'countries', 'country_id', 'Country');
+genericCrud('occupations', 'occupations', 'occ_id', 'Occupation');
+genericCrud('migration_categories', 'migration_categories', 'migration_cat_id', 'Migration Category');
+genericCrud('work_categories', 'work_categories', 'work_cat_id', 'Work Category');
+genericCrud('visa_categories', 'visa_categories', 'visa_cat_id', 'Visa Category');
+genericCrud('coaching_courses', 'coaching_courses', 'course_id', 'Coaching Course');
 
 module.exports = router;

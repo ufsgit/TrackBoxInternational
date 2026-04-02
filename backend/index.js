@@ -24,6 +24,19 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
+// Middleware for authentication
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+};
+
 // Test route
 app.get('/', (req, res) => {
     res.send('Trackbox API is running...');
@@ -40,18 +53,9 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Middleware for authentication
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) return res.sendStatus(401);
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-};
+// Masters Setting Module
+const masterSettings = require('./src/modules/master/settings.module');
+app.use('/api', authenticateToken, masterSettings);
 
 // Auth Routes
 app.post('/api/auth/login', (req, res) => {
@@ -490,7 +494,10 @@ app.get('/api/lookups', authenticateToken, (req, res) => {
             fields: results[4],
             categories: results[5],
             years: results[6],
-            enquirySources: results[7]
+            enquirySources: results[7],
+            visaCategories: results[8],
+            workCategories: results[9],
+            coachingCourses: results[10]
         });
     });
 });

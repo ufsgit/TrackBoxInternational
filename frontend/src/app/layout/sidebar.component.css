@@ -147,8 +147,7 @@
 }
 
 .submenu.expanded {
-    max-height: 500px;
-    /* Large enough for all items */
+    max-height: 1000px; /* Large enough for many items */
 }
 
 .has-submenu {

@@ -13,6 +13,12 @@ import { LevelListComponent } from './settings/level-list.component';
 import { FieldListComponent } from './settings/field-list.component';
 import { ApplicationStatusListComponent } from './settings/application-status-list.component';
 import { ApplicationSubStatusListComponent } from './settings/application-sub-status-list.component';
+import { CountryListComponent } from './settings/country-list.component';
+import { OccupationListComponent } from './settings/occupation-list.component';
+import { MigrationCategoryListComponent } from './settings/migration-category-list.component';
+import { WorkCategoryListComponent } from './settings/work-category-list.component';
+import { VisaCategoryListComponent } from './settings/visa-category-list.component';
+import { CoachingCourseListComponent } from './settings/coaching-course-list.component';
 import { EnquiryReportComponent } from './reports/enquiry-report.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { authGuard } from './shared/auth.guard';
@@ -40,6 +46,12 @@ export const routes: Routes = [
             { path: 'settings/fields', component: FieldListComponent },
             { path: 'settings/app-status', component: ApplicationStatusListComponent },
             { path: 'settings/app-sub-status', component: ApplicationSubStatusListComponent },
+            { path: 'settings/countries', component: CountryListComponent },
+            { path: 'settings/occupations', component: OccupationListComponent },
+            { path: 'settings/migration-categories', component: MigrationCategoryListComponent },
+            { path: 'settings/work-categories', component: WorkCategoryListComponent },
+            { path: 'settings/visa-categories', component: VisaCategoryListComponent },
+            { path: 'settings/coaching-courses', component: CoachingCourseListComponent },
             { path: 'reports/enquiry', component: EnquiryReportComponent },
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
         ]

@@ -118,4 +118,65 @@ export class SettingsService {
     deleteApplicationSubStatus(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/application-sub-statuses/${id}`);
     }
+
+    // Generic Settings Methods
+    getCountries(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/countries`);
+    }
+    saveCountry(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/countries`, data);
+    }
+    deleteCountry(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/countries/${id}`);
+    }
+
+    getOccupations(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/occupations`);
+    }
+    saveOccupation(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/occupations`, data);
+    }
+    deleteOccupation(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/occupations/${id}`);
+    }
+
+    getMigrationCategories(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/migration_categories`);
+    }
+    saveMigrationCategory(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/migration_categories`, data);
+    }
+    deleteMigrationCategory(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/migration_categories/${id}`);
+    }
+
+    getWorkCategories(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/work_categories`);
+    }
+    saveWorkCategory(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/work_categories`, data);
+    }
+    deleteWorkCategory(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/work_categories/${id}`);
+    }
+
+    getVisaCategories(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/visa_categories`);
+    }
+    saveVisaCategory(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/visa_categories`, data);
+    }
+    deleteVisaCategory(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/visa_categories/${id}`);
+    }
+
+    getCoachingCourses(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/coaching_courses`);
+    }
+    saveCoachingCourse(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/coaching_courses`, data);
+    }
+    deleteCoachingCourse(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/coaching_courses/${id}`);
+    }
 }

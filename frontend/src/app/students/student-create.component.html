@@ -143,7 +143,7 @@
                     <table class="dynamic-table no-header">
                         <tbody>
                             <tr *ngFor="let p of programs.coaching; let i = index">
-                                <td><app-searchable-dropdown [options]="formattedLookups.fields" [allowEmpty]="false" placeholder="Course" [(ngModel)]="p.course"></app-searchable-dropdown></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.coachingCourses" [allowEmpty]="false" placeholder="Course" [(ngModel)]="p.course"></app-searchable-dropdown></td>
                                 <td><input type="text" [(ngModel)]="p.batch" placeholder="Type Batch"></td>
                                 <td class="action-cell"><button class="btn-delete-icon"
                                         (click)="removeProgramRow('coaching', i)" title="Remove">×</button></td>
@@ -164,7 +164,7 @@
                         <tbody>
                             <tr *ngFor="let p of programs.visa; let i = index">
                                 <td><app-searchable-dropdown [options]="formattedLookups.countries" [allowEmpty]="false" placeholder="Country" [(ngModel)]="p.country"></app-searchable-dropdown></td>
-                                <td><app-searchable-dropdown [options]="formattedLookups.categories" [allowEmpty]="false" placeholder="Category" [(ngModel)]="p.category"></app-searchable-dropdown></td>
+                                <td><app-searchable-dropdown [options]="formattedLookups.visaCategories" [allowEmpty]="false" placeholder="Category" [(ngModel)]="p.category"></app-searchable-dropdown></td>
                                 <td class="action-cell"><button class="btn-delete-icon"
                                         (click)="removeProgramRow('visa', i)" title="Remove">×</button></td>
                             </tr>
