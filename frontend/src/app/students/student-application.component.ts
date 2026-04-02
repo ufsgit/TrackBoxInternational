@@ -53,7 +53,15 @@ export class StudentApplicationComponent implements OnInit {
         migration_data: {},
         migration_spouse_data: {},
         relatives_data: {},
-        spouse_work_experience_list: []
+        spouse_work_experience_list: [],
+        highest_education_status: 'Completed',
+        highest_education_expected: '',
+        spouse_edu_status: 'Completed',
+        spouse_edu_expected: '',
+        has_other_country_edu: false,
+        other_country_edu_list: [],
+        spouse_has_other_country_edu: false,
+        spouse_other_country_edu_list: []
     };
     children: any[] = [];
     suggestedPrograms: any[] = [];
@@ -585,7 +593,14 @@ export class StudentApplicationComponent implements OnInit {
 
         this.educationCountries.forEach(country => {
             if (!this.application.education_data[country]) {
-                this.application.education_data[country] = { has_edu: false, level: '', field: '' };
+                this.application.education_data[country] = { has_edu: false, level: '', field: '', status: 'Completed', expected_completion: '', additional_entries: [] };
+            } else {
+                if (!this.application.education_data[country].additional_entries) {
+                    this.application.education_data[country].additional_entries = [];
+                }
+                if (!this.application.education_data[country].status) {
+                    this.application.education_data[country].status = 'Completed';
+                }
             }
         });
 
@@ -596,6 +611,13 @@ export class StudentApplicationComponent implements OnInit {
         if (!this.application.education_data.additional) {
             this.application.education_data.additional = [];
         }
+
+        if (!this.application.other_country_edu_list) {
+            this.application.other_country_edu_list = [];
+        }
+        if (!this.application.spouse_other_country_edu_list) {
+            this.application.spouse_other_country_edu_list = [];
+        }
     }
 
     addQualification() {
@@ -603,6 +625,17 @@ export class StudentApplicationComponent implements OnInit {
             this.application.education_data.additional = [];
         }
         this.application.education_data.additional.push({ level: '', field: '' });
+    }
+
+    addCountryEducation(country: string) {
+        if (!this.application.education_data[country].additional_entries) {
+            this.application.education_data[country].additional_entries = [];
+        }
+        this.application.education_data[country].additional_entries.push({ level: '', field: '' });
+    }
+
+    removeCountryEducation(country: string, index: number) {
+        this.application.education_data[country].additional_entries.splice(index, 1);
     }
 
     addSpouseQualification() {
@@ -620,6 +653,16 @@ export class StudentApplicationComponent implements OnInit {
 
     removeQualification(index: number) {
         this.application.education_data.additional.splice(index, 1);
+    }
+
+    addOtherCountryEducation(target: 'applicant' | 'spouse' = 'applicant') {
+        const list = target === 'applicant' ? this.application.other_country_edu_list : this.application.spouse_other_country_edu_list;
+        list.push({ level: '', field: '', status: 'Completed', expected_completion: '' });
+    }
+
+    removeOtherCountryEducation(index: number, target: 'applicant' | 'spouse' = 'applicant') {
+        const list = target === 'applicant' ? this.application.other_country_edu_list : this.application.spouse_other_country_edu_list;
+        list.splice(index, 1);
     }
 
     hasInterest(type: 'study' | 'migration' | 'visa' | 'work' | 'coaching'): boolean {
