@@ -267,6 +267,17 @@ export class StudentApplicationComponent implements OnInit {
                             if (this.application[`spouse_${prefix}_work`]) this.application.migration_spouse_data[name].work_years = this.application[`spouse_${prefix}_work`];
                         }
                     });
+                    
+                    // Sync unmapped education properties from JSON
+                    this.application.highest_education_status = this.application.education_data.highest_education_status || 'Completed';
+                    this.application.highest_education_expected = this.application.education_data.highest_education_expected || '';
+                    this.application.has_other_country_edu = this.application.education_data.has_other_country_edu || false;
+                    this.application.other_country_edu_list = this.application.education_data.other_country_edu_list || [];
+                    this.application.spouse_edu_status = this.application.education_data.spouse_edu_status || 'Completed';
+                    this.application.spouse_edu_expected = this.application.education_data.spouse_edu_expected || '';
+                    this.application.spouse_education = this.application.education_data.spouse_education || [];
+                    this.application.spouse_has_other_country_edu = this.application.education_data.spouse_has_other_country_edu || false;
+                    this.application.spouse_other_country_edu_list = this.application.education_data.spouse_other_country_edu_list || [];
                 }
                 this.children = res.children || [];
                 this.suggestedPrograms = (res.suggestedPrograms || []).flatMap((p: any) => {
@@ -810,6 +821,18 @@ export class StudentApplicationComponent implements OnInit {
                 this.application[`spouse_${prefix}_work`] = this.application.migration_spouse_data[name].work_years;
             }
         });
+
+        // Map UI-only education properties into education_data JSON for saving
+        if (!this.application.education_data) this.application.education_data = {};
+        this.application.education_data.highest_education_status = this.application.highest_education_status;
+        this.application.education_data.highest_education_expected = this.application.highest_education_expected;
+        this.application.education_data.has_other_country_edu = this.application.has_other_country_edu;
+        this.application.education_data.other_country_edu_list = this.application.other_country_edu_list;
+        this.application.education_data.spouse_edu_status = this.application.spouse_edu_status;
+        this.application.education_data.spouse_edu_expected = this.application.spouse_edu_expected;
+        this.application.education_data.spouse_education = this.application.spouse_education;
+        this.application.education_data.spouse_has_other_country_edu = this.application.spouse_has_other_country_edu;
+        this.application.education_data.spouse_other_country_edu_list = this.application.spouse_other_country_edu_list;
 
         const data = {
             application: this.application,
