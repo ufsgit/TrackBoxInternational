@@ -133,7 +133,8 @@
 .edu-grid-tabular input:not([type="radio"]):not([type="checkbox"]),
 .edu-grid-tabular select,
 .work-exp-tabular input:not([type="radio"]):not([type="checkbox"]),
-.work-exp-tabular select {
+.work-exp-tabular select,
+.score-item input {
     padding: 6px 10px;
     border: 1.5px solid #e2e8f0;
     border-radius: 6px;
@@ -145,7 +146,8 @@
 }
 
 .form-group input:not([type="radio"]):not([type="checkbox"]),
-.form-group select {
+.form-group select,
+.score-item input {
     flex: 1;
 }
 
@@ -154,7 +156,8 @@
 .edu-grid-tabular input:focus,
 .edu-grid-tabular select:focus,
 .work-exp-tabular input:focus,
-.work-exp-tabular select:focus {
+.work-exp-tabular select:focus,
+.score-item input:focus {
     outline: none;
     border-color: #667eea;
     box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
@@ -245,18 +248,23 @@ input[type="radio"] {
 
 .scores-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
     margin-top: 12px;
+}
+
+.score-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .score-item label {
     font-size: 0.75rem;
-    margin-bottom: 4px;
-}
-
-.score-item input {
-    padding: 6px 10px;
+    font-weight: 600;
+    color: #475569;
+    white-space: nowrap;
+    min-width: 70px;
 }
 
 .table-responsive {
