@@ -139,6 +139,22 @@ export class StudentRegistrationComponent implements OnInit {
         return this.allAppStatuses.filter(s => (s.categories || []).includes(cat));
     }
 
+    validateNumeric(field: string, event: any) {
+        let val = event.target.value;
+        let filtered = val.replace(/[^0-9]/g, '');
+        if (filtered.length > 10) filtered = filtered.substring(0, 10);
+        this.application[field] = filtered;
+        event.target.value = filtered;
+    }
+
+    onlyNumberKey(event: any) {
+        const charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+
     onStatusChange(p: any) {
         // Find the status_id for the selected status name to filter sub-statuses
         const selected = this.allAppStatuses.find(s => s.name === p.status && (s.categories || []).includes(p.type));
