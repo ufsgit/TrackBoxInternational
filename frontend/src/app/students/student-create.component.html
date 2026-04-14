@@ -64,12 +64,14 @@
 
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" [(ngModel)]="student.email" placeholder="Email Address">
+                    <div class="field-with-social">
+                        <input type="email" [(ngModel)]="student.email" placeholder="Email Address">
+                    </div>
                 </div>
             </div>
 
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-group flex-3">
                     <label>Program Required:</label>
                     <div class="program-checks">
                         <label><input type="checkbox" [(ngModel)]="student.study_interested"
@@ -231,7 +233,7 @@
                 </div>
             </div>
 
-            <div class="form-row three-cols">
+            <div class="form-row flex-2-row">
                 <div class="form-group">
                     <label>To Staff</label>
                     <select [(ngModel)]="newFollowup.assigned_to">
@@ -244,9 +246,11 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Remark <span class="required">*</span></label>
-                <textarea [(ngModel)]="newFollowup.remark" rows="3" placeholder="Enter follow-up details..."></textarea>
+            <div class="form-row">
+                <div class="form-group flex-3">
+                    <label>Remark <span class="required">*</span></label>
+                    <textarea [(ngModel)]="newFollowup.remark" rows="3" placeholder="Enter follow-up details..."></textarea>
+                </div>
             </div>
 
             <div class="mt-15">
