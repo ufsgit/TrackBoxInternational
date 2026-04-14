@@ -156,8 +156,14 @@
     <!-- Bottom Section -->
     <div class="bottom-bar">
         <div class="follow-up-stats">
-            <span class="stat-item">Total Follow Ups: <strong>{{totalItems}}</strong></span>
-            <span class="stat-item missed">Missed Follow Ups: <strong>0</strong></span>
+            <div class="stat-box">
+                <span class="label">Total Follow Ups:</span>
+                <strong>{{totalItems}}</strong>
+            </div>
+            <div class="stat-box missed">
+                <span class="label">Missed Follow Ups:</span>
+                <strong>0</strong>
+            </div>
         </div>
         <div class="pagination">
             <button class="btn btn-outline" (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
