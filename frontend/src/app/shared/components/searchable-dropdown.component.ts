@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ElementRef, HostListener, forwardRef, ViewChild, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, HostListener, forwardRef, ViewChild, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -91,11 +91,11 @@ import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/f
     }
     .dropdown-panel {
       position: fixed;
-      z-index: 99999;
+      z-index: 99;
       background: white;
       border: 1px solid var(--border);
       border-radius: 0.75rem;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
       overflow: hidden;
       animation: dropdownFade 0.15s ease-out;
     }
@@ -167,7 +167,7 @@ import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/f
     }
   ]
 })
-export class SearchableDropdownComponent implements ControlValueAccessor, OnChanges {
+export class SearchableDropdownComponent implements ControlValueAccessor, OnChanges, OnInit, OnDestroy {
   @Input() options: { label: string, value: any }[] = [];
   @Input() placeholder: string = 'Select...';
   @Input() allowEmpty: boolean = true;
@@ -180,11 +180,28 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnChan
   isOpen: boolean = false;
   selectedLabel: string = '';
   dropdownStyles: any = {};
+  private scrollListener: any;
 
   onChange: any = () => {};
   onTouched: any = () => {};
 
   constructor(private elementRef: ElementRef) {}
+
+  ngOnInit() {
+    // Add a capturing scroll listener to the whole document to catch internal scrolls
+    this.scrollListener = () => {
+      if (this.isOpen) {
+        this.updatePosition();
+      }
+    };
+    document.addEventListener('scroll', this.scrollListener, true);
+  }
+
+  ngOnDestroy() {
+    if (this.scrollListener) {
+      document.removeEventListener('scroll', this.scrollListener, true);
+    }
+  }
 
   ngOnChanges() {
     this.filteredOptions = [...this.options];
@@ -218,22 +235,16 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnChan
   }
 
   updatePosition() {
+    if (!this.triggerElement) return;
+    
     const rect = this.triggerElement.nativeElement.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    const panelHeight = 300; // Estimated max height
     
     this.dropdownStyles = {
       'left': rect.left + 'px',
-      'width': rect.width + 'px'
+      'width': rect.width + 'px',
+      'top': (rect.bottom + 5) + 'px',
+      'bottom': 'auto'
     };
-
-    if (spaceBelow < panelHeight && rect.top > panelHeight) {
-      // Open UP
-      this.dropdownStyles.bottom = (window.innerHeight - rect.top + 5) + 'px';
-    } else {
-      // Open DOWN
-      this.dropdownStyles.top = (rect.bottom + 5) + 'px';
-    }
   }
 
   @HostListener('window:scroll')

@@ -110,6 +110,12 @@ export class StudentCreateComponent implements OnInit {
         return items.map(i => ({ label: i.name, value: i.name }));
     }
 
+    onNumberInput(event: any, field: 'mobile_number' | 'phone_number') {
+        const val = event.target.value.replace(/[^0-9]/g, '');
+        this.student[field] = val.slice(0, 10);
+        event.target.value = this.student[field];
+    }
+
     ngOnInit() {
         this.loadInitialData();
         this.route.params.subscribe(params => {

@@ -29,7 +29,7 @@
                                 <option value="+971">+971 (UAE)</option>
                                 <option value="+1">+1 (US)</option>
                             </select>
-                            <input type="text" [(ngModel)]="student.mobile_number" placeholder="Mobile Number">
+                            <input type="tel" [(ngModel)]="student.mobile_number" maxlength="10" (input)="onNumberInput($event, 'mobile_number')" placeholder="Mobile Number">
                         </div>
                         <div class="social-checks-inline">
                             <label title="Whatsapp"><input type="checkbox" [(ngModel)]="student.whatsapp"> <i
@@ -49,7 +49,7 @@
                             <select [(ngModel)]="student.phone_country_code">
                                 <option value="+91">+91 (IN)</option>
                             </select>
-                            <input type="text" [(ngModel)]="student.phone_number" placeholder="Phone Number">
+                            <input type="tel" [(ngModel)]="student.phone_number" maxlength="10" (input)="onNumberInput($event, 'phone_number')" placeholder="Phone Number">
                         </div>
                         <div class="social-checks-inline">
                             <label title="Whatsapp"><input type="checkbox" [(ngModel)]="student.phone_whatsapp"> <i
