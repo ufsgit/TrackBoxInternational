@@ -111,7 +111,9 @@
 
 .collapsed .text,
 .collapsed .separator-label,
-.collapsed .version-badge {
+.collapsed .version-badge,
+.collapsed .arrow-icon,
+.collapsed .submenu {
     display: none;
 }
 
