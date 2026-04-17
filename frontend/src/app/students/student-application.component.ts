@@ -680,6 +680,19 @@ export class StudentApplicationComponent implements OnInit {
         return !!(this.studentPrograms && this.studentPrograms[type] && this.studentPrograms[type].length > 0);
     }
 
+    shouldShowExpCompletion(primaryStatus: string, additionalRows: any[] = []): boolean {
+        if (primaryStatus === 'Not Completed') return true;
+        if (additionalRows && additionalRows.length > 0) {
+            return additionalRows.some(r => r.status === 'Not Completed');
+        }
+        return false;
+    }
+
+    shouldShowListExpCompletion(rows: any[]): boolean {
+        if (!rows || rows.length === 0) return false;
+        return rows.some(r => r.status === 'Not Completed');
+    }
+
 
     forceSyncPrograms() {
         if (confirm('This will overwrite current suggested programs. Continue?')) {
