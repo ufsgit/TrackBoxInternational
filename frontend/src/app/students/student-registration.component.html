@@ -24,7 +24,7 @@
 
                 <div class="form-row">
                     <div class="form-group flex-2">
-                        <label>Profile Name</label>
+                        <label>Profile Name (as per Passport) <span class="required">*</span></label>
                         <input type="text" [(ngModel)]="application.passport_name"
                             placeholder="Full name matching your passport">
                     </div>
@@ -185,82 +185,211 @@
                 <h3 class="section-title">EDUCATION DETAILS</h3>
                 <!-- Specific Country Education (Dynamic) -->
                 <div class="edu-grid-tabular">
-                    <div class="edu-row" *ngFor="let country of educationCountries">
+                    <div class="edu-row" *ngFor="let country of educationCountries" style="flex-direction: column; align-items: flex-start; gap: 8px;">
                         <ng-container *ngIf="application.education_data && application.education_data[country]">
-                            <div class="edu-label">Do you have any {{country}} Education?</div>
-                            <div class="edu-toggle">
-                                <label><input type="radio" [name]="'has_'+country+'_edu'"
-                                        [(ngModel)]="application.education_data[country].has_edu" [value]="true">
-                                    YES</label>
-                                <label><input type="radio" [name]="'has_'+country+'_edu'"
-                                        [(ngModel)]="application.education_data[country].has_edu" [value]="false">
-                                    NO</label>
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <div class="edu-label" style="min-width: auto;">Do you have any {{country}} Education?</div>
+                                <div class="edu-toggle">
+                                    <label><input type="radio" [name]="'has_'+country+'_edu'"
+                                            [(ngModel)]="application.education_data[country].has_edu" [value]="true">
+                                        YES</label>
+                                    <label><input type="radio" [name]="'has_'+country+'_edu'"
+                                            [(ngModel)]="application.education_data[country].has_edu" [value]="false">
+                                        NO</label>
+                                </div>
                             </div>
-                            <div class="edu-inputs" *ngIf="application.education_data[country].has_edu">
-                                <select [(ngModel)]="application.education_data[country].level">
-                                    <option value="">Level</option>
-                                    <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
-                                </select>
-                                <select [(ngModel)]="application.education_data[country].field">
-                                    <option value="">Field</option>
-                                    <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
-                                </select>
+                            <div class="edu-inputs" *ngIf="application.education_data[country].has_edu" style="width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px;">
+                                <div style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
+                                    <!-- Table Header -->
+                                    <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
+                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
+                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
+                                        <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
+                                        <div *ngIf="shouldShowExpCompletion(application.education_data[country].status, application.education_data[country].additional_entries)" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
+                                        <div style="width: 34px;"></div>
+                                    </div>
+                                    <!-- Primary entry -->
+                                    <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                        <select [(ngModel)]="application.education_data[country].level" style="flex: 0 0 25%; min-width: 0;">
+                                            <option value="">Level</option>
+                                            <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                        </select>
+                                        <select [(ngModel)]="application.education_data[country].field" style="flex: 0 0 25%; min-width: 0;">
+                                            <option value="">Field</option>
+                                            <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                        </select>
+                                        <select [(ngModel)]="application.education_data[country].status" style="flex: 0 0 20%; min-width: 0;">
+                                            <option value="Completed">Completed</option>
+                                            <option value="Not Completed">Not Completed</option>
+                                        </select>
+                                        <div *ngIf="shouldShowExpCompletion(application.education_data[country].status, application.education_data[country].additional_entries)" 
+                                             style="flex: 0 0 20%;">
+                                            <input type="month" *ngIf="application.education_data[country].status === 'Not Completed'" 
+                                                [(ngModel)]="application.education_data[country].expected_completion" 
+                                                placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-primary" (click)="addCountryEducation(country)"
+                                            title="Add more Education Details"
+                                            style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                            +
+                                        </button>
+                                    </div>
+                            
+                                    <!-- Additional entries -->
+                                    <div *ngFor="let entry of application.education_data[country].additional_entries; let i = index"
+                                        style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                        <select [(ngModel)]="entry.level" style="flex: 0 0 25%; min-width: 0;">
+                                            <option value="">Level</option>
+                                            <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                        </select>
+                                        <select [(ngModel)]="entry.field" style="flex: 0 0 25%; min-width: 0;">
+                                            <option value="">Field</option>
+                                            <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                        </select>
+                                        <select [(ngModel)]="entry.status" style="flex: 0 0 20%; min-width: 0;">
+                                            <option value="Completed">Completed</option>
+                                            <option value="Not Completed">Not Completed</option>
+                                        </select>
+                                        <div *ngIf="shouldShowExpCompletion(application.education_data[country].status, application.education_data[country].additional_entries)" 
+                                             style="flex: 0 0 20%;">
+                                            <input type="month" *ngIf="entry.status === 'Not Completed'" 
+                                                [(ngModel)]="entry.expected_completion" 
+                                                placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-danger" (click)="removeCountryEducation(country, i)"
+                                            title="Remove qualification"
+                                            style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                            &times;
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </ng-container>
                     </div>
 
                 </div>
 
-                <p class="section-subtitle">Please enter the highest level of education you have completed (for study
-                    and
-                    Migration)</p>
-
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label>Highest Education Level</label>
-                        <select [(ngModel)]="application.highest_education">
-                            <option value="">Select Level</option>
-                            <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
-                        </select>
-                    </div>
-                    <div class="form-group flex-1">
-                        <label>Field of Study</label>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <select [(ngModel)]="application.education_field" style="flex: 1;">
-                                <option value="">Field</option>
-                                <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
-                            </select>
-                            <button type="button" class="btn btn-sm btn-primary" (click)="addQualification()"
-                                title="Add another qualification"
-                                style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">
-                                +
-                            </button>
+                <div class="edu-grid-tabular">
+                    <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <div class="edu-label" style="min-width: auto; margin-bottom: 5px; font-size: 0.9rem;">Please enter the highest level of education you have completed (for study and Migration)</div>
+                        <div class="edu-inputs" style="width: 100%;">
+                            <div style="display: flex; flex-direction: column; width: 100%; gap: 5px;">
+                                <!-- Table Header -->
+                                <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
+                                    <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
+                                    <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
+                                    <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
+                                    <div *ngIf="shouldShowExpCompletion(application.highest_education_status, application.education_data?.additional)" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
+                                    <div style="width: 34px;"></div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                    <select [(ngModel)]="application.highest_education" style="flex: 0 0 25%; min-width: 0;">
+                                        <option value="">Level</option>
+                                        <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                    </select>
+                                    <select [(ngModel)]="application.education_field" style="flex: 0 0 25%; min-width: 0;">
+                                        <option value="">Field</option>
+                                        <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                    </select>
+                                    <select [(ngModel)]="application.highest_education_status" style="flex: 0 0 20%; min-width: 0;">
+                                        <option value="Completed">Completed</option>
+                                        <option value="Not Completed">Not Completed</option>
+                                    </select>
+                                    <div *ngIf="shouldShowExpCompletion(application.highest_education_status, application.education_data?.additional)" 
+                                         style="flex: 0 0 20%;">
+                                        <input type="month" *ngIf="application.highest_education_status === 'Not Completed'" 
+                                            [(ngModel)]="application.highest_education_expected" 
+                                            placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-primary" (click)="addQualification()"
+                                        title="ADD Previous Education Details"
+                                        style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">
+                                        +
+                                    </button>
+                                </div>
+                                <div *ngFor="let q of application.education_data?.additional; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 5px;">
+                                    <select [(ngModel)]="q.level" style="flex: 0 0 25%; min-width: 0;">
+                                        <option value="">Level</option>
+                                        <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                    </select>
+                                    <select [(ngModel)]="q.field" style="flex: 0 0 25%; min-width: 0;">
+                                        <option value="">Field</option>
+                                        <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                    </select>
+                                    <select [(ngModel)]="q.status" style="flex: 0 0 20%; min-width: 0;">
+                                        <option value="Completed">Completed</option>
+                                        <option value="Not Completed">Not Completed</option>
+                                    </select>
+                                    <div *ngIf="shouldShowExpCompletion(application.highest_education_status, application.education_data?.additional)" 
+                                         style="flex: 0 0 20%;">
+                                        <input type="month" *ngIf="q.status === 'Not Completed'" 
+                                            [(ngModel)]="q.expected_completion" 
+                                            placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                    </div>
+                                    <button type="button" class="btn btn-sm" (click)="removeQualification(i)"
+                                        title="Remove qualification"
+                                        style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">
+                                        &times;
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Additional Qualifications -->
-                <div class="form-row" *ngFor="let q of application.education_data?.additional; let i = index"
-                    style="margin-top: 10px;">
-                    <div class="form-group flex-1">
-                        <label>Education Level {{i + 2}}</label>
-                        <select [(ngModel)]="q.level">
-                            <option value="">Select Level</option>
-                            <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
-                        </select>
-                    </div>
-                    <div class="form-group flex-1">
-                        <label>Field of Study {{i + 2}}</label>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <select [(ngModel)]="q.field" style="flex: 1;">
-                                <option value="">Field</option>
-                                <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
-                            </select>
-                            <button type="button" class="btn btn-sm btn-danger" (click)="removeQualification(i)"
-                                title="Remove qualification"
-                                style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">
-                                &times;
-                            </button>
+                <!-- Other Country Education -->
+                <div class="edu-grid-tabular">
+                    <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div class="edu-label" style="min-width: auto;">Do you have any other country Education? (Highest level completed/current study)</div>
+                            <div class="radio-group-modern">
+                                <label><input type="radio" [value]="true" [(ngModel)]="application.has_other_country_edu"> YES</label>
+                                <label><input type="radio" [value]="false" [(ngModel)]="application.has_other_country_edu"> NO</label>
+                            </div>
+                        </div>
+
+                        <div class="edu-inputs" *ngIf="application.has_other_country_edu" style="width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px;">
+                            <div style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
+                                <!-- Table Header -->
+                                <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
+                                    <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
+                                    <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
+                                    <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
+                                    <div *ngIf="shouldShowListExpCompletion(application.other_country_edu_list)" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
+                                    <div style="width: 34px;"></div>
+                                </div>
+                                <div *ngFor="let entry of application.other_country_edu_list; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 5px;">
+                                    <select [(ngModel)]="entry.level" style="flex: 0 0 25%; min-width: 0;">
+                                        <option value="">Level</option>
+                                        <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                    </select>
+                                    <select [(ngModel)]="entry.field" style="flex: 0 0 25%; min-width: 0;">
+                                        <option value="">Field</option>
+                                        <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                    </select>
+                                    <select [(ngModel)]="entry.status" style="flex: 0 0 20%; min-width: 0;">
+                                        <option value="Completed">Completed</option>
+                                        <option value="Not Completed">Not Completed</option>
+                                    </select>
+                                    <div *ngIf="shouldShowListExpCompletion(application.other_country_edu_list)" 
+                                         style="flex: 0 0 20%;">
+                                        <input type="month" *ngIf="entry.status === 'Not Completed'" 
+                                            [(ngModel)]="entry.expected_completion" 
+                                            placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                    </div>
+                                    <button type="button" class="btn btn-sm" (click)="removeOtherCountryEducation(i, 'applicant')"
+                                        title="Remove qualification"
+                                        style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">
+                                        &times;
+                                    </button>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
+                                    <button type="button" class="btn btn-sm btn-primary" (click)="addOtherCountryEducation('applicant')"
+                                        style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
+                                        + Add more Education Details
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -585,9 +714,9 @@
                     <div class="section-subtitle" style="font-weight:700;">EDUCATION DETAILS</div>
 
                     <ng-container *ngFor="let country of interestedCountries">
-                        <div class="form-row" *ngIf="application.migration_spouse_data?.[country]">
-                            <div class="form-group flex-1">
-                                <label>Did Spouse study in {{country}}?</label>
+                        <div class="form-row" *ngIf="application.migration_spouse_data?.[country]" style="flex-direction: column; align-items: flex-start; gap: 8px; background: white; padding: 8px 16px; border-bottom: 1px solid #f1f5f9;">
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <div class="edu-label" style="min-width: auto;">Did Spouse study in {{country}}?</div>
                                 <div class="radio-group-modern">
                                     <label><input type="radio" [name]="'spouse_has_edu_'+country"
                                             [(ngModel)]="application.migration_spouse_data[country].has_edu" [value]="true"> YES</label>
@@ -595,55 +724,138 @@
                                             [(ngModel)]="application.migration_spouse_data[country].has_edu" [value]="false"> NO</label>
                                 </div>
                             </div>
-                            <div class="form-group flex-1" *ngIf="application.migration_spouse_data[country].has_edu">
-                                <label>Level</label>
-                                <select [(ngModel)]="application.migration_spouse_data[country].edu_level">
-                                    <option value="">Select Level</option>
-                                    <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
-                                </select>
-                            </div>
-                            <div class="form-group flex-1" *ngIf="application.migration_spouse_data[country].has_edu">
-                                <label>Field</label>
-                                <select [(ngModel)]="application.migration_spouse_data[country].edu_field">
-                                    <option value="">Select Field</option>
-                                    <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
-                                </select>
+                            <div class="form-group" style="flex: 2; width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px; flex-direction: column; align-items: stretch;" *ngIf="application.migration_spouse_data[country].has_edu">
+                                <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
+                                    <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
+                                    <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
+                                    <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
+                                    <div *ngIf="application.migration_spouse_data[country].status === 'Not Completed'" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                    <select [(ngModel)]="application.migration_spouse_data[country].edu_level" style="flex: 0 0 25%; min-width: 0;">
+                                        <option value="">Level</option>
+                                        <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                    </select>
+                                    <select [(ngModel)]="application.migration_spouse_data[country].edu_field" style="flex: 0 0 25%; min-width: 0;">
+                                        <option value="">Field</option>
+                                        <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                    </select>
+                                    <select [(ngModel)]="application.migration_spouse_data[country].status" style="flex: 0 0 20%; min-width: 0;">
+                                        <option value="Completed">Completed</option>
+                                        <option value="Not Completed">Not Completed</option>
+                                    </select>
+                                    <div *ngIf="application.migration_spouse_data[country].status === 'Not Completed'" style="flex: 0 0 20%;">
+                                        <input type="month" [(ngModel)]="application.migration_spouse_data[country].expected_completion" 
+                                            placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </ng-container>
 
-                    <p class="section-subtitle">Please enter the highest level of education you have completed</p>
-
-                    <div class="form-row">
-                        <div class="form-group flex-1">
-                            <label>Highest Education Level</label>
-                            <select [(ngModel)]="application.spouse_edu_level">
-                                <option value="">Select Level</option>
-                                <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
-                            </select>
-                        </div>
-                        <div class="form-group flex-1">
-                            <label>Field of Study</label>
-                            <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                                <input type="text" [(ngModel)]="application.spouse_edu_field" placeholder="Field of Study" style="flex: 1;" />
-                                <button type="button" class="btn btn-sm btn-primary" (click)="addSpouseQualification()" title="Add another qualification" style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">+</button>
+                    <div class="edu-grid-tabular">
+                        <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div class="edu-label" style="min-width: auto; margin-bottom: 5px; font-size: 0.9rem;">Please enter the highest level of education you have completed</div>
+                            <div class="edu-inputs" style="width: 100%;">
+                                <div style="display: flex; flex-direction: column; width: 100%; gap: 5px;">
+                                    <!-- Table Header -->
+                                    <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
+                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
+                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
+                                        <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
+                                        <div *ngIf="shouldShowExpCompletion(application.spouse_edu_status, application.spouse_education)" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
+                                        <div style="width: 34px;"></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                        <select [(ngModel)]="application.spouse_edu_level" style="flex: 0 0 25%; min-width: 0;">
+                                            <option value="">Level</option>
+                                            <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                        </select>
+                                        <select [(ngModel)]="application.spouse_edu_field" style="flex: 0 0 25%; min-width: 0;">
+                                            <option value="">Field</option>
+                                            <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                        </select>
+                                        <select [(ngModel)]="application.spouse_edu_status" style="flex: 0 0 20%; min-width: 0;">
+                                            <option value="Completed">Completed</option>
+                                            <option value="Not Completed">Not Completed</option>
+                                        </select>
+                                        <div *ngIf="shouldShowExpCompletion(application.spouse_edu_status, application.spouse_education)" style="flex: 0 0 20%;">
+                                            <input type="month" *ngIf="application.spouse_edu_status === 'Not Completed'" 
+                                                [(ngModel)]="application.spouse_edu_expected" 
+                                                placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-primary" (click)="addSpouseQualification()" title="ADD Previous Education Details" style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">+</button>
+                                    </div>
+                                    <div *ngFor="let q of application.spouse_education; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 5px;">
+                                        <select [(ngModel)]="q.level" style="flex: 0 0 25%; min-width: 0;">
+                                            <option value="">Level</option>
+                                            <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                        </select>
+                                        <select [(ngModel)]="q.field" style="flex: 0 0 25%; min-width: 0;">
+                                            <option value="">Field</option>
+                                            <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                        </select>
+                                        <select [(ngModel)]="q.status" style="flex: 0 0 20%; min-width: 0;">
+                                            <option value="Completed">Completed</option>
+                                            <option value="Not Completed">Not Completed</option>
+                                        </select>
+                                        <div *ngIf="shouldShowExpCompletion(application.spouse_edu_status, application.spouse_education)" style="flex: 0 0 20%;">
+                                            <input type="month" *ngIf="q.status === 'Not Completed'" 
+                                                [(ngModel)]="q.expected_completion" 
+                                                placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-danger" (click)="removeSpouseQualification(i)" title="Remove qualification" style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">&times;</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-row" *ngFor="let q of application.spouse_education; let i = index" style="margin-top: 10px;">
-                        <div class="form-group flex-1">
-                            <label>Education Level {{i + 2}}</label>
-                            <select [(ngModel)]="q.level">
-                                <option value="">Select Level</option>
-                                <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
-                            </select>
-                        </div>
-                        <div class="form-group flex-1">
-                            <label>Field of Study {{i + 2}}</label>
-                            <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                                <input type="text" [(ngModel)]="q.field" placeholder="Field of Study" style="flex: 1;" />
-                                <button type="button" class="btn btn-sm btn-danger" (click)="removeSpouseQualification(i)" title="Remove qualification" style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">&times;</button>
+                    <!-- Spouse Other Country Education -->
+                    <div class="edu-grid-tabular">
+                        <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <div class="edu-label" style="min-width: auto;">Does Spouse have any other country Education?</div>
+                                <div class="radio-group-modern">
+                                    <label><input type="radio" [value]="true" [(ngModel)]="application.spouse_has_other_country_edu"> YES</label>
+                                    <label><input type="radio" [value]="false" [(ngModel)]="application.spouse_has_other_country_edu"> NO</label>
+                                </div>
+                            </div>
+    
+                            <div class="edu-inputs" *ngIf="application.spouse_has_other_country_edu" style="width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px;">
+                                <div style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
+                                    <!-- Table Header -->
+                                    <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
+                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
+                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
+                                        <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
+                                        <div *ngIf="shouldShowListExpCompletion(application.spouse_other_country_edu_list)" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
+                                        <div style="width: 34px;"></div>
+                                    </div>
+                                    <div *ngFor="let entry of application.spouse_other_country_edu_list; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 5px;">
+                                        <select [(ngModel)]="entry.level" style="flex: 0 0 25%; min-width: 0;">
+                                            <option value="">Level</option>
+                                            <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                        </select>
+                                        <select [(ngModel)]="entry.field" style="flex: 0 0 25%; min-width: 0;">
+                                            <option value="">Field</option>
+                                            <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                        </select>
+                                        <select [(ngModel)]="entry.status" style="flex: 0 0 20%; min-width: 0;">
+                                            <option value="Completed">Completed</option>
+                                            <option value="Not Completed">Not Completed</option>
+                                        </select>
+                                        <div *ngIf="shouldShowListExpCompletion(application.spouse_other_country_edu_list)" style="flex: 0 0 20%;">
+                                            <input type="month" *ngIf="entry.status === 'Not Completed'" 
+                                                [(ngModel)]="entry.expected_completion" 
+                                                placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-danger" (click)="removeOtherCountryEducation(i, 'spouse')" title="Remove qualification" style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">&times;</button>
+                                    </div>
+                                    <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
+                                        <button type="button" class="btn btn-sm btn-primary" (click)="addOtherCountryEducation('spouse')" style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">+ Add more Education Details</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

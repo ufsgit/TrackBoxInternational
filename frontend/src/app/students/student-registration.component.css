@@ -77,17 +77,20 @@
 }
 
 .section-title {
-    color: #2563eb;
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-top: 2px;
-    margin-bottom: 12px;
-    padding-bottom: 6px;
+    color: #1e3a8a;
+    background: #eff6ff;
+    padding: 10px 16px;
+    border-radius: 8px 8px 0 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 4px;
+    margin-bottom: 16px;
     border-bottom: 1.5px solid #cbd5e1;
     position: relative;
-    letter-spacing: -0.2px;
+    letter-spacing: 0.5px;
     display: block;
     width: 100%;
+    text-transform: uppercase;
 }
 
 .section-title::after {
@@ -129,21 +132,29 @@
 }
 
 .form-group input:not([type="radio"]):not([type="checkbox"]),
-.form-group select {
+.form-group select,
+.edu-inputs select,
+.edu-inputs input:not([type="radio"]):not([type="checkbox"]),
+.details-row-inputs input {
     flex: 1;
     padding: 6px 10px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 6px;
+    border: 1.5px solid #94a3b8;
+    border-radius: 8px;
     font-size: 0.85rem;
     background: #ffffff;
-    height: 34px;
+    height: 38px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.edu-inputs select:focus,
+.edu-inputs input:focus,
+.details-row-inputs input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     transform: translateY(-1px);
 }
 
@@ -662,10 +673,10 @@ input[type="radio"] {
 .details-row-inputs input {
     flex: 1;
     min-width: 0;
-    padding: 4px 6px;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    font-size: 0.8rem;
+    padding: 6px 10px;
+    border: 1.5px solid #94a3b8;
+    border-radius: 8px;
+    font-size: 0.85rem;
     background: #ffffff;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
 }
@@ -679,10 +690,10 @@ input[type="radio"] {
 .app-table td select,
 .app-table td input[type="text"] {
     width: 100%;
-    padding: 4px 6px;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    font-size: 0.8rem;
+    padding: 6px 10px;
+    border: 1.5px solid #94a3b8;
+    border-radius: 8px;
+    font-size: 0.85rem;
     background: #ffffff;
 }
 
