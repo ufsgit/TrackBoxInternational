@@ -6,7 +6,7 @@
 }
 
 .page-title {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .page-title h2 {
@@ -19,9 +19,9 @@
     background: white;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.25rem;
     box-shadow: var(--shadow-sm);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .section-title {
@@ -30,7 +30,7 @@
     color: var(--primary);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -48,7 +48,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 1.25rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
     align-items: flex-start;
 }
 
@@ -223,9 +223,9 @@
 /* Dynamic Program Sections Overhaul */
 .program-section {
     background: white;
-    border-radius: 1rem;
-    padding: 2rem;
-    margin-bottom: 2rem;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
 }
@@ -234,7 +234,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border);
 }
@@ -254,8 +254,8 @@
 .dynamic-table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0.65rem 0.75rem;
-    margin-left: -0.65rem; /* Align first column to the left */
+    border-spacing: 0.5rem 0.5rem;
+    margin-left: -0.5rem; /* Align first column to the left */
 }
 
 .dynamic-table.no-header td {

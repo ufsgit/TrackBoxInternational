@@ -448,9 +448,9 @@
                             </div>
                             <button type="button" (click)="removeWorkExperience(null, 'work_experience_list', i)"
                                 *ngIf="application.work_experience_list.length > 1"
-                                style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">×</button>
+                                style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
                         </div>
-                        <div style="margin-top: 10px;">
+                        <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
                             <button type="button" (click)="addWorkExperience(null, 'work_experience_list')"
                                 style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
                                 <span style="font-size: 1.2rem; line-height: 1;">+</span> Add More Experience
@@ -475,20 +475,20 @@
                     style="margin-top: -15px; margin-bottom: 20px;">
                     <div class="work-experience-list" style="width: 100%; padding-left: 20px;">
                         <div class="work-inputs" *ngFor="let exp of application.other_work_experience_list; let i = index"
-                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; width: 100%; position: relative;">
+                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
                             <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
-                                <label style="font-size: 0.85rem; color: #166534;">Country of Employment</label>
+                                <label style="font-size: 0.85rem; color: #1e40af;">Country of Employment</label>
                                 <select [(ngModel)]="exp.employment_country">
                                     <option value="">Select country</option>
                                     <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
                                 </select>
                             </div>
                             <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
-                                <label style="font-size: 0.85rem; color: #166534;">Job Title</label>
+                                <label style="font-size: 0.85rem; color: #1e40af;">Job Title</label>
                                 <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
                             </div>
                             <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
-                                <label style="font-size: 0.85rem; color: #166534;">Duration</label>
+                                <label style="font-size: 0.85rem; color: #1e40af;">Duration</label>
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
                                         style="width: 45px;" min="0">
@@ -500,11 +500,11 @@
                             </div>
                             <button type="button" (click)="removeWorkExperience(null, 'other_work_experience_list', i)"
                                 *ngIf="application.other_work_experience_list.length > 1"
-                                style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">×</button>
+                                style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
                         </div>
-                        <div style="margin-top: 10px;">
+                        <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
                             <button type="button" (click)="addWorkExperience(null, 'other_work_experience_list')"
-                                style="background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                                style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
                                 <span style="font-size: 1.2rem; line-height: 1;">+</span> Add More Experience
                             </button>
                         </div>
@@ -565,9 +565,9 @@
                                         <button type="button"
                                             (click)="removeWorkExperience(country, 'migration_data', i, 'current_work_experience_list')"
                                             *ngIf="application.migration_data[country].current_work_experience_list.length > 1"
-                                            style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">×</button>
+                                            style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end; margin-bottom: 2px;">&times;</button>
                                     </div>
-                                    <div style="margin-top: 5px;">
+                                    <div style="margin-top: 5px; display: flex; justify-content: flex-end;">
                                         <button type="button"
                                             (click)="addWorkExperience(country, 'migration_data', 'current_work_experience_list')"
                                             style="background: #2563eb; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
@@ -597,13 +597,13 @@
                                     *ngIf="application.migration_data[country].has_other_work" style="width: 100%;">
                                     <div class="work-inputs"
                                         *ngFor="let exp of application.migration_data[country].other_work_experience_list; let i = index"
-                                        style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 10px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; width: 100%; position: relative;">
+                                        style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 10px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
                                         <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
-                                            <label style="font-size: 0.8rem; color: #166534;">Job Title</label>
+                                            <label style="font-size: 0.8rem; color: #1e40af;">Job Title</label>
                                             <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
                                         </div>
                                         <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
-                                            <label style="font-size: 0.8rem; color: #166534;">Duration</label>
+                                            <label style="font-size: 0.8rem; color: #1e40af;">Duration</label>
                                             <div style="display: flex; align-items: center; gap: 8px;">
                                                 <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
                                                     style="width: 70px;" min="0">
@@ -616,12 +616,12 @@
                                         <button type="button"
                                             (click)="removeWorkExperience(country, 'migration_data', i, 'other_work_experience_list')"
                                             *ngIf="application.migration_data[country].other_work_experience_list.length > 1"
-                                            style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">×</button>
+                                            style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end; margin-bottom: 2px;">&times;</button>
                                     </div>
-                                    <div style="margin-top: 5px;">
+                                    <div style="margin-top: 5px; display: flex; justify-content: flex-end;">
                                         <button type="button"
                                             (click)="addWorkExperience(country, 'migration_data', 'other_work_experience_list')"
-                                            style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                                            style="background: #2563eb; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
                                             + Add
                                         </button>
                                     </div>
@@ -926,12 +926,12 @@
                                 <button type="button"
                                     (click)="removeWorkExperience(null, 'spouse_work_experience_list', i)"
                                     *ngIf="application.spouse_work_experience_list.length > 1"
-                                    style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">×</button>
+                                    style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
                             </div>
-                            <div style="margin-top: 10px;">
+                            <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
                                 <button type="button" (click)="addWorkExperience(null, 'spouse_work_experience_list')"
-                                    style="background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
-                                    + Add More
+                                    style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                                    <span style="font-size: 1.2rem; line-height: 1;">+</span> Add More
                                 </button>
                             </div>
                         </div>
@@ -954,20 +954,20 @@
                         <div class="work-experience-list" style="width: 100%; padding-left: 10px;">
                             <div class="work-inputs"
                                 *ngFor="let exp of application.spouse_other_work_experience_list; let i = index"
-                                style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; width: 100%; position: relative;">
+                                style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
                                 <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
-                                    <label style="font-size: 0.85rem; color: #166534;">Country of Employment</label>
+                                    <label style="font-size: 0.85rem; color: #1e40af;">Country of Employment</label>
                                     <select [(ngModel)]="exp.employment_country">
                                         <option value="">Select country</option>
                                         <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
                                     </select>
                                 </div>
                                 <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
-                                    <label style="font-size: 0.85rem; color: #166534;">Job Title</label>
+                                    <label style="font-size: 0.85rem; color: #1e40af;">Job Title</label>
                                     <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
                                 </div>
                                 <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
-                                    <label style="font-size: 0.85rem; color: #166534;">Duration</label>
+                                    <label style="font-size: 0.85rem; color: #1e40af;">Duration</label>
                                     <div style="display: flex; align-items: center; gap: 8px;">
                                         <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
                                             style="width: 45px;" min="0">
@@ -980,12 +980,12 @@
                                 <button type="button"
                                     (click)="removeWorkExperience(null, 'spouse_other_work_experience_list', i)"
                                     *ngIf="application.spouse_other_work_experience_list.length > 1"
-                                    style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">×</button>
+                                    style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
                             </div>
-                            <div style="margin-top: 10px;">
+                            <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
                                 <button type="button" (click)="addWorkExperience(null, 'spouse_other_work_experience_list')"
-                                    style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
-                                    + Add More
+                                    style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                                    <span style="font-size: 1.2rem; line-height: 1;">+</span> Add More
                                 </button>
                             </div>
                         </div>
@@ -1051,9 +1051,9 @@
                                             <button type="button"
                                                 (click)="removeWorkExperience(country, 'migration_spouse_data', i, 'current_work_experience_list')"
                                                 *ngIf="application.migration_spouse_data[country].current_work_experience_list.length > 1"
-                                                style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">×</button>
+                                                style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
                                         </div>
-                                        <div style="margin-top: 5px;">
+                                        <div style="margin-top: 5px; display: flex; justify-content: flex-end;">
                                             <button type="button"
                                                 (click)="addWorkExperience(country, 'migration_spouse_data', 'current_work_experience_list')"
                                                 style="background: #2563eb; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
@@ -1084,13 +1084,13 @@
                                         style="width: 100%;">
                                         <div class="work-inputs"
                                             *ngFor="let exp of application.migration_spouse_data[country].other_work_experience_list; let i = index"
-                                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 10px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; width: 100%; position: relative;">
+                                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 10px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
                                             <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
-                                                <label style="font-size: 0.8rem; color: #166534;">Job Title</label>
+                                                <label style="font-size: 0.8rem; color: #1e40af;">Job Title</label>
                                                 <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
                                             </div>
                                             <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
-                                                <label style="font-size: 0.8rem; color: #166534;">Duration</label>
+                                                <label style="font-size: 0.8rem; color: #1e40af;">Duration</label>
                                                 <div style="display: flex; align-items: center; gap: 8px;">
                                                     <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
                                                         style="width: 70px;" min="0">
@@ -1103,12 +1103,12 @@
                                             <button type="button"
                                                 (click)="removeWorkExperience(country, 'migration_spouse_data', i, 'other_work_experience_list')"
                                                 *ngIf="application.migration_spouse_data[country].other_work_experience_list.length > 1"
-                                                style="position: absolute; right: -8px; top: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">×</button>
+                                                style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
                                         </div>
-                                        <div style="margin-top: 5px;">
+                                        <div style="margin-top: 5px; display: flex; justify-content: flex-end;">
                                             <button type="button"
                                                 (click)="addWorkExperience(country, 'migration_spouse_data', 'other_work_experience_list')"
-                                                style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                                                style="background: #2563eb; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
                                                 + Add
                                             </button>
                                         </div>
@@ -1171,7 +1171,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-remove" (click)="removeChild(i)">×</button>
+                        <button type="button" class="btn btn-sm" (click)="removeChild(i)" title="Remove" style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer;">&times;</button>
                     </div>
                 </div>
             </section>
@@ -1368,7 +1368,7 @@
                                 </select>
                             </td>
                             <td><input type="checkbox" [(ngModel)]="p.is_selected"></td>
-                            <td><button class="btn-remove" (click)="removeProgram(i)">×</button></td>
+                            <td><button type="button" class="btn btn-sm" (click)="removeProgram(i)" title="Remove" style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer;">&times;</button></td>
                         </tr>
                     </tbody>
                 </table>

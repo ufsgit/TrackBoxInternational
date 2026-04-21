@@ -58,7 +58,7 @@
 
 .form-section {
     background: #ffffff;
-    padding: 8px 16px;
+    padding: 6px 12px;
     border-bottom: 1px solid #e2e8f0;
 }
 
@@ -81,8 +81,8 @@
     font-size: 1.05rem;
     font-weight: 600;
     margin-top: 2px;
-    margin-bottom: 12px;
-    padding-bottom: 6px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
     border-bottom: 1.5px solid #cbd5e1;
     position: relative;
     letter-spacing: -0.2px;
@@ -96,8 +96,8 @@
 
 .form-row {
     display: flex;
-    gap: 16px;
-    margin-bottom: 8px;
+    gap: 12px;
+    margin-bottom: 6px;
 }
 
 .flex-1 {
@@ -202,12 +202,12 @@ input[type="radio"] {
 
 .card-row {
     background: #f8fafc;
-    padding: 16px;
+    padding: 12px;
     border-radius: 8px;
     display: flex;
     align-items: flex-end;
-    gap: 16px;
-    margin-bottom: 12px;
+    gap: 12px;
+    margin-bottom: 8px;
     border-left: 4px solid #3498db;
     position: relative;
 }
