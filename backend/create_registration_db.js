@@ -134,10 +134,11 @@ END;
 
 DROP PROCEDURE IF EXISTS sp_UpsertStudentRegistration;
 CREATE PROCEDURE sp_UpsertStudentRegistration(
-    IN p_student_id INT, IN p_passport_name VARCHAR(255), IN p_age INT, IN p_gender ENUM('Male', 'Female', 'Other'),
+    IN p_student_id INT, IN p_passport_name VARCHAR(255), IN p_age INT, IN p_dob DATE, IN p_gender ENUM('Male', 'Female', 'Other'),
     IN p_marital_status VARCHAR(50), IN p_spouse_accompanying TINYINT(1), IN p_address_country VARCHAR(100),
     IN p_address_state VARCHAR(100), IN p_address_suburb VARCHAR(100), IN p_contact1 VARCHAR(50),
     IN p_contact2 VARCHAR(50), IN p_email VARCHAR(100), IN p_citizenship_country VARCHAR(100),
+    IN p_passport_country VARCHAR(100), IN p_has_second_passport TINYINT(1), IN p_second_passport_country VARCHAR(100),
     IN p_highest_education VARCHAR(100), IN p_education_field VARCHAR(100), IN p_has_canadian_edu TINYINT(1),
     IN p_canadian_edu_level VARCHAR(100), IN p_canadian_edu_field VARCHAR(100), IN p_has_australian_edu TINYINT(1),
     IN p_australian_edu_level VARCHAR(100), IN p_australian_edu_field VARCHAR(100), IN p_has_aus_specialised_edu TINYINT(1),
@@ -164,8 +165,9 @@ BEGIN
     SELECT registration_id INTO v_reg_id FROM student_registrations WHERE student_id = p_student_id LIMIT 1;
     IF v_reg_id IS NULL THEN
         INSERT INTO student_registrations (
-            student_id, passport_name, age, gender, marital_status, spouse_accompanying, address_country, address_state, address_suburb,
-            contact1, contact2, email, citizenship_country, highest_education, education_field, has_canadian_edu, canadian_edu_level,
+            student_id, passport_name, age, dob, gender, marital_status, spouse_accompanying, address_country, address_state, address_suburb,
+            contact1, contact2, email, citizenship_country, passport_country, has_second_passport, second_passport_country,
+            highest_education, education_field, has_canadian_edu, canadian_edu_level,
             canadian_edu_field, has_australian_edu, australian_edu_level, australian_edu_field, has_aus_specialised_edu, aus_specialised_edu_level,
             aus_specialised_edu_field, has_nz_edu, nz_edu_level, nz_edu_field, has_work_experience, total_work_experience, canadian_work_years,
             australian_work_years, nz_work_years, has_language_test, language_test_type, writing_score, listening_score, speaking_score,
@@ -176,8 +178,9 @@ BEGIN
             spouse_speaking, spouse_reading, has_relatives, relative_relationship, relative_related_to, education_data, migration_data,
             migration_spouse_data, relatives_data
         ) VALUES (
-            p_student_id, p_passport_name, p_age, p_gender, p_marital_status, p_spouse_accompanying, p_address_country, p_address_state, p_address_suburb,
-            p_contact1, p_contact2, p_email, p_citizenship_country, p_highest_education, p_education_field, p_has_canadian_edu, p_canadian_edu_level,
+            p_student_id, p_passport_name, p_age, p_dob, p_gender, p_marital_status, p_spouse_accompanying, p_address_country, p_address_state, p_address_suburb,
+            p_contact1, p_contact2, p_email, p_citizenship_country, p_passport_country, p_has_second_passport, p_second_passport_country,
+            p_highest_education, p_education_field, p_has_canadian_edu, p_canadian_edu_level,
             p_canadian_edu_field, p_has_australian_edu, p_australian_edu_level, p_australian_edu_field, p_has_aus_specialised_edu, p_aus_specialised_edu_level,
             p_aus_specialised_edu_field, p_has_nz_edu, p_nz_edu_level, p_nz_edu_field, p_has_work_experience, p_total_work_experience, p_canadian_work_years,
             p_australian_work_years, p_nz_work_years, p_has_language_test, p_language_test_type, p_writing_score, p_listening_score, p_speaking_score,
@@ -191,9 +194,10 @@ BEGIN
         SET v_reg_id = LAST_INSERT_ID();
     ELSE
         UPDATE student_registrations SET
-            passport_name = p_passport_name, age = p_age, gender = p_gender, marital_status = p_marital_status, spouse_accompanying = p_spouse_accompanying,
+            passport_name = p_passport_name, age = p_age, dob = p_dob, gender = p_gender, marital_status = p_marital_status, spouse_accompanying = p_spouse_accompanying,
             address_country = p_address_country, address_state = p_address_state, address_suburb = p_address_suburb, contact1 = p_contact1, contact2 = p_contact2,
-            email = p_email, citizenship_country = p_citizenship_country, highest_education = p_highest_education, education_field = p_education_field,
+            email = p_email, citizenship_country = p_citizenship_country, passport_country = p_passport_country, has_second_passport = p_has_second_passport,
+            second_passport_country = p_second_passport_country, highest_education = p_highest_education, education_field = p_education_field,
             has_canadian_edu = p_has_canadian_edu, canadian_edu_level = p_canadian_edu_level, canadian_edu_field = p_canadian_edu_field,
             has_australian_edu = p_has_australian_edu, australian_edu_level = p_australian_edu_level, australian_edu_field = p_australian_edu_field,
             has_aus_specialised_edu = p_has_aus_specialised_edu, aus_specialised_edu_level = p_aus_specialised_edu_level,

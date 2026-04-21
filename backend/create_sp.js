@@ -6,6 +6,7 @@ CREATE PROCEDURE sp_UpsertStudentApplication(
     IN p_student_id INT,
     IN p_passport_name VARCHAR(255),
     IN p_age INT,
+    IN p_dob DATE,
     IN p_gender ENUM('Male', 'Female', 'Other'),
     IN p_marital_status VARCHAR(50),
     IN p_spouse_accompanying TINYINT(1),
@@ -16,6 +17,9 @@ CREATE PROCEDURE sp_UpsertStudentApplication(
     IN p_contact2 VARCHAR(50),
     IN p_email VARCHAR(100),
     IN p_citizenship_country VARCHAR(100),
+    IN p_passport_country VARCHAR(100),
+    IN p_has_second_passport TINYINT(1),
+    IN p_second_passport_country VARCHAR(100),
     IN p_highest_education VARCHAR(100),
     IN p_education_field VARCHAR(100),
     IN p_has_canadian_edu TINYINT(1),
@@ -82,9 +86,10 @@ BEGIN
     
     IF v_app_id IS NULL THEN
         INSERT INTO student_applications (
-            student_id, passport_name, age, gender, marital_status,
+            student_id, passport_name, age, dob, gender, marital_status,
             spouse_accompanying, address_country, address_state, address_suburb,
-            contact1, contact2, email, citizenship_country,
+            contact1, contact2, email, citizenship_country, passport_country,
+            has_second_passport, second_passport_country,
             highest_education, education_field, has_canadian_edu,
             canadian_edu_level, canadian_edu_field, has_australian_edu,
             australian_edu_level, australian_edu_field, has_aus_specialised_edu,
@@ -104,9 +109,10 @@ BEGIN
             relative_related_to, education_data, migration_data,
             migration_spouse_data, relatives_data
         ) VALUES (
-            p_student_id, p_passport_name, p_age, p_gender, p_marital_status,
+            p_student_id, p_passport_name, p_age, p_dob, p_gender, p_marital_status,
             p_spouse_accompanying, p_address_country, p_address_state, p_address_suburb,
-            p_contact1, p_contact2, p_email, p_citizenship_country,
+            p_contact1, p_contact2, p_email, p_citizenship_country, p_passport_country,
+            p_has_second_passport, p_second_passport_country,
             p_highest_education, p_education_field, p_has_canadian_edu,
             p_canadian_edu_level, p_canadian_edu_field, p_has_australian_edu,
             p_australian_edu_level, p_australian_edu_field, p_has_aus_specialised_edu,
@@ -129,11 +135,13 @@ BEGIN
         SET v_app_id = LAST_INSERT_ID();
     ELSE
         UPDATE student_applications SET
-            passport_name = p_passport_name, age = p_age, gender = p_gender,
+            passport_name = p_passport_name, age = p_age, dob = p_dob, gender = p_gender,
             marital_status = p_marital_status, spouse_accompanying = p_spouse_accompanying,
             address_country = p_address_country, address_state = p_address_state,
             address_suburb = p_address_suburb, contact1 = p_contact1, contact2 = p_contact2,
             email = p_email, citizenship_country = p_citizenship_country,
+            passport_country = p_passport_country, has_second_passport = p_has_second_passport,
+            second_passport_country = p_second_passport_country,
             highest_education = p_highest_education, education_field = p_education_field,
             has_canadian_edu = p_has_canadian_edu, canadian_edu_level = p_canadian_edu_level,
             canadian_edu_field = p_canadian_edu_field, has_australian_edu = p_has_australian_edu,
@@ -170,7 +178,6 @@ BEGIN
             updated_at = CURRENT_TIMESTAMP
         WHERE application_id = v_app_id;
     END IF;
-    
     SELECT v_app_id AS application_id;
 END;
 `;

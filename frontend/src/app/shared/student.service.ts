@@ -53,6 +53,10 @@ export class StudentService {
         return this.http.post<any>(`${this.apiUrl}/students/${id}/application`, data);
     }
 
+    getStudentAssessment(id: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/students/${id}/assessment`);
+    }
+
     getStudentRegistration(id: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/students/${id}/registration`);
     }

@@ -29,8 +29,14 @@
                             placeholder="Full name matching your passport">
                     </div>
                     <div class="form-group flex-1" *ngIf="showAgeField">
-                        <label>Age <span class="required">*</span></label>
-                        <input type="number" [(ngModel)]="application.age" placeholder="Enter age">
+                        <label>Date Of Birth <span class="required">*</span></label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="date" [(ngModel)]="application.dob" (change)="onDobChange()" style="flex: 2;">
+                            <span *ngIf="application.age"
+                                style="flex: 1; font-weight: bold; color: #2563eb; white-space: nowrap;">
+                                Age: {{application.age}}
+                            </span>
+                        </div>
                     </div>
                     <div class="form-group flex-1" *ngIf="student.work_interested">
                         <label>Gender</label>
@@ -40,6 +46,61 @@
                             <label><input type="radio" name="gender" [(ngModel)]="application.gender" value="Female">
                                 Female</label>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Citizenship Details Heading -->
+                <div class="form-row mt-3">
+                    <div class="edu-label"
+                        style="min-width: 100%; color: #2563eb; font-weight: 700; border-bottom: 1.5px solid #cbd5e1; margin-bottom: 8px; padding-bottom: 4px;">
+                        Citizenship Details
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Country of Citizenship</label>
+                        <select [(ngModel)]="application.citizenship_country">
+                            <option value="">Select Country</option>
+                            <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Passport Details Heading -->
+                <div class="form-row mt-4">
+                    <div class="edu-label"
+                        style="min-width: 100%; color: #2563eb; font-weight: 700; border-bottom: 1.5px solid #cbd5e1; margin-bottom: 8px; padding-bottom: 4px;">
+                        Passport Details
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Select country of issue</label>
+                        <select [(ngModel)]="application.passport_country">
+                            <option value="">Select Country</option>
+                            <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row" *ngIf="application.passport_country">
+                    <div class="form-group flex-1">
+                        <label>Do you have any other passport?</label>
+                        <div class="radio-group-modern">
+                            <label><input type="radio" name="has_second_pass" [(ngModel)]="application.has_second_passport"
+                                    [value]="true"> YES</label>
+                            <label><input type="radio" name="has_second_pass" [(ngModel)]="application.has_second_passport"
+                                    [value]="false"> NO</label>
+                        </div>
+                    </div>
+                    <div class="form-group flex-1" *ngIf="application.has_second_passport">
+                        <label>Select another country</label>
+                        <select [(ngModel)]="application.second_passport_country">
+                            <option value="">Select Country</option>
+                            <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
+                        </select>
                     </div>
                 </div>
 

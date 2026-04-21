@@ -10,6 +10,7 @@ router.post('/', studentController.createOrUpdateStudent);
 router.get('/:id', studentController.getStudentById);
 router.delete('/:id', studentController.deleteStudent);
 router.get('/:id/application', studentController.getStudentApplication);
+router.get('/:id/assessment', studentController.getStudentApplication);
 router.post('/:id/application', studentController.saveStudentApplication);
 router.get('/:id/registration', studentController.getStudentRegistration);
 router.post('/:id/registration', studentController.saveStudentRegistration);

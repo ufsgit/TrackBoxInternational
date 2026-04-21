@@ -61,7 +61,12 @@ export class StudentApplicationComponent implements OnInit {
         has_other_country_edu: false,
         other_country_edu_list: [],
         spouse_has_other_country_edu: false,
-        spouse_other_country_edu_list: []
+        spouse_other_country_edu_list: [],
+        dob: '',
+        citizenship_country: '',
+        passport_country: '',
+        has_second_passport: false,
+        second_passport_country: ''
     };
     children: any[] = [];
     suggestedPrograms: any[] = [];
@@ -917,6 +922,19 @@ export class StudentApplicationComponent implements OnInit {
                 this.addWorkExperience(null, target);
             }
         }
+    }
+
+
+    onDobChange() {
+        if (!this.application.dob) return;
+        const birthDate = new Date(this.application.dob);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        this.application.age = age;
     }
 
     goBack() {

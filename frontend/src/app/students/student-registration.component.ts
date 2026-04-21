@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +18,8 @@ import { LoadingService } from '../shared/loading.service';
 })
 export class StudentRegistrationComponent implements OnInit {
     studentId: number = 0;
+    assessmentData = signal<any>(null);
+    registrationLoaded = false;
     student: any = {};
     studentPrograms: any = {};
     application: any = {
@@ -93,7 +95,16 @@ export class StudentRegistrationComponent implements OnInit {
         private dialogService: DialogService,
         private settingsService: SettingsService,
         private loadingService: LoadingService
-    ) { }
+    ) {
+        // Effect to auto-fill the form when assessment data is fetched
+        effect(() => {
+            const data = this.assessmentData();
+            if (data && data.application) {
+                console.log('AUTO-FILL: Checking for missing fields from Assessment data...');
+                this.patchFromAssessment(data);
+            }
+        });
+    }
 
     ngOnInit() {
         this.route.params.subscribe(params => {
@@ -102,7 +113,19 @@ export class StudentRegistrationComponent implements OnInit {
                 this.loadInitialData();
                 this.loadApplication();
                 this.loadApplicationStatuses();
+                this.fetchAssessmentData();
             }
+        });
+    }
+
+    fetchAssessmentData() {
+        this.studentService.getStudentAssessment(this.studentId).subscribe({
+            next: (res) => {
+                if (res) {
+                    this.assessmentData.set(res);
+                }
+            },
+            error: (err) => console.error('Error fetching assessment data:', err)
         });
     }
 
@@ -229,6 +252,7 @@ export class StudentRegistrationComponent implements OnInit {
         this.studentService.getStudentRegistration(this.studentId).subscribe({
             next: (data) => {
                 if (data.application) {
+                    this.registrationLoaded = true;
                     this.application = data.application;
                     // Ensure boolean types
                     ['spouse_accompanying', 'has_canadian_edu', 'has_australian_edu', 'has_aus_specialised_edu',
@@ -359,6 +383,13 @@ export class StudentRegistrationComponent implements OnInit {
                 if (this.suggestedPrograms.length === 0) {
                     this.syncSuggestedPrograms();
                 }
+
+                // If assessment data is already loaded, try to patch any missing fields
+                const assessment = this.assessmentData();
+                if (assessment) {
+                    this.patchFromAssessment(assessment);
+                }
+
                 this.loadingService.hide();
             },
             error: () => this.loadingService.hide()
@@ -929,6 +960,90 @@ export class StudentRegistrationComponent implements OnInit {
             age--;
         }
         this.application.age = age;
+    }
+
+    patchFromAssessment(data: any) {
+        const app = data.application;
+        if (!app) return;
+
+        // Populate common fields if they are currently empty
+        const fieldsToPatch = [
+            'passport_name', 'gender', 'marital_status', 'spouse_accompanying',
+            'address_country', 'address_state', 'address_suburb',
+            'contact1', 'contact2', 'email', 'citizenship_country',
+            'passport_country', 'has_second_passport', 'second_passport_country', 'dob',
+            'highest_education', 'education_field', 'has_canadian_edu',
+            'canadian_edu_level', 'canadian_edu_field', 'has_australian_edu',
+            'australian_edu_level', 'australian_edu_field', 'has_aus_specialised_edu',
+            'aus_specialised_edu_level', 'aus_specialised_edu_field', 'has_nz_edu',
+            'nz_edu_level', 'nz_edu_field', 'has_work_experience',
+            'total_work_experience', 'canadian_work_years', 'australian_work_years',
+            'nz_work_years', 'has_language_test', 'language_test_type',
+            'writing_score', 'listening_score', 'speaking_score', 'reading_score',
+            'has_admission_test', 'admission_test_type', 'quant_score',
+            'verbal_score', 'data_insights_score', 'spouse_age',
+            'spouse_edu_level', 'spouse_canadian_edu', 'spouse_canadian_edu_level',
+            'spouse_canadian_edu_field', 'spouse_australian_edu',
+            'spouse_australian_edu_level', 'spouse_australian_edu_field',
+            'spouse_aus_specialised_edu', 'spouse_aus_specialised_edu_level',
+            'spouse_aus_specialised_edu_field', 'spouse_work_exp',
+            'spouse_canadian_work', 'spouse_australian_work', 'spouse_nz_work',
+            'spouse_lang_test_type', 'spouse_writing', 'spouse_listening',
+            'spouse_speaking', 'spouse_reading', 'has_relatives',
+            'relative_relationship', 'relative_related_to'
+        ];
+
+        fieldsToPatch.forEach(field => {
+            if (app[field] !== undefined && app[field] !== null && 
+                (this.application[field] === '' || this.application[field] === null || this.application[field] === false || this.application[field] === undefined)) {
+                
+                let value = app[field];
+                // Format DOB for date input
+                if (field === 'dob' && value) {
+                    try { value = new Date(value).toISOString().split('T')[0]; } catch (e) { }
+                }
+                this.application[field] = value;
+            }
+        });
+
+        // Trigger age calculation if dob was patched
+        if (this.application.dob) this.onDobChange();
+
+        // Parse and patch JSON objects
+        ['education_data', 'migration_data', 'migration_spouse_data', 'relatives_data'].forEach(key => {
+            let parsed = app[key];
+            if (typeof parsed === 'string') {
+                try { parsed = JSON.parse(parsed); } catch (e) { parsed = null; }
+            }
+            if (parsed && Object.keys(parsed).length > 0) {
+                // Merge if existing is empty or not present
+                if (!this.application[key] || Object.keys(this.application[key]).length === 0) {
+                    this.application[key] = parsed;
+                }
+            }
+        });
+
+        // Patch children if empty
+        if (data.children && data.children.length > 0 && (!this.children || this.children.length === 0)) {
+            this.children = JSON.parse(JSON.stringify(data.children));
+        }
+
+        // Patch suggested programs if empty
+        if (data.suggestedPrograms && data.suggestedPrograms.length > 0 && (!this.suggestedPrograms || this.suggestedPrograms.length === 0)) {
+            console.log('AUTO-FILL: Patching Suggested Programs...');
+            this.suggestedPrograms = JSON.parse(JSON.stringify(data.suggestedPrograms));
+            // Trigger cascading data refresh
+            this.suggestedPrograms.forEach((p, i) => {
+                if (p.branch_id) this.loadRowDepartments(i, p.branch_id);
+                if (p.branch_id && p.department_id) this.loadRowStaff(i, p.branch_id, p.department_id);
+            });
+        }
+
+        // Initialize migration data to ensure structure is correct
+        this.initializeMigrationData();
+        
+        // Final sync of UI fields
+        this.prePopulateFields();
     }
 
     goBack() {
