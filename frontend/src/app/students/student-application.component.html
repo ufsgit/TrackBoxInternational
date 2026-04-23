@@ -24,83 +24,23 @@
 
                 <div class="form-row">
                     <div class="form-group flex-2">
-                        <label>Profile Name (as per Passport) <span class="required">*</span></label>
+                        <label>Profile Name <span class="required">*</span></label>
                         <input type="text" [(ngModel)]="application.passport_name"
                             placeholder="Full name matching your passport">
                     </div>
-                    <div class="form-group flex-1" *ngIf="showAgeField">
-                        <label>Date Of Birth <span class="required">*</span></label>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="date" [(ngModel)]="application.dob" (change)="onDobChange()" style="flex: 2;">
-                            <span *ngIf="application.age"
-                                style="flex: 1; font-weight: bold; color: #2563eb; white-space: nowrap;">
-                                Age: {{application.age}}
-                            </span>
-                        </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Age</label>
+                        <input type="number" [(ngModel)]="application.age" placeholder="Age" style="width: 100%;">
                     </div>
-                    <div class="form-group flex-1" *ngIf="student.work_interested">
+                    <div class="form-group flex-1">
                         <label>Gender</label>
                         <div class="radio-group-modern">
-                            <label><input type="radio" name="gender" [(ngModel)]="application.gender" value="Male">
-                                Male</label>
-                            <label><input type="radio" name="gender" [(ngModel)]="application.gender" value="Female">
-                                Female</label>
+                            <label><input type="radio" name="gender" [(ngModel)]="application.gender" value="Male"> Male</label>
+                            <label><input type="radio" name="gender" [(ngModel)]="application.gender" value="Female"> Female</label>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Citizenship Details Heading -->
-                <div class="form-row mt-3">
-                    <div class="edu-label"
-                        style="min-width: 100%; color: #2563eb; font-weight: 700; border-bottom: 1.5px solid #cbd5e1; margin-bottom: 8px; padding-bottom: 4px;">
-                        Citizenship Details
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label>Country of Citizenship</label>
-                        <select [(ngModel)]="application.citizenship_country">
-                            <option value="">Select Country</option>
-                            <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Passport Details Heading -->
-                <div class="form-row mt-4">
-                    <div class="edu-label"
-                        style="min-width: 100%; color: #2563eb; font-weight: 700; border-bottom: 1.5px solid #cbd5e1; margin-bottom: 8px; padding-bottom: 4px;">
-                        Passport Details
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label>Select country of issue</label>
-                        <select [(ngModel)]="application.passport_country">
-                            <option value="">Select Country</option>
-                            <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row" *ngIf="application.passport_country">
-                    <div class="form-group flex-1">
-                        <label>Do you have any other passport?</label>
-                        <div class="radio-group-modern">
-                            <label><input type="radio" name="has_second_pass" [(ngModel)]="application.has_second_passport"
-                                    [value]="true"> YES</label>
-                            <label><input type="radio" name="has_second_pass" [(ngModel)]="application.has_second_passport"
-                                    [value]="false"> NO</label>
-                        </div>
-                    </div>
-                    <div class="form-group flex-1" *ngIf="application.has_second_passport">
-                        <label>Select another country</label>
-                        <select [(ngModel)]="application.second_passport_country">
-                            <option value="">Select Country</option>
-                            <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
-                        </select>
                     </div>
                 </div>
 
@@ -116,29 +56,38 @@
                             <option value="Separated">Separated</option>
                         </select>
                     </div>
-                    <div class="form-group flex-1"
-                        *ngIf="application.marital_status === 'Married' || application.marital_status === 'Common Law'">
+                    <div class="form-group flex-1" *ngIf="application.marital_status === 'Married' || application.marital_status === 'Common Law'">
                         <label>Will this person accompany you?</label>
-                        <div class="radio-group-modern">
-                            <label><input type="radio" name="spouse_acc" [(ngModel)]="application.spouse_accompanying"
-                                    [value]="true"> Yes</label>
-                            <label><input type="radio" name="spouse_acc" [(ngModel)]="application.spouse_accompanying"
-                                    [value]="false"> No</label>
-                        </div>
+                        <select [(ngModel)]="application.spouse_accompanying">
+                            <option [value]="true">Yes</option>
+                            <option [value]="false">No</option>
+                        </select>
                     </div>
-                    <div class="form-group flex-1">
-                        <label>Number of children</label>
-                        <input type="number" [ngModel]="children.length" (ngModelChange)="onChildrenCountChange($event)"
-                            style="width: 100px;" min="0" placeholder="0">
+                    <div class="form-group flex-2">
+                        <label>Do you have any Children?</label>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="radio-group-modern">
+                                <label><input type="radio" name="has_children" [ngModel]="children.length > 0" (ngModelChange)="$event ? onChildrenCountChange(1) : onChildrenCountChange(0)" [value]="true"> YES</label>
+                                <label><input type="radio" name="has_children" [ngModel]="children.length === 0" (ngModelChange)="$event ? onChildrenCountChange(0) : null" [value]="false"> NO</label>
+                            </div>
+                            <ng-container *ngIf="children.length > 0">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 0.8rem; font-weight: 600; color: #475569; white-space: nowrap;">Number of Children</span>
+                                    <input type="number" [ngModel]="children.length" (ngModelChange)="onChildrenCountChange($event)"
+                                        style="width: 70px;" min="0" placeholder="0">
+                                </div>
+                            </ng-container>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Present Address Sub-section -->
+                <div class="form-row mt-4">
+                    <div class="edu-label" style="min-width: 100%; color: #2563eb; font-weight: 700; border-bottom: 1.5px solid #cbd5e1; margin-bottom: 12px; padding-bottom: 4px;">
+                        Present Address
+                    </div>
+                </div>
 
-            </section>
-
-            <!-- SECTION 3: ADDRESS INFORMATION -->
-            <section class="form-section">
-                <h3 class="section-title">ADDRESS INFORMATION</h3>
                 <div class="form-row">
                     <div class="form-group flex-1">
                         <label>Country</label>
@@ -148,39 +97,61 @@
                         </select>
                     </div>
                     <div class="form-group flex-1">
-                        <label>State/Province</label>
-                        <input type="text" [(ngModel)]="application.address_state" placeholder="State/Province">
+                        <label>State / Territory</label>
+                        <input type="text" [(ngModel)]="application.address_state" placeholder="State">
                     </div>
                     <div class="form-group flex-1">
-                        <label>Suburb/Town</label>
-                        <input type="text" [(ngModel)]="application.address_suburb" placeholder="Suburb/Town">
+                        <label>Suburb / Town</label>
+                        <input type="text" [(ngModel)]="application.address_suburb" placeholder="Suburb">
+                    </div>
+                </div>
+
+
+            </section>
+
+            <!-- SECTION 4: CONTACT DETAILS -->
+            <section class="form-section">
+                <h3 class="section-title">CONTACT DETAILS</h3>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Primary Contact No</label>
+                        <div class="phone-input-group">
+                            <select [(ngModel)]="application.mobile_country_code" class="phone-code-select">
+                                <option value="+91">+91 (IN)</option>
+                                <option value="+971">+971 (UAE)</option>
+                                <option value="+1">+1 (US)</option>
+                            </select>
+                            <input type="tel" [(ngModel)]="application.contact1" class="phone-number-input"
+                                (input)="onNumberInput($event, 'contact1')" placeholder="Type__" maxlength="10">
+                        </div>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Secondary Contact No</label>
+                        <div class="phone-input-group">
+                            <select [(ngModel)]="application.phone_country_code" class="phone-code-select">
+                                <option value="+91">+91 (IN)</option>
+                                <option value="+971">+971 (UAE) </option>
+                                <option value="+1">+1 (US)</option>
+                            </select>
+                            <input type="tel" [(ngModel)]="application.contact2" class="phone-number-input"
+                                (input)="onNumberInput($event, 'contact2')" placeholder="Type__" maxlength="10">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row mt-2">
+                    <div class="form-group flex-1">
+                        <label>Email</label>
+                        <input type="email" [(ngModel)]="application.email" placeholder="Type Email">
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION 4 & 5: CONTACT & CITIZENSHIP -->
-            <section class="form-section row-split">
-                <div class="split-left">
-                    <h3 class="section-title">CONTACT DETAILS</h3>
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" [(ngModel)]="application.email" placeholder="Email">
-                    </div>
-                    <div class="form-row mt-2">
-                        <div class="form-group flex-1">
-                            <label>Primary Contact</label>
-                            <input type="text" [(ngModel)]="application.contact1" placeholder="Mobile">
-                        </div>
-                        <div class="form-group flex-1">
-                            <label>Secondary Contact</label>
-                            <input type="text" [(ngModel)]="application.contact2" placeholder="Phone">
-                        </div>
-                    </div>
-                </div>
-                <div class="split-right">
-                    <h3 class="section-title">CITIZENSHIP</h3>
-                    <div class="form-group">
-                        <label>Country of Citizenship</label>
+            <!-- SECTION 5: CITIZENSHIP DETAILS -->
+            <section class="form-section">
+                <h3 class="section-title">CITIZENSHIP DETAILS</h3>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Select Country</label>
                         <select [(ngModel)]="application.citizenship_country">
                             <option value="">Select Country</option>
                             <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
@@ -188,163 +159,201 @@
                     </div>
                 </div>
             </section>
+                <!-- SECTION 6: EDUCATION DETAILS -->
+                <section class="form-section">
+                    <h3 class="section-title">EDUCATION DETAILS</h3>
 
-            <!-- SECTION 6: EDUCATION DETAILS -->
-            <section class="form-section">
-                <h3 class="section-title">EDUCATION DETAILS</h3>
-                <!-- Specific Country Education (Dynamic) -->
-                <div class="edu-grid-tabular">
-                    <div class="edu-row" *ngFor="let country of educationCountries" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                        <ng-container *ngIf="application.education_data && application.education_data[country]">
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <div class="edu-label" style="min-width: auto;">Do you have any {{country}} Education?</div>
-                                <div class="edu-toggle">
-                                    <label><input type="radio" [name]="'has_'+country+'_edu'"
-                                            [(ngModel)]="application.education_data[country].has_edu" [value]="true">
-                                        YES</label>
-                                    <label><input type="radio" [name]="'has_'+country+'_edu'"
-                                            [(ngModel)]="application.education_data[country].has_edu" [value]="false">
-                                        NO</label>
-                                </div>
-                            </div>
-                            <div class="edu-inputs" *ngIf="application.education_data[country].has_edu" style="width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px;">
-                                <div style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
+                    <!-- 1. Highest Qualification (General) -->
+                    <div class="edu-grid-tabular">
+                        <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div class="edu-label" style="min-width: auto; margin-bottom: 5px; font-size: 0.9rem;">Please enter the highest level of education you have 
+                                completed and your current study details</div>
+                            <div class="edu-inputs" style="width: 100%;">
+                                <div style="display: flex; flex-direction: column; width: 100%; gap: 5px;">
                                     <!-- Table Header -->
-                                    <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
-                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
-                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
-                                        <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
-                                        <div *ngIf="shouldShowExpCompletion(application.education_data[country].status, application.education_data[country].additional_entries)" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
+                                    <div
+                                        style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
+                                        <div
+                                            style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">
+                                            LEVEL</div>
+                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">
+                                            FIELD</div>
+                                        <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">
+                                            STATUS</div>
+                                        <div *ngIf="shouldShowExpCompletion(application.highest_education_status, application.education_data?.additional)"
+                                            style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">
+                                            EXP. COMPLETION</div>
                                         <div style="width: 34px;"></div>
                                     </div>
-                                    <!-- Primary entry -->
                                     <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                                        <select [(ngModel)]="application.education_data[country].level" style="flex: 0 0 25%; min-width: 0;">
+                                        <select [(ngModel)]="application.highest_education"
+                                            style="flex: 0 0 25%; min-width: 0;">
                                             <option value="">Level</option>
                                             <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
                                         </select>
-                                        <select [(ngModel)]="application.education_data[country].field" style="flex: 0 0 25%; min-width: 0;">
+                                        <select [(ngModel)]="application.education_field"
+                                            style="flex: 0 0 25%; min-width: 0;">
                                             <option value="">Field</option>
                                             <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
                                         </select>
-                                        <select [(ngModel)]="application.education_data[country].status" style="flex: 0 0 20%; min-width: 0;">
+                                        <select [(ngModel)]="application.highest_education_status"
+                                            style="flex: 0 0 20%; min-width: 0;">
                                             <option value="Completed">Completed</option>
                                             <option value="Not Completed">Not Completed</option>
                                         </select>
-                                        <div *ngIf="shouldShowExpCompletion(application.education_data[country].status, application.education_data[country].additional_entries)" 
-                                             style="flex: 0 0 20%;">
-                                            <input type="month" *ngIf="application.education_data[country].status === 'Not Completed'" 
-                                                [(ngModel)]="application.education_data[country].expected_completion" 
+                                        <div *ngIf="shouldShowExpCompletion(application.highest_education_status, application.education_data?.additional)"
+                                            style="flex: 0 0 20%;">
+                                            <input type="month"
+                                                *ngIf="application.highest_education_status === 'Not Completed'"
+                                                [(ngModel)]="application.highest_education_expected"
                                                 placeholder="Exp Completion" style="width: 100%; min-width: 0;">
                                         </div>
-                                        <button type="button" class="btn btn-sm btn-primary" (click)="addCountryEducation(country)"
-                                            title="Add more Education Details"
-                                            style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                            (click)="addQualification()" title="ADD Previous Education Details"
+                                            style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">
                                             +
                                         </button>
                                     </div>
-                            
-                                    <!-- Additional entries -->
-                                    <div *ngFor="let entry of application.education_data[country].additional_entries; let i = index"
-                                        style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                                        <select [(ngModel)]="entry.level" style="flex: 0 0 25%; min-width: 0;">
+                                    <div *ngFor="let q of application.education_data?.additional; let i = index"
+                                        style="display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 5px;">
+                                        <select [(ngModel)]="q.level" style="flex: 0 0 25%; min-width: 0;">
                                             <option value="">Level</option>
                                             <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
                                         </select>
-                                        <select [(ngModel)]="entry.field" style="flex: 0 0 25%; min-width: 0;">
+                                        <select [(ngModel)]="q.field" style="flex: 0 0 25%; min-width: 0;">
                                             <option value="">Field</option>
                                             <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
                                         </select>
-                                        <select [(ngModel)]="entry.status" style="flex: 0 0 20%; min-width: 0;">
+                                        <select [(ngModel)]="q.status" style="flex: 0 0 20%; min-width: 0;">
                                             <option value="Completed">Completed</option>
                                             <option value="Not Completed">Not Completed</option>
                                         </select>
-                                        <div *ngIf="shouldShowExpCompletion(application.education_data[country].status, application.education_data[country].additional_entries)" 
-                                             style="flex: 0 0 20%;">
-                                            <input type="month" *ngIf="entry.status === 'Not Completed'" 
-                                                [(ngModel)]="entry.expected_completion" 
-                                                placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                        <div *ngIf="shouldShowExpCompletion(application.highest_education_status, application.education_data?.additional)"
+                                            style="flex: 0 0 20%;">
+                                            <input type="month" *ngIf="q.status === 'Not Completed'"
+                                                [(ngModel)]="q.expected_completion" placeholder="Exp Completion"
+                                                style="width: 100%; min-width: 0;">
                                         </div>
-                                        <button type="button" class="btn btn-sm btn-danger" (click)="removeCountryEducation(country, i)"
+                                        <button type="button" class="btn btn-sm" (click)="removeQualification(i)"
                                             title="Remove qualification"
-                                            style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                            style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">
                                             &times;
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                        </ng-container>
-                    </div>
-
-                </div>
-
-                <div class="edu-grid-tabular">
-                    <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                        <div class="edu-label" style="min-width: auto; margin-bottom: 5px; font-size: 0.9rem;">Please enter the highest level of education you have completed (for study and Migration)</div>
-                        <div class="edu-inputs" style="width: 100%;">
-                            <div style="display: flex; flex-direction: column; width: 100%; gap: 5px;">
-                                <!-- Table Header -->
-                                <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
-                                    <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
-                                    <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
-                                    <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
-                                    <div *ngIf="shouldShowExpCompletion(application.highest_education_status, application.education_data?.additional)" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
-                                    <div style="width: 34px;"></div>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                                    <select [(ngModel)]="application.highest_education" style="flex: 0 0 25%; min-width: 0;">
-                                        <option value="">Level</option>
-                                        <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
-                                    </select>
-                                    <select [(ngModel)]="application.education_field" style="flex: 0 0 25%; min-width: 0;">
-                                        <option value="">Field</option>
-                                        <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
-                                    </select>
-                                    <select [(ngModel)]="application.highest_education_status" style="flex: 0 0 20%; min-width: 0;">
-                                        <option value="Completed">Completed</option>
-                                        <option value="Not Completed">Not Completed</option>
-                                    </select>
-                                    <div *ngIf="shouldShowExpCompletion(application.highest_education_status, application.education_data?.additional)" 
-                                         style="flex: 0 0 20%;">
-                                        <input type="month" *ngIf="application.highest_education_status === 'Not Completed'" 
-                                            [(ngModel)]="application.highest_education_expected" 
-                                            placeholder="Exp Completion" style="width: 100%; min-width: 0;">
-                                    </div>
-                                    <button type="button" class="btn btn-sm btn-primary" (click)="addQualification()"
-                                        title="ADD Previous Education Details"
-                                        style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">
-                                        +
-                                    </button>
-                                </div>
-                                <div *ngFor="let q of application.education_data?.additional; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 5px;">
-                                    <select [(ngModel)]="q.level" style="flex: 0 0 25%; min-width: 0;">
-                                        <option value="">Level</option>
-                                        <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
-                                    </select>
-                                    <select [(ngModel)]="q.field" style="flex: 0 0 25%; min-width: 0;">
-                                        <option value="">Field</option>
-                                        <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
-                                    </select>
-                                    <select [(ngModel)]="q.status" style="flex: 0 0 20%; min-width: 0;">
-                                        <option value="Completed">Completed</option>
-                                        <option value="Not Completed">Not Completed</option>
-                                    </select>
-                                    <div *ngIf="shouldShowExpCompletion(application.highest_education_status, application.education_data?.additional)" 
-                                         style="flex: 0 0 20%;">
-                                        <input type="month" *ngIf="q.status === 'Not Completed'" 
-                                            [(ngModel)]="q.expected_completion" 
-                                            placeholder="Exp Completion" style="width: 100%; min-width: 0;">
-                                    </div>
-                                    <button type="button" class="btn btn-sm" (click)="removeQualification(i)"
-                                        title="Remove qualification"
-                                        style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">
-                                        &times;
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                </div>
+
+                    <!-- 2. Specific Country Education (Dynamic) -->
+                    <div class="edu-grid-tabular">
+                        <div class="edu-row" *ngFor="let country of educationCountries"
+                            style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <ng-container *ngIf="application.education_data && application.education_data[country]">
+                                <div style="display: flex; align-items: center; gap: 16px;">
+                                    <div class="edu-label" style="min-width: auto;">Do you have any {{country}}
+                                        Education?</div>
+                                    <div class="edu-toggle">
+                                        <label><input type="radio" [name]="'has_'+country+'_edu'"
+                                                [(ngModel)]="application.education_data[country].has_edu" [value]="true">
+                                            YES</label>
+                                        <label><input type="radio" [name]="'has_'+country+'_edu'"
+                                                [(ngModel)]="application.education_data[country].has_edu"
+                                                [value]="false">
+                                            NO</label>
+                                    </div>
+                                </div>
+                                <div class="edu-inputs" *ngIf="application.education_data[country].has_edu"
+                                    style="width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px;">
+                                    <div style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
+                                        <!-- Table Header -->
+                                        <div
+                                            style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
+                                            <div
+                                                style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">
+                                                LEVEL</div>
+                                            <div
+                                                style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">
+                                                FIELD</div>
+                                            <div
+                                                style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">
+                                                STATUS</div>
+                                            <div *ngIf="shouldShowExpCompletion(application.education_data[country].status, application.education_data[country].additional_entries)"
+                                                style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">
+                                                EXP. COMPLETION</div>
+                                            <div style="width: 34px;"></div>
+                                        </div>
+                                        <!-- Primary entry -->
+                                        <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                            <select [(ngModel)]="application.education_data[country].level"
+                                                style="flex: 0 0 25%; min-width: 0;">
+                                                <option value="">Level</option>
+                                                <option *ngFor="let l of lookups.levels" [value]="l.name">
+                                                    {{l.name}}</option>
+                                            </select>
+                                            <select [(ngModel)]="application.education_data[country].field"
+                                                style="flex: 0 0 25%; min-width: 0;">
+                                                <option value="">Field</option>
+                                                <option *ngFor="let f of lookups.fields" [value]="f.name">
+                                                    {{f.name}}</option>
+                                            </select>
+                                            <select [(ngModel)]="application.education_data[country].status"
+                                                style="flex: 0 0 20%; min-width: 0;">
+                                                <option value="Completed">Completed</option>
+                                                <option value="Not Completed">Not Completed</option>
+                                            </select>
+                                            <div *ngIf="shouldShowExpCompletion(application.education_data[country].status, application.education_data[country].additional_entries)"
+                                                style="flex: 0 0 20%;">
+                                                <input type="month"
+                                                    *ngIf="application.education_data[country].status === 'Not Completed'"
+                                                    [(ngModel)]="application.education_data[country].expected_completion"
+                                                    placeholder="Exp Completion" style="width: 100%; min-width: 0;">
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-primary"
+                                                (click)="addCountryEducation(country)"
+                                                title="Add more Education Details"
+                                                style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                                +
+                                            </button>
+                                        </div>
+
+                                        <!-- Additional entries -->
+                                        <div *ngFor="let entry of application.education_data[country].additional_entries; let i = index"
+                                            style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                            <select [(ngModel)]="entry.level" style="flex: 0 0 25%; min-width: 0;">
+                                                <option value="">Level</option>
+                                                <option *ngFor="let l of lookups.levels" [value]="l.name">
+                                                    {{l.name}}</option>
+                                            </select>
+                                            <select [(ngModel)]="entry.field" style="flex: 0 0 25%; min-width: 0;">
+                                                <option value="">Field</option>
+                                                <option *ngFor="let f of lookups.fields" [value]="f.name">
+                                                    {{f.name}}</option>
+                                            </select>
+                                            <select [(ngModel)]="entry.status" style="flex: 0 0 20%; min-width: 0;">
+                                                <option value="Completed">Completed</option>
+                                                <option value="Not Completed">Not Completed</option>
+                                            </select>
+                                            <div *ngIf="shouldShowExpCompletion(application.education_data[country].status, application.education_data[country].additional_entries)"
+                                                style="flex: 0 0 20%;">
+                                                <input type="month" *ngIf="entry.status === 'Not Completed'"
+                                                    [(ngModel)]="entry.expected_completion" placeholder="Exp Completion"
+                                                    style="width: 100%; min-width: 0;">
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                (click)="removeCountryEducation(country, i)"
+                                                title="Remove qualification"
+                                                style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                                &times;
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
+
 
                 <!-- Other Country Education -->
                 <div class="edu-grid-tabular">
@@ -352,8 +361,9 @@
                         <div style="display: flex; align-items: center; gap: 16px;">
                             <div class="edu-label" style="min-width: auto;">Do you have any other country Education? (Highest level completed/current study)</div>
                             <div class="radio-group-modern">
-                                <label><input type="radio" [value]="true" [(ngModel)]="application.has_other_country_edu"> YES</label>
-                                <label><input type="radio" [value]="false" [(ngModel)]="application.has_other_country_edu"> NO</label>
+                                <label><input type="radio" name="has_other_country_edu" [value]="true" [(ngModel)]="application.has_other_country_edu"
+                                    (change)="application.has_other_country_edu && (!application.other_country_edu_list || application.other_country_edu_list.length === 0) && addOtherCountryEducation('applicant')"> YES</label>
+                                <label><input type="radio" name="has_other_country_edu" [value]="false" [(ngModel)]="application.has_other_country_edu"> NO</label>
                             </div>
                         </div>
 
@@ -459,57 +469,6 @@
                     </div>
                 </div>
 
-                <!-- OTHER WORK EXPERIENCE -->
-                <div class="form-row" *ngIf="showGeneralWorkExperience">
-                    <div class="form-group flex-2">
-                        <label>Do you have any other Work Experience?</label>
-                        <div class="radio-group-modern">
-                            <label><input type="radio" name="has_other_work" [(ngModel)]="application.has_other_work_experience"
-                                    [value]="true" (change)="onWorkToggle(null, 'other_work_experience_list')"> YES</label>
-                            <label><input type="radio" name="has_other_work" [(ngModel)]="application.has_other_work_experience"
-                                    [value]="false"> NO</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row" *ngIf="showGeneralWorkExperience && application.has_other_work_experience"
-                    style="margin-top: -15px; margin-bottom: 20px;">
-                    <div class="work-experience-list" style="width: 100%; padding-left: 20px;">
-                        <div class="work-inputs" *ngFor="let exp of application.other_work_experience_list; let i = index"
-                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
-                            <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
-                                <label style="font-size: 0.85rem; color: #1e40af;">Country of Employment</label>
-                                <select [(ngModel)]="exp.employment_country">
-                                    <option value="">Select country</option>
-                                    <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
-                                </select>
-                            </div>
-                            <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
-                                <label style="font-size: 0.85rem; color: #1e40af;">Job Title</label>
-                                <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
-                            </div>
-                            <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
-                                <label style="font-size: 0.85rem; color: #1e40af;">Duration</label>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
-                                        style="width: 45px;" min="0">
-                                    <span style="font-size: 0.8rem;">Yrs</span>
-                                    <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
-                                        style="width: 45px;" min="0" max="11">
-                                    <span style="font-size: 0.8rem;">Mths</span>
-                                </div>
-                            </div>
-                            <button type="button" (click)="removeWorkExperience(null, 'other_work_experience_list', i)"
-                                *ngIf="application.other_work_experience_list.length > 1"
-                                style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
-                        </div>
-                        <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
-                            <button type="button" (click)="addWorkExperience(null, 'other_work_experience_list')"
-                                style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
-                                <span style="font-size: 1.2rem; line-height: 1;">+</span> Add More Experience
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="work-exp-tabular">
                     <div class="work-row" *ngFor="let country of interestedCountries">
@@ -630,79 +589,164 @@
                         </ng-container>
                     </div>
                 </div>
-            </section>
+            <!-- OTHER WORK EXPERIENCE -->
+            <div class="form-row" *ngIf="showGeneralWorkExperience">
+                <div class="form-group flex-2">
+                    <label>Do you have any other Work Experience?</label>
+                    <div class="radio-group-modern">
+                        <label><input type="radio" name="has_other_work" [(ngModel)]="application.has_other_work_experience"
+                                [value]="true" (change)="onWorkToggle(null, 'other_work_experience_list')"> YES</label>
+                        <label><input type="radio" name="has_other_work" [(ngModel)]="application.has_other_work_experience"
+                                [value]="false"> NO</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row" *ngIf="showGeneralWorkExperience && application.has_other_work_experience"
+                style="margin-top: -15px; margin-bottom: 20px;">
+                <div class="work-experience-list" style="width: 100%; padding-left: 20px;">
+                    <div class="work-inputs" *ngFor="let exp of application.other_work_experience_list; let i = index"
+                        style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
+                        <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
+                            <label style="font-size: 0.85rem; color: #1e40af;">Country of Employment</label>
+                            <select [(ngModel)]="exp.employment_country">
+                                <option value="">Select country</option>
+                                <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
+                            <label style="font-size: 0.85rem; color: #1e40af;">Job Title</label>
+                            <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
+                        </div>
+                        <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
+                            <label style="font-size: 0.85rem; color: #1e40af;">Duration</label>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
+                                    style="width: 45px;" min="0">
+                                <span style="font-size: 0.8rem;">Yrs</span>
+                                <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
+                                    style="width: 45px;" min="0" max="11">
+                                <span style="font-size: 0.8rem;">Mths</span>
+                            </div>
+                        </div>
+                        <button type="button" (click)="removeWorkExperience(null, 'other_work_experience_list', i)"
+                            *ngIf="application.other_work_experience_list.length > 1"
+                            style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
+                    </div>
+                    <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+                        <button type="button" (click)="addWorkExperience(null, 'other_work_experience_list')"
+                            style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                            <span style="font-size: 1.2rem; line-height: 1;">+</span> Add More Experience
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
             <!-- SECTION 8: LANGUAGE TEST -->
             <section class="form-section">
                 <h3 class="section-title">LANGUAGE PROFICIENCY</h3>
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label>Provided English Test?</label>
-                        <div class="radio-group-modern">
-                            <label><input type="radio" name="has_lang" [(ngModel)]="application.has_language_test"
-                                    [value]="true"> YES</label>
-                            <label><input type="radio" name="has_lang" [(ngModel)]="application.has_language_test"
-                                    [value]="false"> NO</label>
+                <div class="edu-grid-tabular">
+                    <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                            <div class="edu-label" style="flex: 1; min-width: auto; font-size: 0.9rem;">Have you completed any language Test?</div>
+                            <div class="radio-group-modern" style="flex: 0 0 auto;">
+                                <label><input type="radio" name="has_lang" [(ngModel)]="application.has_language_test"
+                                        [value]="true" (change)="onTestToggle('language')"> YES</label>
+                                <label><input type="radio" name="has_lang" [(ngModel)]="application.has_language_test"
+                                        [value]="false"> NO</label>
+                            </div>
+                            <div style="flex: 2;"></div>
+                        </div>
+
+                        <div class="edu-inputs" *ngIf="application.has_language_test" style="width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px;">
+                            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                                <!-- Headers -->
+                                <div style="display: flex; gap: 10px; padding-right: 44px; margin-bottom: -5px;">
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Select</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Writing</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Listening</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Speaking</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Reading</div>
+                                </div>
+                                
+                                <div *ngFor="let test of application.language_test_list; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                    <select [(ngModel)]="test.type" style="flex: 1;">
+                                        <option value="">Select Test</option>
+                                        <option value="IELTS">IELTS</option>
+                                        <option value="PTE">PTE</option>
+                                        <option value="TOEFL">TOEFL</option>
+                                        <option value="CELPIP">CELPIP</option>
+                                        <option value="DET">DET</option>
+                                    </select>
+                                    <input type="text" [(ngModel)]="test.writing" style="flex: 1;">
+                                    <input type="text" [(ngModel)]="test.listening" style="flex: 1;">
+                                    <input type="text" [(ngModel)]="test.speaking" style="flex: 1;">
+                                    <input type="text" [(ngModel)]="test.reading" style="flex: 1;">
+                                    
+                                    <button type="button" class="btn btn-sm btn-danger" (click)="removeLanguageTest(i)" 
+                                        style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2;">&times;</button>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
+                                    <button type="button" class="btn btn-sm btn-primary" (click)="addLanguageTest()"
+                                        style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
+                                        + Add more Language Test
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group flex-1" *ngIf="application.has_language_test">
-                        <label>Test Type</label>
-                        <select [(ngModel)]="application.language_test_type">
-                            <option value="">Select Test</option>
-                            <option value="IELTS">IELTS</option>
-                            <option value="PTE">PTE</option>
-                            <option value="TOEFL">TOEFL</option>
-                            <option value="CELPIP">CELPIP</option>
-                            <option value="DET">DET</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="scores-grid" *ngIf="application.has_language_test">
-                    <div class="score-item"><label>Reading</label><input type="text"
-                            [(ngModel)]="application.reading_score"></div>
-                    <div class="score-item"><label>Listening</label><input type="text"
-                            [(ngModel)]="application.listening_score"></div>
-                    <div class="score-item"><label>Speaking</label><input type="text"
-                            [(ngModel)]="application.speaking_score"></div>
-                    <div class="score-item"><label>Writing</label><input type="text"
-                            [(ngModel)]="application.writing_score"></div>
                 </div>
             </section>
 
             <!-- SECTION 9: ADMISSION TEST -->
             <section class="form-section">
                 <h3 class="section-title">ADMISSION TEST (GMAT/GRE/SAT)</h3>
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label>Provided Admission Test?</label>
-                        <div class="radio-group-modern">
-                            <label><input type="radio" name="has_adm" [(ngModel)]="application.has_admission_test"
-                                    [value]="true"> YES</label>
-                            <label><input type="radio" name="has_adm" [(ngModel)]="application.has_admission_test"
-                                    [value]="false"> NO</label>
+                <div class="edu-grid-tabular">
+                    <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                            <div class="edu-label" style="flex: 1; min-width: auto; font-size: 0.9rem;">Have you completed any Admission Test?</div>
+                            <div class="radio-group-modern" style="flex: 0 0 auto;">
+                                <label><input type="radio" name="has_adm" [(ngModel)]="application.has_admission_test"
+                                        [value]="true" (change)="onTestToggle('admission')"> YES</label>
+                                <label><input type="radio" name="has_adm" [(ngModel)]="application.has_admission_test"
+                                        [value]="false"> NO</label>
+                            </div>
+                            <div style="flex: 2;"></div>
+                        </div>
+
+                        <div class="edu-inputs" *ngIf="application.has_admission_test" style="width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px;">
+                            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                                <!-- Headers -->
+                                <div style="display: flex; gap: 10px; padding-right: 44px; margin-bottom: -5px;">
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Test</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Quantitative Reasoning</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Verbal Reasoning</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Data Insights</div>
+                                </div>
+                                
+                                <div *ngFor="let test of application.admission_test_list; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                    <select [(ngModel)]="test.type" style="flex: 1;">
+                                        <option value="">Select Test</option>
+                                        <option value="GMAT">GMAT Focus</option>
+                                        <option value="GRE">GRE</option>
+                                        <option value="SAT">SAT</option>
+                                    </select>
+                                    <input type="text" [(ngModel)]="test.quant" style="flex: 1;">
+                                    <input type="text" [(ngModel)]="test.verbal" style="flex: 1;">
+                                    <input type="text" [(ngModel)]="test.data_insights" style="flex: 1;">
+                                    
+                                    <button type="button" class="btn btn-sm btn-danger" (click)="removeAdmissionTest(i)" 
+                                        style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2;">&times;</button>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
+                                    <button type="button" class="btn btn-sm btn-primary" (click)="addAdmissionTest()"
+                                        style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
+                                        + Add more Admission Test
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group flex-1" *ngIf="application.has_admission_test">
-                        <label>Test Type</label>
-                        <select [(ngModel)]="application.admission_test_type">
-                            <option value="">Select Test</option>
-                            <option value="GMAT">GMAT Focus</option>
-                            <option value="GRE">GRE</option>
-                            <option value="SAT">SAT</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="scores-grid" *ngIf="application.has_admission_test">
-                    <div class="score-item"><label>Quant</label><input type="text"
-                            [(ngModel)]="application.quant_score">
-                    </div>
-                    <div class="score-item"><label>Verbal</label><input type="text"
-                            [(ngModel)]="application.verbal_score">
-                    </div>
-                    <div class="score-item"><label>Data Insights</label><input type="text"
-                            [(ngModel)]="application.data_insights_score"></div>
                 </div>
             </section>
 
@@ -711,10 +755,12 @@
                 *ngIf="application.spouse_accompanying && (application.marital_status === 'Married' || application.marital_status === 'Common Law')">
                 <h3 class="section-title">SPOUSE DETAILS</h3>
 
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label>Spouse Age</label>
-                        <input type="number" [(ngModel)]="application.spouse_age" style="width: 100px;">
+                <div class="edu-grid-tabular" style="margin-bottom: 24px;">
+                    <div class="edu-row" style="align-items: center; gap: 16px;">
+                        <div class="edu-label" style="flex: 1; font-size: 0.9rem;">Spouse Age</div>
+                        <div class="edu-inputs" style="flex: 3; display: flex; align-items: center;">
+                            <input type="number" [(ngModel)]="application.spouse_age" style="width: 100px;" placeholder="Age">
+                        </div>
                     </div>
                 </div>
 
@@ -722,148 +768,154 @@
                 <div class="spouse-education-card mt-4">
                     <div class="section-subtitle" style="font-weight:700;">EDUCATION DETAILS</div>
 
-                    <ng-container *ngFor="let country of interestedCountries">
-                        <div class="form-row" *ngIf="application.migration_spouse_data?.[country]" style="flex-direction: column; align-items: flex-start; gap: 8px; background: white; padding: 8px 16px; border-bottom: 1px solid #f1f5f9;">
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <div class="edu-label" style="min-width: auto;">Did Spouse study in {{country}}?</div>
-                                <div class="radio-group-modern">
-                                    <label><input type="radio" [name]="'spouse_has_edu_'+country"
-                                            [(ngModel)]="application.migration_spouse_data[country].has_edu" [value]="true"> YES</label>
-                                    <label><input type="radio" [name]="'spouse_has_edu_'+country"
-                                            [(ngModel)]="application.migration_spouse_data[country].has_edu" [value]="false"> NO</label>
-                                </div>
-                            </div>
-                            <div class="form-group" style="flex: 2; width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px; flex-direction: column; align-items: stretch;" *ngIf="application.migration_spouse_data[country].has_edu">
-                                <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
-                                    <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
-                                    <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
-                                    <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
-                                    <div *ngIf="application.migration_spouse_data[country].status === 'Not Completed'" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                                    <select [(ngModel)]="application.migration_spouse_data[country].edu_level" style="flex: 0 0 25%; min-width: 0;">
-                                        <option value="">Level</option>
-                                        <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
-                                    </select>
-                                    <select [(ngModel)]="application.migration_spouse_data[country].edu_field" style="flex: 0 0 25%; min-width: 0;">
-                                        <option value="">Field</option>
-                                        <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
-                                    </select>
-                                    <select [(ngModel)]="application.migration_spouse_data[country].status" style="flex: 0 0 20%; min-width: 0;">
-                                        <option value="Completed">Completed</option>
-                                        <option value="Not Completed">Not Completed</option>
-                                    </select>
-                                    <div *ngIf="application.migration_spouse_data[country].status === 'Not Completed'" style="flex: 0 0 20%;">
-                                        <input type="month" [(ngModel)]="application.migration_spouse_data[country].expected_completion" 
-                                            placeholder="Exp Completion" style="width: 100%; min-width: 0;">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-container>
-
+                    <!-- 1. Highest Qualification (General) -->
                     <div class="edu-grid-tabular">
                         <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                            <div class="edu-label" style="min-width: auto; margin-bottom: 5px; font-size: 0.9rem;">Please enter the highest level of education you have completed</div>
+                            <div class="edu-label" style="min-width: auto; margin-bottom: 5px; font-size: 0.9rem;">
+                                Please enter the highest level of education you have completed
+                            </div>
                             <div class="edu-inputs" style="width: 100%;">
                                 <div style="display: flex; flex-direction: column; width: 100%; gap: 5px;">
-                                    <!-- Table Header -->
-                                    <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
-                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
-                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
-                                        <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
-                                        <div *ngIf="shouldShowExpCompletion(application.spouse_edu_status, application.spouse_education)" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
-                                        <div style="width: 34px;"></div>
-                                    </div>
                                     <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                                        <select [(ngModel)]="application.spouse_edu_level" style="flex: 0 0 25%; min-width: 0;">
-                                            <option value="">Level</option>
+                                        <select [(ngModel)]="application.spouse_edu_level" style="flex: 1; min-width: 0;">
+                                            <option value="">Select Education Level</option>
                                             <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
                                         </select>
-                                        <select [(ngModel)]="application.spouse_edu_field" style="flex: 0 0 25%; min-width: 0;">
-                                            <option value="">Field</option>
+                                        <select [(ngModel)]="application.spouse_edu_field" style="flex: 1; min-width: 0;">
+                                            <option value="">Select Education Field</option>
                                             <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
                                         </select>
-                                        <select [(ngModel)]="application.spouse_edu_status" style="flex: 0 0 20%; min-width: 0;">
-                                            <option value="Completed">Completed</option>
-                                            <option value="Not Completed">Not Completed</option>
-                                        </select>
-                                        <div *ngIf="shouldShowExpCompletion(application.spouse_edu_status, application.spouse_education)" style="flex: 0 0 20%;">
-                                            <input type="month" *ngIf="application.spouse_edu_status === 'Not Completed'" 
-                                                [(ngModel)]="application.spouse_edu_expected" 
-                                                placeholder="Exp Completion" style="width: 100%; min-width: 0;">
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-primary" (click)="addSpouseQualification()" title="ADD Previous Education Details" style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">+</button>
+                                        <button type="button" class="btn btn-sm btn-primary" (click)="addSpouseQualification()" 
+                                            title="ADD Previous Education Details"
+                                            style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">
+                                            +
+                                        </button>
                                     </div>
+                                    <!-- Additional entries for General Education -->
                                     <div *ngFor="let q of application.spouse_education; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 5px;">
-                                        <select [(ngModel)]="q.level" style="flex: 0 0 25%; min-width: 0;">
+                                        <select [(ngModel)]="q.level" style="flex: 1; min-width: 0;">
                                             <option value="">Level</option>
                                             <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
                                         </select>
-                                        <select [(ngModel)]="q.field" style="flex: 0 0 25%; min-width: 0;">
+                                        <select [(ngModel)]="q.field" style="flex: 1; min-width: 0;">
                                             <option value="">Field</option>
                                             <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
                                         </select>
-                                        <select [(ngModel)]="q.status" style="flex: 0 0 20%; min-width: 0;">
-                                            <option value="Completed">Completed</option>
-                                            <option value="Not Completed">Not Completed</option>
-                                        </select>
-                                        <div *ngIf="shouldShowExpCompletion(application.spouse_edu_status, application.spouse_education)" style="flex: 0 0 20%;">
-                                            <input type="month" *ngIf="q.status === 'Not Completed'" 
-                                                [(ngModel)]="q.expected_completion" 
-                                                placeholder="Exp Completion" style="width: 100%; min-width: 0;">
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-danger" (click)="removeSpouseQualification(i)" title="Remove qualification" style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">&times;</button>
+                                        <button type="button" class="btn btn-sm btn-danger" (click)="removeSpouseQualification(i)" 
+                                            title="Remove" style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2;">&times;</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Spouse Other Country Education -->
-                    <div class="edu-grid-tabular">
+                    <!-- 2. Canadian Education -->
+                    <div class="edu-grid-tabular mt-3">
                         <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <div class="edu-label" style="min-width: auto;">Does Spouse have any other country Education?</div>
-                                <div class="radio-group-modern">
+                            <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                                <div class="edu-label" style="flex: 1; min-width: auto; font-size: 0.9rem;">Do you have any Canadian Education?</div>
+                                <div class="radio-group-modern" style="flex: 0 0 auto;">
+                                    <label><input type="radio" name="spouse_has_canada_edu" [value]="true" [(ngModel)]="application.migration_spouse_data['Canada'].has_edu"> YES</label>
+                                    <label><input type="radio" name="spouse_has_canada_edu" [value]="false" [(ngModel)]="application.migration_spouse_data['Canada'].has_edu"> NO</label>
+                                </div>
+                                <div style="flex: 2;"></div>
+                            </div>
+                            <!-- Inputs on second line -->
+                            <div class="edu-inputs" style="width: 100%; display: flex; gap: 10px; margin-top: 5px;" *ngIf="application.migration_spouse_data['Canada']?.has_edu">
+                                <select [(ngModel)]="application.migration_spouse_data['Canada'].edu_level" style="flex: 1;">
+                                    <option value="">Select Education Level</option>
+                                    <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                </select>
+                                <select [(ngModel)]="application.migration_spouse_data['Canada'].edu_field" style="flex: 1;">
+                                    <option value="">Select Education Field</option>
+                                    <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Australian Education -->
+                    <div class="edu-grid-tabular mt-1">
+                        <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                                <div class="edu-label" style="flex: 1; min-width: auto; font-size: 0.9rem;">Do you have any Australian Education?</div>
+                                <div class="radio-group-modern" style="flex: 0 0 auto;">
+                                    <label><input type="radio" name="spouse_has_aus_edu" [value]="true" [(ngModel)]="application.migration_spouse_data['Australia'].has_edu"> YES</label>
+                                    <label><input type="radio" name="spouse_has_aus_edu" [value]="false" [(ngModel)]="application.migration_spouse_data['Australia'].has_edu"> NO</label>
+                                </div>
+                                <div style="flex: 2;"></div>
+                            </div>
+                            <!-- Inputs on second line -->
+                            <div class="edu-inputs" style="width: 100%; display: flex; gap: 10px; margin-top: 5px;" *ngIf="application.migration_spouse_data['Australia']?.has_edu">
+                                <select [(ngModel)]="application.migration_spouse_data['Australia'].edu_level" style="flex: 1;">
+                                    <option value="">Select Education Level</option>
+                                    <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                </select>
+                                <select [(ngModel)]="application.migration_spouse_data['Australia'].edu_field" style="flex: 1;">
+                                    <option value="">Select Education Field</option>
+                                    <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. New Zealand Education -->
+                    <div class="edu-grid-tabular mt-1">
+                        <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                                <div class="edu-label" style="flex: 1; min-width: auto; font-size: 0.9rem;">Do you have any New Zealand Education?</div>
+                                <div class="radio-group-modern" style="flex: 0 0 auto;">
+                                    <label><input type="radio" name="spouse_has_nz_edu" [value]="true" [(ngModel)]="application.migration_spouse_data['New Zealand'].has_edu"> YES</label>
+                                    <label><input type="radio" name="spouse_has_nz_edu" [value]="false" [(ngModel)]="application.migration_spouse_data['New Zealand'].has_edu"> NO</label>
+                                </div>
+                                <div style="flex: 1;" *ngIf="application.migration_spouse_data['New Zealand']?.has_edu">
+                                    <select [(ngModel)]="application.migration_spouse_data['New Zealand'].status" style="width: 100%; font-size: 0.75rem;">
+                                        <option value="">Status</option>
+                                        <option value="Completed">COMPLETED</option>
+                                        <option value="Not Completed">STUDYING</option>
+                                    </select>
+                                </div>
+                                <div style="flex: 1;" *ngIf="!application.migration_spouse_data['New Zealand']?.has_edu"></div>
+                            </div>
+                            <!-- Inputs on second line -->
+                            <div class="edu-inputs" style="width: 100%; display: flex; gap: 8px; margin-top: 5px;" *ngIf="application.migration_spouse_data['New Zealand']?.has_edu">
+                                <select [(ngModel)]="application.migration_spouse_data['New Zealand'].edu_level" style="flex: 1;">
+                                    <option value="">Select Education Level</option>
+                                    <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
+                                </select>
+                                <select [(ngModel)]="application.migration_spouse_data['New Zealand'].edu_field" style="flex: 1;">
+                                    <option value="">Select Education Field</option>
+                                    <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Other country Education -->
+                    <div class="edu-grid-tabular mt-1">
+                        <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                                <div class="edu-label" style="flex: 1; min-width: auto; font-size: 0.85rem;">Do you have any other country Education? (Please enter the highest level of education you have completed)</div>
+                                <div class="radio-group-modern" style="flex: 0 0 auto;">
                                     <label><input type="radio" [value]="true" [(ngModel)]="application.spouse_has_other_country_edu"> YES</label>
                                     <label><input type="radio" [value]="false" [(ngModel)]="application.spouse_has_other_country_edu"> NO</label>
                                 </div>
+                                <div style="flex: 2;"></div>
                             </div>
     
                             <div class="edu-inputs" *ngIf="application.spouse_has_other_country_edu" style="width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px;">
                                 <div style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
-                                    <!-- Table Header -->
-                                    <div style="display: flex; align-items: center; gap: 10px; width: 100%; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 5px;">
-                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569; padding-left: 5px;">LEVEL</div>
-                                        <div style="flex: 0 0 25%; font-weight: 700; font-size: 0.8rem; color: #475569;">FIELD</div>
-                                        <div style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">STATUS</div>
-                                        <div *ngIf="shouldShowListExpCompletion(application.spouse_other_country_edu_list)" style="flex: 0 0 20%; font-weight: 700; font-size: 0.8rem; color: #475569;">EXP. COMPLETION</div>
-                                        <div style="width: 34px;"></div>
-                                    </div>
-                                    <div *ngFor="let entry of application.spouse_other_country_edu_list; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 5px;">
-                                        <select [(ngModel)]="entry.level" style="flex: 0 0 25%; min-width: 0;">
-                                            <option value="">Level</option>
+                                    <div *ngFor="let entry of application.spouse_other_country_edu_list; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                        <select [(ngModel)]="entry.level" style="flex: 1; min-width: 0;">
+                                            <option value="">Select Education Level</option>
                                             <option *ngFor="let l of lookups.levels" [value]="l.name">{{l.name}}</option>
                                         </select>
-                                        <select [(ngModel)]="entry.field" style="flex: 0 0 25%; min-width: 0;">
-                                            <option value="">Field</option>
+                                        <select [(ngModel)]="entry.field" style="flex: 1; min-width: 0;">
+                                            <option value="">Select Education Field</option>
                                             <option *ngFor="let f of lookups.fields" [value]="f.name">{{f.name}}</option>
                                         </select>
-                                        <select [(ngModel)]="entry.status" style="flex: 0 0 20%; min-width: 0;">
-                                            <option value="Completed">Completed</option>
-                                            <option value="Not Completed">Not Completed</option>
-                                        </select>
-                                        <div *ngIf="shouldShowListExpCompletion(application.spouse_other_country_edu_list)" style="flex: 0 0 20%;">
-                                            <input type="month" *ngIf="entry.status === 'Not Completed'" 
-                                                [(ngModel)]="entry.expected_completion" 
-                                                placeholder="Exp Completion" style="width: 100%; min-width: 0;">
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-danger" (click)="removeOtherCountryEducation(i, 'spouse')"
-                                            title="Remove qualification"
-                                            style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%;">
-                                            &times;
-                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" (click)="removeOtherCountryEducation(i, 'spouse')" 
+                                            style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2;">&times;</button>
                                     </div>
                                     <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
                                         <button type="button" class="btn btn-sm btn-primary" (click)="addOtherCountryEducation('spouse')"
@@ -882,270 +934,126 @@
                     <div class="work-row">
                         <div class="work-label"
                             style="min-width: 100%; color: #2563eb; font-weight: 700; border-bottom: 1.5px solid #cbd5e1; margin-bottom: 8px; padding-bottom: 4px;">
-                            WORK EXPERIENCE SECTION
+                            WORK EXPERIENCE DETAILS
                         </div>
                     </div>
+                    
+                    <!-- 1. General Work Experience -->
                     <div class="work-row" *ngIf="showGeneralWorkExperience">
-                        <div class="work-label">Is your Spouse currently Working?</div>
-                        <div class="radio-group-modern">
-                            <label><input type="radio" [name]="'spouse_has_work'"
-                                    [(ngModel)]="application.spouse_has_work_experience" [value]="true"
-                                    (change)="onWorkToggle(null, 'spouse_work_experience_list')"> YES</label>
-                            <label><input type="radio" [name]="'spouse_has_work'"
-                                    [(ngModel)]="application.spouse_has_work_experience" [value]="false"> NO</label>
+                        <div class="work-label" style="flex: 2; min-width: 300px;">Do you have any Work Experience</div>
+                        <div class="radio-group-modern" style="flex: 0 0 auto;">
+                            <label><input type="radio" name="spouse_has_work" [value]="true" [(ngModel)]="application.spouse_has_work_experience"> YES</label>
+                            <label><input type="radio" name="spouse_has_work" [value]="false" [(ngModel)]="application.spouse_has_work_experience"> NO</label>
                         </div>
-                    </div>
-                    <div class="form-row" *ngIf="showGeneralWorkExperience && application.spouse_has_work_experience"
-                        style="margin-top: 10px; margin-bottom: 20px; width: 100%;">
-                        <div class="work-experience-list" style="width: 100%; padding-left: 10px;">
-                            <div class="work-inputs"
-                                *ngFor="let exp of application.spouse_work_experience_list; let i = index"
-                                style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
-                                <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
-                                    <label style="font-size: 0.85rem; color: #1e40af;">Country of Employment</label>
-                                    <select [(ngModel)]="exp.employment_country">
-                                        <option value="">Select country</option>
-                                        <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
-                                    <label style="font-size: 0.85rem; color: #1e40af;">Job Title</label>
-                                    <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
-                                </div>
-                                <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
-                                    <label style="font-size: 0.85rem; color: #1e40af;">Duration</label>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
-                                            style="width: 45px;" min="0">
-                                        <span style="font-size: 0.8rem;">Yrs</span>
-                                        <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
-                                            style="width: 45px;" min="0" max="11">
-                                        <span style="font-size: 0.8rem;">Mths</span>
-                                    </div>
-                                </div>
-                                <button type="button"
-                                    (click)="removeWorkExperience(null, 'spouse_work_experience_list', i)"
-                                    *ngIf="application.spouse_work_experience_list.length > 1"
-                                    style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
-                            </div>
-                            <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
-                                <button type="button" (click)="addWorkExperience(null, 'spouse_work_experience_list')"
-                                    style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
-                                    <span style="font-size: 1.2rem; line-height: 1;">+</span> Add More
-                                </button>
-                            </div>
+                        <div class="edu-inputs" style="flex: 1; display: flex; align-items: center; gap: 8px;" *ngIf="application.spouse_has_work_experience">
+                            <input type="number" [(ngModel)]="application.spouse_work_experience_years" style="width: 140px;" placeholder="Total Year of Exp">
                         </div>
+                        <div style="flex: 1;" *ngIf="!application.spouse_has_work_experience"></div>
                     </div>
 
-                    <!-- SPOUSE OTHER WORK EXPERIENCE -->
-                    <div class="work-row" *ngIf="showGeneralWorkExperience">
-                        <div class="work-label">Does your Spouse have any other Work Experience?</div>
-                        <div class="radio-group-modern">
-                            <label><input type="radio" [name]="'spouse_has_other_work'"
-                                    [(ngModel)]="application.spouse_has_other_work_experience" [value]="true"
-                                    (change)="onWorkToggle(null, 'spouse_other_work_experience_list')"> YES</label>
-                            <label><input type="radio" [name]="'spouse_has_other_work'"
-                                    [(ngModel)]="application.spouse_has_other_work_experience" [value]="false"> NO</label>
+                    <!-- 2. Canadian Work Experience -->
+                    <div class="work-row">
+                        <div class="work-label" style="flex: 2; min-width: 300px;">Do you have any Canadian Work Experience</div>
+                        <div class="radio-group-modern" style="flex: 0 0 auto;">
+                            <label><input type="radio" name="spouse_has_canada_work" [value]="true" [(ngModel)]="application.migration_spouse_data['Canada'].has_work"> YES</label>
+                            <label><input type="radio" name="spouse_has_canada_work" [value]="false" [(ngModel)]="application.migration_spouse_data['Canada'].has_work"> NO</label>
                         </div>
-                    </div>
-                    <div class="form-row"
-                        *ngIf="showGeneralWorkExperience && application.spouse_has_other_work_experience"
-                        style="margin-top: 10px; margin-bottom: 20px; width: 100%;">
-                        <div class="work-experience-list" style="width: 100%; padding-left: 10px;">
-                            <div class="work-inputs"
-                                *ngFor="let exp of application.spouse_other_work_experience_list; let i = index"
-                                style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 15px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
-                                <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
-                                    <label style="font-size: 0.85rem; color: #1e40af;">Country of Employment</label>
-                                    <select [(ngModel)]="exp.employment_country">
-                                        <option value="">Select country</option>
-                                        <option *ngFor="let c of lookups.countries" [value]="c.name">{{c.name}}</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mb-0" style="flex: 1; min-width: 180px;">
-                                    <label style="font-size: 0.85rem; color: #1e40af;">Job Title</label>
-                                    <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
-                                </div>
-                                <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
-                                    <label style="font-size: 0.85rem; color: #1e40af;">Duration</label>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
-                                            style="width: 45px;" min="0">
-                                        <span style="font-size: 0.8rem;">Yrs</span>
-                                        <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
-                                            style="width: 45px;" min="0" max="11">
-                                        <span style="font-size: 0.8rem;">Mths</span>
-                                    </div>
-                                </div>
-                                <button type="button"
-                                    (click)="removeWorkExperience(null, 'spouse_other_work_experience_list', i)"
-                                    *ngIf="application.spouse_other_work_experience_list.length > 1"
-                                    style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
-                            </div>
-                            <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
-                                <button type="button" (click)="addWorkExperience(null, 'spouse_other_work_experience_list')"
-                                    style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-weight: 500;">
-                                    <span style="font-size: 1.2rem; line-height: 1;">+</span> Add More
-                                </button>
-                            </div>
+                        <div class="edu-inputs" style="flex: 1; display: flex; align-items: center; gap: 8px;" *ngIf="application.migration_spouse_data['Canada'].has_work">
+                            <input type="number" [(ngModel)]="application.migration_spouse_data['Canada'].work_years" style="width: 140px;" placeholder="Total Year of Exp">
                         </div>
+                        <div style="flex: 1;" *ngIf="!application.migration_spouse_data['Canada'].has_work"></div>
                     </div>
 
+                    <!-- 3. Australia Work Experience -->
+                    <div class="work-row">
+                        <div class="work-label" style="flex: 2; min-width: 300px;">Do you have any Australia Work Experience/ Do you have any other Work Experience</div>
+                        <div class="radio-group-modern" style="flex: 0 0 auto;">
+                            <label><input type="radio" name="spouse_has_aus_work" [value]="true" [(ngModel)]="application.migration_spouse_data['Australia'].has_work"> YES</label>
+                            <label><input type="radio" name="spouse_has_aus_work" [value]="false" [(ngModel)]="application.migration_spouse_data['Australia'].has_work"> NO</label>
+                        </div>
+                        <div class="edu-inputs" style="flex: 1; display: flex; align-items: center; gap: 8px;" *ngIf="application.migration_spouse_data['Australia'].has_work">
+                            <input type="number" [(ngModel)]="application.migration_spouse_data['Australia'].work_years" style="width: 140px;" placeholder="Total Year of Exp">
+                        </div>
+                        <div style="flex: 1;" *ngIf="!application.migration_spouse_data['Australia'].has_work"></div>
+                    </div>
 
-                    <!-- Dynamic Spouse Migration Specific Questions (Split Rows) -->
-                    <ng-container *ngFor="let country of interestedCountries">
-                        <ng-container
-                            *ngIf="application.migration_spouse_data && application.migration_spouse_data[country]">
-                            <!-- Spouse Work Row -->
-                            <div class="work-row">
-                                <div class="work-label">Do your Spouse have any {{country}} Work Experience?</div>
-                                <div class="radio-group-modern">
-                                    <label><input type="radio" [name]="'spouse_work_'+country"
-                                            [(ngModel)]="application.migration_spouse_data[country].has_work"
-                                            [value]="true">
-                                        YES</label>
-                                    <label><input type="radio" [name]="'spouse_work_'+country"
-                                            [(ngModel)]="application.migration_spouse_data[country].has_work"
-                                            [value]="false"> NO</label>
-                                </div>
+                    <!-- 4. New Zealand Work Experience -->
+                    <div class="work-row">
+                        <div class="work-label" style="flex: 2; min-width: 300px;">Do you have any New Zealand Work Experience/ Do you have any other Work Experience</div>
+                        <div class="radio-group-modern" style="flex: 0 0 auto;">
+                            <label><input type="radio" name="spouse_has_nz_work" [value]="true" [(ngModel)]="application.migration_spouse_data['New Zealand'].has_work"> YES</label>
+                            <label><input type="radio" name="spouse_has_nz_work" [value]="false" [(ngModel)]="application.migration_spouse_data['New Zealand'].has_work"> NO</label>
+                        </div>
+                        <div class="edu-inputs" style="flex: 1; display: flex; align-items: center; gap: 8px;" *ngIf="application.migration_spouse_data['New Zealand'].has_work">
+                            <input type="number" [(ngModel)]="application.migration_spouse_data['New Zealand'].work_years" style="width: 140px;" placeholder="Total Year of Exp">
+                        </div>
+                        <div style="flex: 1;" *ngIf="!application.migration_spouse_data['New Zealand'].has_work"></div>
+                    </div>
 
-                                <div *ngIf="application.migration_spouse_data[country].has_work"
-                                    style="width: 100%; padding-left: 30px; margin-top: 10px;">
-                                    <!-- Spouse Current Work -->
-                                    <div class="work-row" style="border-top: 1px dotted #cbd5e1; padding-top: 10px;">
-                                        <div class="work-label" style="font-size: 0.9rem;">Is your Spouse currently working in
-                                            {{country}}?</div>
-                                        <div class="radio-group-modern">
-                                            <label><input type="radio" [name]="'spouse_is_current_work_'+country"
-                                                    [(ngModel)]="application.migration_spouse_data[country].is_currently_working"
-                                                    [value]="true"
-                                                    (change)="onWorkToggle(country, 'migration_spouse_data', 'current_work_experience_list')">
-                                                YES</label>
-                                            <label><input type="radio" [name]="'spouse_is_current_work_'+country"
-                                                    [(ngModel)]="application.migration_spouse_data[country].is_currently_working"
-                                                    [value]="false">
-                                                NO</label>
-                                        </div>
-                                    </div>
-                                    <div class="work-experience-list"
-                                        *ngIf="application.migration_spouse_data[country].is_currently_working"
-                                        style="width: 100%;">
-                                        <div class="work-inputs"
-                                            *ngFor="let exp of application.migration_spouse_data[country].current_work_experience_list; let i = index"
-                                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 10px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
-                                            <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
-                                                <label style="font-size: 0.8rem; color: #1e40af;">Job Title</label>
-                                                <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
-                                            </div>
-                                            <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
-                                                <label style="font-size: 0.8rem; color: #1e40af;">Duration</label>
-                                                <div style="display: flex; align-items: center; gap: 8px;">
-                                                    <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
-                                                        style="width: 70px;" min="0">
-                                                    <span style="font-size: 0.75rem;">Yrs</span>
-                                                    <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
-                                                        style="width: 70px;" min="0" max="11">
-                                                    <span style="font-size: 0.75rem;">Mths</span>
-                                                </div>
-                                            </div>
-                                            <button type="button"
-                                                (click)="removeWorkExperience(country, 'migration_spouse_data', i, 'current_work_experience_list')"
-                                                *ngIf="application.migration_spouse_data[country].current_work_experience_list.length > 1"
-                                                style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
-                                        </div>
-                                        <div style="margin-top: 5px; display: flex; justify-content: flex-end;">
-                                            <button type="button"
-                                                (click)="addWorkExperience(country, 'migration_spouse_data', 'current_work_experience_list')"
-                                                style="background: #2563eb; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
-                                                + Add
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Spouse Other Work -->
-                                    <div class="work-row"
-                                        style="margin-top: 15px; border-top: 1px dotted #cbd5e1; padding-top: 10px;">
-                                        <div class="work-label" style="font-size: 0.9rem;">Does your Spouse have any other
-                                            {{country}} Work Experience?</div>
-                                        <div class="radio-group-modern">
-                                            <label><input type="radio" [name]="'spouse_has_other_work_'+country"
-                                                    [(ngModel)]="application.migration_spouse_data[country].has_other_work"
-                                                    [value]="true"
-                                                    (change)="onWorkToggle(country, 'migration_spouse_data', 'other_work_experience_list')">
-                                                YES</label>
-                                            <label><input type="radio" [name]="'spouse_has_other_work_'+country"
-                                                    [(ngModel)]="application.migration_spouse_data[country].has_other_work"
-                                                    [value]="false">
-                                                NO</label>
-                                        </div>
-                                    </div>
-                                    <div class="work-experience-list"
-                                        *ngIf="application.migration_spouse_data[country].has_other_work"
-                                        style="width: 100%;">
-                                        <div class="work-inputs"
-                                            *ngFor="let exp of application.migration_spouse_data[country].other_work_experience_list; let i = index"
-                                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding: 10px; background: #f0f4ff; border-radius: 8px; border: 1px solid #dbeafe; width: 100%; position: relative;">
-                                            <div class="form-group mb-0" style="flex: 1; min-width: 200px;">
-                                                <label style="font-size: 0.8rem; color: #1e40af;">Job Title</label>
-                                                <input type="text" [(ngModel)]="exp.job_title" placeholder="Job Title">
-                                            </div>
-                                            <div class="form-group mb-0" style="flex: 1; min-width: 160px;">
-                                                <label style="font-size: 0.8rem; color: #1e40af;">Duration</label>
-                                                <div style="display: flex; align-items: center; gap: 8px;">
-                                                    <input type="number" [(ngModel)]="exp.work_years" placeholder="Yrs"
-                                                        style="width: 70px;" min="0">
-                                                    <span style="font-size: 0.75rem;">Yrs</span>
-                                                    <input type="number" [(ngModel)]="exp.work_months" placeholder="Mths"
-                                                        style="width: 70px;" min="0" max="11">
-                                                    <span style="font-size: 0.75rem;">Mths</span>
-                                                </div>
-                                            </div>
-                                            <button type="button"
-                                                (click)="removeWorkExperience(country, 'migration_spouse_data', i, 'other_work_experience_list')"
-                                                *ngIf="application.migration_spouse_data[country].other_work_experience_list.length > 1"
-                                                style="background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2; height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; cursor: pointer; align-self: flex-end;">&times;</button>
-                                        </div>
-                                        <div style="margin-top: 5px; display: flex; justify-content: flex-end;">
-                                            <button type="button"
-                                                (click)="addWorkExperience(country, 'migration_spouse_data', 'other_work_experience_list')"
-                                                style="background: #2563eb; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
-                                                + Add
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-container>
-                    </ng-container>
-                </div>
-
-                <div class="form-row mt-4">
-                    <div class="form-group flex-2">
-                        <label>Language Test Type</label>
-                        <select [(ngModel)]="application.spouse_lang_test_type">
-                            <option value="">None</option>
-                            <option value="IELTS">IELTS</option>
-                            <option value="PTE">PTE</option>
-                        </select>
+                    <!-- 5. Other Work Experience -->
+                    <div class="work-row" *ngIf="!showGeneralWorkExperience">
+                        <div class="work-label" style="flex: 2; min-width: 300px;">Do you have any other Work Experience</div>
+                        <div class="radio-group-modern" style="flex: 0 0 auto;">
+                            <label><input type="radio" name="spouse_has_other_cont_work" [value]="true" [(ngModel)]="application.migration_spouse_data['Other'].has_work"> YES</label>
+                            <label><input type="radio" name="spouse_has_other_cont_work" [value]="false" [(ngModel)]="application.migration_spouse_data['Other'].has_work"> NO</label>
+                        </div>
+                        <div class="edu-inputs" style="flex: 1; display: flex; align-items: center; gap: 8px;" *ngIf="application.migration_spouse_data['Other'].has_work">
+                            <input type="number" [(ngModel)]="application.migration_spouse_data['Other'].work_years" style="width: 140px;" placeholder="Total Year of Exp">
+                        </div>
+                        <div style="flex: 1;" *ngIf="!application.migration_spouse_data['Other'].has_work"></div>
                     </div>
                 </div>
 
-                <div class="scores-grid mt-3" *ngIf="application.spouse_lang_test_type">
-                    <div class="score-item">
-                        <label>Reading</label>
-                        <input type="text" [(ngModel)]="application.spouse_reading">
-                    </div>
-                    <div class="score-item">
-                        <label>Listening</label>
-                        <input type="text" [(ngModel)]="application.spouse_listening">
-                    </div>
-                    <div class="score-item">
-                        <label>Speaking</label>
-                        <input type="text" [(ngModel)]="application.spouse_speaking">
-                    </div>
-                    <div class="score-item">
-                        <label>Writing</label>
-                        <input type="text" [(ngModel)]="application.spouse_writing">
+                <!-- Language Proficiency (Tabular) -->
+                <div class="edu-grid-tabular mt-4">
+                    <div class="edu-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                            <div class="edu-label" style="flex: 1; min-width: auto; font-size: 0.9rem;">Have you completed any language Test?</div>
+                            <div class="radio-group-modern" style="flex: 0 0 auto;">
+                                <label><input type="radio" name="spouse_has_lang" [(ngModel)]="application.spouse_has_language_test"
+                                        [value]="true" (change)="onTestToggle('language', 'spouse')"> YES</label>
+                                <label><input type="radio" name="spouse_has_lang" [(ngModel)]="application.spouse_has_language_test"
+                                        [value]="false"> NO</label>
+                            </div>
+                            <div style="flex: 2;"></div>
+                        </div>
+
+                        <div class="edu-inputs" *ngIf="application.spouse_has_language_test" style="width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 5px;">
+                            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                                <!-- Headers -->
+                                <div style="display: flex; gap: 10px; padding-right: 44px; margin-bottom: -5px;">
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Select Test</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Writing</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Listening</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Speaking</div>
+                                    <div style="flex: 1; font-size: 0.75rem; font-weight: 700; color: #64748b;">Reading</div>
+                                </div>
+                                
+                                <div *ngFor="let test of application.spouse_language_test_list; let i = index" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                                    <select [(ngModel)]="test.type" style="flex: 1;">
+                                        <option value="">Select Test</option>
+                                        <option value="IELTS">IELTS</option>
+                                        <option value="PTE">PTE</option>
+                                        <option value="TOEFL">TOEFL</option>
+                                        <option value="CELPIP">CELPIP</option>
+                                        <option value="DET">DET</option>
+                                    </select>
+                                    <input type="text" [(ngModel)]="test.writing" style="flex: 1;">
+                                    <input type="text" [(ngModel)]="test.listening" style="flex: 1;">
+                                    <input type="text" [(ngModel)]="test.speaking" style="flex: 1;">
+                                    <input type="text" [(ngModel)]="test.reading" style="flex: 1;">
+                                    
+                                    <button type="button" class="btn btn-sm btn-danger" (click)="removeLanguageTest(i, 'spouse')" 
+                                        style="height: 34px; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 50%; background: #fdf2f2; color: #e74c3c; border: 1px solid #fee2e2;">&times;</button>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
+                                    <button type="button" class="btn btn-sm btn-primary" (click)="addLanguageTest('spouse')"
+                                        style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
+                                        + Add more Language Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

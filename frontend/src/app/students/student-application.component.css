@@ -58,7 +58,7 @@
 
 .form-section {
     background: #ffffff;
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-bottom: 1px solid #e2e8f0;
 }
 
@@ -81,8 +81,8 @@
     font-size: 1.05rem;
     font-weight: 600;
     margin-top: 2px;
-    margin-bottom: 8px;
-    padding-bottom: 4px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
     border-bottom: 1.5px solid #cbd5e1;
     position: relative;
     letter-spacing: -0.2px;
@@ -96,8 +96,8 @@
 
 .form-row {
     display: flex;
-    gap: 12px;
-    margin-bottom: 6px;
+    gap: 16px;
+    margin-bottom: 8px;
 }
 
 .flex-1 {
@@ -202,12 +202,12 @@ input[type="radio"] {
 
 .card-row {
     background: #f8fafc;
-    padding: 12px;
+    padding: 16px;
     border-radius: 8px;
     display: flex;
     align-items: flex-end;
-    gap: 12px;
-    margin-bottom: 8px;
+    gap: 16px;
+    margin-bottom: 12px;
     border-left: 4px solid #3498db;
     position: relative;
 }
@@ -724,4 +724,63 @@ input[type="radio"] {
 .type-badge {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transform: none !important;
+}
+
+/* Phone Input Group */
+.phone-input-group {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    height: 34px;
+}
+
+
+.phone-code-select {
+    flex: 0 0 auto !important;
+    width: 100px !important;
+    min-width: 100px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    background: #f8fafc !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+    padding: 0 8px !important;
+    height: 36px !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.phone-code-select:hover {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
+
+.phone-code-select:focus {
+    outline: none !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+.phone-number-input {
+    flex: 1 !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    height: 36px !important;
+    padding: 6px 12px !important;
+    font-size: 0.85rem !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease;
+}
+
+.phone-number-input:focus {
+    outline: none !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    transform: translateY(-1px) !important;
 }

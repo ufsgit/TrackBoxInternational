@@ -45,7 +45,9 @@ export class StudentApplicationComponent implements OnInit {
         has_other_work_experience: false,
         other_work_experience_list: [],
         has_language_test: false,
+        language_test_list: [],
         has_admission_test: false,
+        admission_test_list: [],
         has_relatives: false,
         spouse_canadian_edu: false,
         spouse_australian_edu: false,
@@ -207,8 +209,16 @@ export class StudentApplicationComponent implements OnInit {
         if (!this.student || !this.application) return;
         if (!this.application.passport_name) this.application.passport_name = this.student.student_name;
         if (!this.application.contact1) this.application.contact1 = this.student.mobile_number;
+        if (!this.application.mobile_country_code) this.application.mobile_country_code = this.student.mobile_country_code;
         if (!this.application.contact2) this.application.contact2 = this.student.phone_number;
+        if (!this.application.phone_country_code) this.application.phone_country_code = this.student.phone_country_code;
         if (!this.application.email) this.application.email = this.student.email;
+    }
+
+    onNumberInput(event: any, field: string) {
+        const val = event.target.value.replace(/[^0-9]/g, '');
+        this.application[field] = val.slice(0, 10);
+        event.target.value = this.application[field];
     }
 
     loadApplication() {
@@ -238,6 +248,47 @@ export class StudentApplicationComponent implements OnInit {
                     }
                     if (typeof this.application.education_data === 'string') {
                         try { this.application.education_data = JSON.parse(this.application.education_data); } catch (e) { this.application.education_data = {}; }
+                    }
+                    if (typeof this.application.language_test_list === 'string') {
+                        try { this.application.language_test_list = JSON.parse(this.application.language_test_list); } catch (e) { this.application.language_test_list = []; }
+                    }
+                    if (typeof this.application.spouse_language_test_list === 'string') {
+                        try { this.application.spouse_language_test_list = JSON.parse(this.application.spouse_language_test_list); } catch (e) { this.application.spouse_language_test_list = []; }
+                    }
+                    if (typeof this.application.admission_test_list === 'string') {
+                        try { this.application.admission_test_list = JSON.parse(this.application.admission_test_list); } catch (e) { this.application.admission_test_list = []; }
+                    }
+
+                    // Backward compatibility for Language Tests
+                    if (this.application.has_language_test && (!this.application.language_test_list || this.application.language_test_list.length === 0)) {
+                        this.application.language_test_list = [{
+                            type: this.application.language_test_type || '',
+                            reading: this.application.reading_score || '',
+                            listening: this.application.listening_score || '',
+                            speaking: this.application.speaking_score || '',
+                            writing: this.application.writing_score || ''
+                        }];
+                    }
+
+                    // Backward compatibility for Spouse Language Tests
+                    if (this.application.spouse_has_language_test && (!this.application.spouse_language_test_list || this.application.spouse_language_test_list.length === 0)) {
+                        this.application.spouse_language_test_list = [{
+                            type: this.application.spouse_lang_test_type || '',
+                            reading: this.application.spouse_reading || '',
+                            listening: this.application.spouse_listening || '',
+                            speaking: this.application.spouse_speaking || '',
+                            writing: this.application.spouse_writing || ''
+                        }];
+                    }
+
+                    // Backward compatibility for Admission Tests
+                    if (this.application.has_admission_test && (!this.application.admission_test_list || this.application.admission_test_list.length === 0)) {
+                        this.application.admission_test_list = [{
+                            type: this.application.admission_test_type || '',
+                            quant: this.application.quant_score || '',
+                            verbal: this.application.verbal_score || '',
+                            data_insights: this.application.data_insights_score || ''
+                        }];
                     }
 
                     this.initializeMigrationData();
@@ -536,7 +587,6 @@ export class StudentApplicationComponent implements OnInit {
 
     get interestedCountries(): string[] {
         const countries: string[] = [];
-        // Drive visibility primarily from Suggested Programs table
         if (this.suggestedPrograms && this.suggestedPrograms.length > 0) {
             this.suggestedPrograms.forEach(p => {
                 if (p.type === 'MIGRATION' && p.country) {
@@ -544,10 +594,18 @@ export class StudentApplicationComponent implements OnInit {
                 }
             });
         } else if (this.studentPrograms) {
-            // Fallback to student profile data if no suggested programs yet
             (this.studentPrograms.migration || []).forEach((p: any) => { if (p.country) countries.push(p.country) });
         }
-        return [...new Set(countries)];
+        const unique = [...new Set(countries)];
+        const order = ['Canada', 'Australia', 'New Zealand'];
+        return unique.sort((a, b) => {
+            const idxA = order.indexOf(a);
+            const idxB = order.indexOf(b);
+            if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+            if (idxA !== -1) return -1;
+            if (idxB !== -1) return 1;
+            return a.localeCompare(b);
+        });
     }
 
     get educationCountries(): string[] {
@@ -561,7 +619,7 @@ export class StudentApplicationComponent implements OnInit {
         } else if (this.studentPrograms) {
             (this.studentPrograms.migration || []).forEach((p: any) => { if (p.country) countries.push(p.country) });
         }
-        return [...new Set(countries)];
+        const unique = [...new Set(countries)]; const order = ["Canada", "Australia", "New Zealand"]; return unique.sort((a, b) => { const idxA = order.indexOf(a); const idxB = order.indexOf(b); if (idxA !== -1 && idxB !== -1) return idxA - idxB; if (idxA !== -1) return -1; if (idxB !== -1) return 1; return a.localeCompare(b); });
     }
 
     initializeMigrationData() {
@@ -578,6 +636,32 @@ export class StudentApplicationComponent implements OnInit {
         if (!this.application.migration_spouse_data['General']) {
             this.application.migration_spouse_data['General'] = { has_edu: false, edu_level: '', edu_field: '', has_work: false, work_years: '' };
         }
+
+        const fixedCountries = ['Canada', 'Australia', 'New Zealand', 'Other'];
+        fixedCountries.forEach(country => {
+            if (!this.application.migration_spouse_data[country]) {
+                this.application.migration_spouse_data[country] = { 
+                    has_edu: false, edu_level: '', edu_field: '', 
+                    has_work: false, 
+                    is_currently_working: false, 
+                    current_work_experience_list: [],
+                    has_other_work: false,
+                    other_work_experience_list: [],
+                    work_years: '',
+                    status: ''
+                };
+            } else if (this.application.migration_spouse_data[country].status === undefined || this.application.migration_spouse_data[country].status === null) {
+                this.application.migration_spouse_data[country].status = '';
+            }
+            if (this.application.spouse_has_work_experience === undefined) this.application.spouse_has_work_experience = false;
+            if (this.application.spouse_work_experience_years === undefined) this.application.spouse_work_experience_years = '';
+            if (this.application.spouse_has_language_test === undefined) this.application.spouse_has_language_test = false;
+            if (!this.application.spouse_language_test_list) this.application.spouse_language_test_list = [];
+
+            if (!this.application.education_data[country]) {
+                this.application.education_data[country] = { has_edu: false, level: '', field: '', status: 'Completed', expected_completion: '', additional_entries: [] };
+            }
+        });
 
         this.interestedCountries.forEach(country => {
             if (!this.application.migration_data[country]) {
@@ -920,6 +1004,51 @@ export class StudentApplicationComponent implements OnInit {
 
             if (hasWork && (!this.application[target] || this.application[target].length === 0)) {
                 this.addWorkExperience(null, target);
+            }
+        }
+    }
+
+    addLanguageTest(target: 'application' | 'spouse' = 'application') {
+        const listKey = target === 'spouse' ? 'spouse_language_test_list' : 'language_test_list';
+        if (!this.application[listKey]) this.application[listKey] = [];
+        this.application[listKey].push({
+            type: '',
+            reading: '',
+            listening: '',
+            speaking: '',
+            writing: ''
+        });
+    }
+
+    removeLanguageTest(index: number, target: 'application' | 'spouse' = 'application') {
+        const listKey = target === 'spouse' ? 'spouse_language_test_list' : 'language_test_list';
+        this.application[listKey].splice(index, 1);
+    }
+
+    addAdmissionTest() {
+        if (!this.application.admission_test_list) this.application.admission_test_list = [];
+        this.application.admission_test_list.push({
+            type: '',
+            quant: '',
+            verbal: '',
+            data_insights: ''
+        });
+    }
+
+    removeAdmissionTest(index: number) {
+        this.application.admission_test_list.splice(index, 1);
+    }
+
+    onTestToggle(type: 'language' | 'admission', target: 'application' | 'spouse' = 'application') {
+        if (type === 'language') {
+            const hasKey = target === 'spouse' ? 'spouse_has_language_test' : 'has_language_test';
+            const listKey = target === 'spouse' ? 'spouse_language_test_list' : 'language_test_list';
+            if (this.application[hasKey] && (!this.application[listKey] || this.application[listKey].length === 0)) {
+                this.addLanguageTest(target);
+            }
+        } else {
+            if (this.application.has_admission_test && (!this.application.admission_test_list || this.application.admission_test_list.length === 0)) {
+                this.addAdmissionTest();
             }
         }
     }
