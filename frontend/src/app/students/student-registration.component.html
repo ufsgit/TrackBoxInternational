@@ -451,7 +451,7 @@
                 </div>
 
                 <!-- OTHER WORK EXPERIENCE -->
-                <div class="form-row" *ngIf="showGeneralWorkExperience">
+                <div class="form-row" *ngIf="!showGeneralWorkExperience">
                     <div class="form-group flex-2">
                         <label>Do you have any other Work Experience?</label>
                         <div class="radio-group-modern">
@@ -462,7 +462,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-row" *ngIf="showGeneralWorkExperience && application.has_other_work_experience"
+                <div class="form-row" *ngIf="!showGeneralWorkExperience && application.has_other_work_experience"
                     style="margin-top: -15px; margin-bottom: 20px;">
                     <div class="work-experience-list" style="width: 100%; padding-left: 20px;">
                         <div class="work-inputs" *ngFor="let exp of application.other_work_experience_list; let i = index"
